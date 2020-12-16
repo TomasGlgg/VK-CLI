@@ -39,10 +39,8 @@ class VKLogin(Cmd):
         self.token_list.remove(argv.split()[0])
 
     def do_list(self, argv):
-        id = 1
-        for token in self.token_list:
-            print(index, token)
-            id += 1
+        for id, token in enumerate(self.token_list):
+            print(id, token[:10]+'...')
 
     def do_auth(self, argv):
         '''
