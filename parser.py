@@ -53,7 +53,7 @@ class Chat_settings:
 
 
 class User:
-    def __init__(self, api, data):
+    def __init__(self, data):
         self.id = data['id']
         self.firs_name = data['first_name']
         self.last_name = data['last_name']
