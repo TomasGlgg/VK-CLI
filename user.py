@@ -38,9 +38,6 @@ class User(Cmd):
             count = argv.split()[0]
         if int(count) > 100:
             count = str(100)
-        messages = list()
         conversations = self.api.messages.getConversations(count=count, v='5.52')['items']
         for conversation in conversations:
-            message = Message(self.api, conversation)
-            messages.append(message)
-            message.print()
+            Message(self.api, conversation).print()
