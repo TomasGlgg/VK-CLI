@@ -1,4 +1,5 @@
 from cmd import Cmd
+from parse_functions import Parser
 import vk
 
 
@@ -10,6 +11,7 @@ class User(Cmd):
     def auth(self):
         session = vk.Session(self.token)
         self.api = vk.API(session)
+        self.parser = Parser(self.api)
 
 
     def setup(self):
@@ -27,7 +29,14 @@ class User(Cmd):
         Status: {self.profile_info['status']} 
         '''
 
-
-
+    def do_dialogs(self, argv):
+        if len(argv.split()) != 1:
+            print('Неверное количество аргументов')
+            return
+        count = argv.split()[0]
+        messages = self.api.messages.getConversations(count=count, v='5.52')['items']
+        for message in messages:
+            self.parser.show_message(message)
+            print('-'*20)
 
 
