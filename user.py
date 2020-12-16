@@ -2,7 +2,7 @@ from cmd import Cmd
 
 import vk
 
-from parse_functions import Parser
+from parser import Parser
 
 
 class User(Cmd):
