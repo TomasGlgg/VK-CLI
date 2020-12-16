@@ -7,6 +7,11 @@ class Peer:
 
 class Push_settings:
     def __init__(self, api, data):
+        if data is None:
+            return
+        for key in ["disabled_until", "disabled_forever", "no_sound"]:
+            if key not in data.keys():
+                data[key] = None
         self.disabled_until = data['disabled_until']
         self.disabled_forever = data['disabled_forever']
         self.no_sound = data['no_sound']
@@ -14,6 +19,9 @@ class Push_settings:
 
 class Can_write:
     def __init__(self, api, data):
+        for key in ["allowed", "reason"]:
+            if key not in data.keys():
+                data[key] = None
         self.allowed = data['allowed']
         self.reason = data['reason']
 
@@ -46,6 +54,11 @@ class Photo:
 
 class Chat_settings:
     def __init__(self, api, data):
+        if data is None:
+            return
+        for key in ["members_count", "title", "pinned_message", "state", "photo", "active_ids", "is_group_channel"]:
+            if key not in data.keys():
+                data[key] = None
         self.members_count = data['members_count']
         self.title = data['title']
         self.pinned_message = data['pinned_message']
@@ -55,9 +68,28 @@ class Chat_settings:
         self.is_group_channel = data['is_group_channel']
 
 
-class Dialog:
+class User:
+    def __init__(self, api, data):
+        if data is None:
+            return
+        for key in ["id", "first_name", "last_name", "deactivated", "is_closed", "can_access_closed"]:
+            if key not in data.keys():
+                data[key] = None
+        self.id = data['id']
+        self.firs_name = data['first_name']
+        self.last_name = data['last_name']
+        self.deactivated = data['deactivated']
+        self.is_closed = data['is_closed']
+        self.can_access_closed = data['can_access_closed']
+
+
+class Conversation:
     def __init__(self, api, data):
         self.api = api
+        for key in ["peer", "in_read", "out_read", "unread_count", "important", "unanswered", "push_settings",
+                    "can_write", "chat_settings"]:
+            if key not in data.keys():
+                data[key] = None
         self.peer = Peer(api, data['peer'])
         self.in_read = data['in_read']
         self.out_read = data['out_read']
@@ -69,21 +101,44 @@ class Dialog:
         self.chat_settings = Chat_settings(api, data['chat_settings'])
 
     def getName(self):
-        name = ""
         if self.peer.type == "user":
-            name = self.api.users.get(user_ids=[self.peer.id], v='5.52')[0]
+            data = self.api.users.get(user_ids=[self.peer.id], v='5.52')[0]
+            user = User(self.api, data)
+            name = user.firs_name + ' ' + user.last_name
+            return name
         elif self.peer.type == "chat":
-            pass
+            return self.chat_settings.title
         elif self.peer.type == "group":
             pass
         elif self.peer.type == "email":
             pass
-        return name
 
     def print(self):
-        print(f"""
-        
-        """)
+        print("Название: ", self.getName())
+
+
+class Last_message:
+    def __init__(self, api, data):
+        self.id = data['id']
+        self.date = data['date']
+        self.peer_id = data['peer_id']
+        self.from_id = data['from_id']
+        self.text = data['text']
+
+    def print(self):
+        print("Последнее сообщение: ", self.text)
+
+
+class Message:
+    def __init__(self, api, data):
+        self.conversation = Conversation(api, data['conversation'])
+        self.last_message = Last_message(api, data['last_message'])
+
+    def print(self):
+        print("-" * 20)
+        self.conversation.print()
+        self.last_message.print()
+        print("-" * 20)
 
 
 class Parser:
