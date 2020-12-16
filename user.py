@@ -2,7 +2,7 @@ from cmd import Cmd
 
 import vk
 
-from parser import Parser
+from parser import Parser, Message
 
 
 class User(Cmd):
@@ -32,10 +32,14 @@ class User(Cmd):
         if len(argv.split()) > 1:
             print('Неверное количество аргументов')
             return
-        count = argv.split()[0]
-        if count is None:
+
+        if len(argv) == 0:
             count = 10
-        messages = self.api.messages.getConversations(count=count, v='5.52')['items']
-        for message in messages:
-            self.parser.show_message(message)
-            print('-' * 20)
+        else:
+            count = argv.split()[0]
+        messages = list()
+        conversations = self.api.messages.getConversations(count=count, v='5.52')['items']
+        for conversation in conversations:
+            message = Message(self.api, conversation)
+            messages.append(message)
+            message.print()
