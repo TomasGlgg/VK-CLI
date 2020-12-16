@@ -1,5 +1,4 @@
 
-
 class Parser:
     def __init__(self, api):
         self.api = api
@@ -18,10 +17,11 @@ class Parser:
 
 
     def show_chat_chat(self, data):
-        #print(json.dumps(data, indent=8, sort_keys=True))
+        # print(json.dumps(data, indent=8, sort_keys=True))
         title = data['conversation']['chat_settings']['title']
         last_peer = data['last_message']['from_id']
-
+        if last_peer < 0:
+            return
         print('Chat:', title)
         user = self.api.users.get(user_ids=[last_peer], v='5.52')[0]
         print('Peer:', user['first_name'], user['last_name'])
@@ -33,7 +33,7 @@ class Parser:
         print('Message:', data['last_message']['text'])
 
     def show_message(self, data):
-        #print(json.dumps(data, indent=8, sort_keys=True))
+        # print(json.dumps(data, indent=8, sort_keys=True))
         if data['conversation']['peer']['type'] == 'user':
             self.show_user_chat(data)
         elif data['conversation']['peer']['type'] == 'chat':
