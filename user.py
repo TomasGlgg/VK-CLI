@@ -2,7 +2,7 @@ from cmd import Cmd
 
 import vk
 
-from parser import Parser, Message
+from parser import Message
 
 
 class User(Cmd):
@@ -12,7 +12,6 @@ class User(Cmd):
     def auth(self):
         session = vk.Session(self.token)
         self.api = vk.API(session)
-        self.parser = Parser(self.api)
 
     def setup(self):
         self.profile_info = self.api.account.getProfileInfo(v=5.126)
@@ -37,6 +36,8 @@ class User(Cmd):
             count = 10
         else:
             count = argv.split()[0]
+        if int(count) > 100:
+            count = str(100)
         messages = list()
         conversations = self.api.messages.getConversations(count=count, v='5.52')['items']
         for conversation in conversations:
