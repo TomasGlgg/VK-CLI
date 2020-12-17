@@ -51,19 +51,25 @@ class Conversation:
             pass
 
     def print(self):
-        print("Название: ", self.getName())
+        print(f"""ID диалога: {self.peer.id}\nНазвание: {self.getName()}""")
 
 
 class Last_message:
     def __init__(self, api, data):
+        self.api = api
         self.id = data['id']
         self.date = data['date']
         self.peer_id = data['peer_id']
         self.from_id = data['from_id']
         self.text = data['text']
 
+    def getNameFrom(self):
+        data = self.api.users.get(user_ids=[self.from_id], v='5.52')[0]
+        user = User(data)
+        return user.firs_name + ' ' + user.last_name
+
     def print(self):
-        print("Последнее сообщение: ", self.text)
+        print(f"""Последнее сообщение: ({self.getNameFrom()}) {self.text}""")
 
 
 class Message:
@@ -72,7 +78,6 @@ class Message:
         self.last_message = Last_message(api, data['last_message'])
 
     def print(self):
-        print("-" * 20)
+        print("-" * 40)
         self.conversation.print()
         self.last_message.print()
-        print("-" * 20)
