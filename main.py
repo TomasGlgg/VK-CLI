@@ -1,7 +1,7 @@
 from cmd import Cmd
 from os import listdir
 
-from user import User
+from profile import Profile
 
 
 class VKLogin(Cmd):
@@ -67,11 +67,11 @@ class VKLogin(Cmd):
             print('Токен не найден')
             return
         token = self.tokens[token_id]
-        user = User()
-        user.load_token(token)
-        user.auth()
-        user.setup()  # setup settings (banner, prompt)
-        user.cmdloop()
+        profile = Profile()
+        profile.load_token(token)
+        profile.auth()
+        profile.setup()  # setup settings (banner, prompt)
+        profile.cmdloop()
 
 
 if __name__ == '__main__':
