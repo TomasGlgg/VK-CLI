@@ -1,8 +1,3 @@
-class City:
-    _id = None
-    title = None
-
-
 class Contacts:
     mobile_phone = None
     home_phone = None
