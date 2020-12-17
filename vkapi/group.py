@@ -8,11 +8,6 @@ class BanInfo:
     comment = None
 
 
-class City:
-    _id = None
-    title = None
-
-
 class Contacts:
     user_id = None
     desc = None
