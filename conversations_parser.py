@@ -1,7 +1,11 @@
+from termcolor import colored
+
 def _printMessage(message):
     print(message['text'])
     if len(message['attachments']):
-        print('Дополнительно:', message['attachments'][0]['type'])
+        for attachment in message['attachments']:
+            print('Дополнительно:', colored(attachment['type'], 'cyan'), end=' ')
+        print()
 
 
 class Parser:
@@ -15,7 +19,7 @@ class Parser:
         peer_info = self.api.users.get(user_ids=[peer_id], v='5.52')[0]
         print('---------- {} {} ({}):'.format(peer_info['first_name'], peer_info['last_name'], peer_id))
         if conversation['last_message']['from_id'] != peer_id:
-            print('Сообщение (Вы):', end=' ')
+            print('Сообщение ', colored('(Вы):', 'green'), end=' ')
         else:
             print('Сообщение:', end=' ')
         _printMessage(conversation['last_message'])

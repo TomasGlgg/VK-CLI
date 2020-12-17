@@ -1,4 +1,5 @@
 from datetime import datetime
+from termcolor import colored
 
 class Private_messages_parser:
     def __init__(self, api, peer_id):
@@ -9,13 +10,13 @@ class Private_messages_parser:
         date = datetime.fromtimestamp(message['date'])
         print('--------', date.strftime('%Y-%m-%d %H:%M:%S'))
         if message['from_id'] != message['peer_id']:
-            print('Message (Вы):', message['text'])
+            print('Message', colored('(Вы):', 'green'), message['text'])
         else:
             print('Message:', message['text'])
         if len(message['attachments']):
             print('Дополнительно:', end=' ')
             for attachment in message['attachments']:
-                print(attachment['type'], end=' ')
+                print(colored(attachment['type'], 'cyan'), end=' ')
             print()
 
     def print_last_messages(self, count):
