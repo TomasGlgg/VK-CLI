@@ -1,8 +1,9 @@
 from cmd import Cmd
+
 import vk
 
-from parser import Message
-from private_messages.private_dialog import Private_dialog
+from messages.dialog import Dialog
+from parser import Message, User
 
 
 class Profile(Cmd):
@@ -18,18 +19,13 @@ class Profile(Cmd):
         self.api = vk.API(session)
 
     def setup(self):
-        self.profile_info = self.api.account.getProfileInfo(v=5.126)
+        data = self.api.account.getProfileInfo(v=5.126)
+        self.user = User(data)
 
         # setup prompt
-        self.prompt = '({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'])
-
+        self.prompt = '({} {})>'.format(self.user.firs_name, self.user.last_name)
         # setup banner
-
-        self.intro = f''' {self.profile_info['first_name']} {self.profile_info['last_name']} - {self.profile_info['screen_name']} {self.profile_info['bdate']}
-        Phone: {self.profile_info['phone']}, Country: {self.profile_info['country']['title']}
-        
-        Status: {self.profile_info['status']} 
-        '''
+        self.intro = f'''{self.user.firs_name} {self.user.last_name} ({self.user.screen_name}) - {self.user.bdate}\nТелефон: {self.user.phone}, Страна: {self.user.country.title}\nСтатус: {self.user.status}'''
 
     def do_dialogs(self, argv):
         if len(argv.split()) > 1:
@@ -51,7 +47,6 @@ class Profile(Cmd):
         if len(argv.split()) != 1:
             print('Неверное количество аргументов')
             return
-        dialog = Private_dialog()
-        dialog.setup_api(self.api, self.profile_info, int(argv.split()[0]))
+        dialog = Dialog()
+        dialog.setup(self.api, self.user, int(argv.split()[0]))
         dialog.cmdloop()
-
