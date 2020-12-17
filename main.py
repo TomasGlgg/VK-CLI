@@ -61,7 +61,9 @@ class VKLogin(Cmd):
         if len(argv.split()) != 1:
             print("Неправильное количество аргументов")
             return
-
+        if not argv.split()[0].isdigit():
+            print('Неверный аргумент')
+            return
         token_id = int(argv.split()[0])
         if token_id > len(self.tokens):
             print('Токен не найден')

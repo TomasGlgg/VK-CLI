@@ -1,3 +1,7 @@
+def _printMessage(message):
+    print(message['text'])
+    if len(message['attachments']):
+        print('Дополнительно:', message['attachments'][0]['type'])
 
 
 class Parser:
@@ -5,11 +9,6 @@ class Parser:
 
     def __init__(self, api):
         self.api = api
-
-    def _printMessage(self, message):
-        print(message['text'])
-        if len(message['attachments']):
-            print('Дополнительно:', message['attachments'][0]['type'])
 
     def _printPrivateMessage(self, conversation):
         peer_id = conversation['conversation']['peer']['id']
@@ -19,7 +18,7 @@ class Parser:
             print('Сообщение (Вы):', end=' ')
         else:
             print('Сообщение:', end=' ')
-        self._printMessage(conversation['last_message'])
+        _printMessage(conversation['last_message'])
 
     def _printChatMessage(self, conversation):
         title = conversation['conversation']['chat_settings']['title']
@@ -29,7 +28,7 @@ class Parser:
         last_peer_info = self.api.users.get(user_ids=[last_peer], v='5.52')[0]
         print('Сообщение от: {} {} ({})'.format(last_peer_info['first_name'], last_peer_info['last_name'], last_peer))
         print('Собщение:', end=' ')
-        self._printMessage(conversation['last_message'])
+        _printMessage(conversation['last_message'])
 
     def printConversations(self, count):
         conversations = self.api.messages.getConversations(count=count, v='5.52')['items']
