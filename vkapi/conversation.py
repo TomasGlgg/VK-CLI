@@ -1,5 +1,5 @@
 from vkapi.geo import Geo
-from vkapi.message import Message
+from vkapi.message import Message, Attachment
 from vkapi.pushsettings import PushSettings
 from vkapi.user import User
 
@@ -42,8 +42,25 @@ class PinnedMessage:
         for key in data.keys():
             if key == "geo":
                 self.geo = Geo(v=self.v, api=self.api, data=data[key])
+            elif key == "attachments":
+                self.attachments = list()
+                for item in data[key]:
+                    attachment = Attachment(v=self.v, api=self.api, data=item)
+                    self.attachments.append(attachment)
+            elif key == "fwd_messages":
+                self.fwd_messages = list()
+                for item in data[key]:
+                    fwd_message = Message(v=self.v, api=self.api, data=item)
+                    self.fwd_messages.append(fwd_message)
             else:
                 self.__setattr__(key, data[key])
+
+    def print(self):
+        print(self.text)
+        for fwd_message in self.fwd_messages:
+            fwd_message.print()
+        for attachment in self.attachments:
+            attachment.print()
 
 
 class ChatSettings:

@@ -7,7 +7,7 @@ from profile import Profile
 
 class VKLogin(Cmd):
     intro = "VK login"
-    prompt = ">"
+    prompt = "Вход > "
 
     tokens = []
 

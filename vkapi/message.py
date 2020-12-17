@@ -10,6 +10,7 @@ from vkapi.geo import Geo
 from vkapi.post import Post
 from vkapi.user import User
 from vkapi.attachments.video import Video
+import time
 
 
 class Action:
@@ -24,7 +25,6 @@ class Action:
         self.api = api
         for key in data.keys():
             self.__setattr__(key, data[key])
-
 
 
 class Attachment:
@@ -160,3 +160,8 @@ class Message:
         user = User(v=self.v, api=self.api, id=self.from_id)
         user.getUserInfo()
         return user.getName()
+
+    def print(self):
+        print(f"""{time.ctime(int(self.date))} ({self.getUserName()}): {self.text}""")
+        for attachment in self.attachments:
+            attachment.print()

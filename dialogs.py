@@ -3,6 +3,7 @@ from cmd import Cmd
 import vk
 from vk.exceptions import VkAuthError, VkAPIError
 
+from dialog import VKDialog
 from vkapi.conversation import Conversation
 from vkapi.message import Message
 from vkapi.user import User
@@ -35,7 +36,7 @@ class VKDialogs(Cmd):
             self.auth()
             self.user = User(v=self.v, api=self.api)
             self.user.getUserInfo()
-            self.prompt = f"""({self.user.getName()}) > """
+            self.prompt = f"""Диалоги ({self.user.getName()}) > """
             return True
         # except VkAuthError as e:
         #     print(e)
@@ -59,3 +60,15 @@ class VKDialogs(Cmd):
 
     def do_back(self, argv):
         return True
+
+    def do_select(self, argv):
+        if len(argv.split()) != 1:
+            print("Неправильное количество аргументов")
+            return
+        conversation_id = argv.split()[0]
+        data = self.api.messages.getConversationsById(peer_ids=[conversation_id], extended='1', v=self.v)['items'][0]
+        conversation = Conversation(v=self.v, api=self.api, data=data)
+
+        dialog = VKDialog(v=self.v, api=self.api)
+        dialog.setup(conversation)
+        dialog.cmdloop()
