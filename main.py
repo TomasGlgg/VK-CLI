@@ -10,6 +10,7 @@ class VKLogin(Cmd):
     def preloop(self):
         Cmd.preloop(self)
         self.load_tokens()
+        self.prompt = '(VK-CLI)'
 
     def save_token_list(self):
         with open('tokens.txt', 'w') as f:
