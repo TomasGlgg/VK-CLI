@@ -26,8 +26,10 @@ class Profile(Cmd):
         self.prompt = '({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'])
         # setup banner
         self.intro = f'''{self.profile_info['first_name']} {self.profile_info['last_name']} ({self.profile_info['screen_name']}) - {self.profile_info['bdate']}
-        Телефон: {self.profile_info['phone']}, Страна: {self.profile_info['country']['title']}
-        Статус: {self.profile_info['status']}'''
+        Телефон: {self.profile_info['phone']}\n'''
+        if 'country' in self.profile_info.keys():
+            self.intro += f'''Страна: {self.profile_info['country']['title']}\n'''
+        self.intro += f'''Статус: {self.profile_info['status']}'''
 
     def do_dialogs(self, argv):
         '''
