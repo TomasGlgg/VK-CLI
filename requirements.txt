@@ -1,2 +1,4 @@
-vk
-nose
+vk~=2.0.2
+numpy~=1.19.4
+Pillow~=8.0.1
+requests~=2.25.0

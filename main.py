@@ -1,10 +1,14 @@
 from cmd import Cmd
 from os import listdir
 
+from dialogs import VKDialogs
 from profile import Profile
 
 
 class VKLogin(Cmd):
+    intro = "VK login"
+    prompt = ">"
+
     tokens = []
 
     def preloop(self):
@@ -33,10 +37,12 @@ class VKLogin(Cmd):
         if len(argv.split()) != 1:
             print("Неправильное количество аргументов")
             return
-        self.tokens.append(argv.split()[0])
+        else:
+            token = argv.split()[0]
+
+        self.tokens.append(token)
         self.save_token_list()
         print('Добавлено')
-        return
 
     def do_delete(self, argv):
         """
@@ -45,7 +51,19 @@ class VKLogin(Cmd):
         if len(argv.split()) != 1:
             print("Неправильное количество аргументов")
             return
-        self.tokens.remove(argv.split()[0])
+        else:
+            token = argv.split()[0]
+
+        self.tokens.remove(token)
+
+    def complete_delete(self, text, line, beginx, endidx):
+        completions = list()
+        if not text:
+            completions = [token for token in self.tokens]
+        for token in self.tokens:
+            if token.startswith(text):
+                completions.append(token)
+        return completions
 
     def do_list(self, argv):
         """
@@ -61,17 +79,26 @@ class VKLogin(Cmd):
         if len(argv.split()) != 1:
             print("Неправильное количество аргументов")
             return
+        else:
+            token_pos = int(argv.split()[0])
 
-        token_id = int(argv.split()[0])
-        if token_id > len(self.tokens):
+        if token_pos > len(self.tokens):
             print('Токен не найден')
             return
-        token = self.tokens[token_id]
-        profile = Profile()
-        profile.load_token(token)
-        profile.auth()
-        profile.setup()  # setup settings (banner, prompt)
-        profile.cmdloop()
+        else:
+            token = self.tokens[token_pos]
+        dialogs = VKDialogs(v="5.128", token=token)
+        if dialogs.setup():
+            dialogs.cmdloop()
+
+    def complete_auth(self, text, line, beginx, endidx):
+        completions = list()
+        if not text:
+            completions = [str(i) for i in range(len(self.tokens))]
+        for i in range(len(self.tokens)):
+            if str(i).startswith(text):
+                completions.append(str(i))
+        return completions
 
 
 if __name__ == '__main__':

@@ -2,10 +2,22 @@ class Addresses:
     is_enabled = None
     main_address_id = None
 
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])
+
 
 class BanInfo:
     end_date = None
     comment = None
+
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])
 
 
 class Contacts:
@@ -14,9 +26,15 @@ class Contacts:
     phone = None
     email = None
 
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])
+
 
 class Group:
-    _id = None
+    id = None
     name = None
     screen_name = None
     is_closed = None
@@ -74,3 +92,9 @@ class Group:
     verified = None
     wall = None
     wiki_page = None
+
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])

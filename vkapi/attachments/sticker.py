@@ -1,28 +1,28 @@
-class Preview:
-    photo = None
-    graffiti = None
-    audio_message = None
-
-    def __init__(self, v, api, data):
-        self.v = v
-        self.api = api
-        for key in data.keys():
-            self.__setattr__(key, data[key])
-
-
-class Doc:
-    id = None
-    owner_id = None
-    title = None
-    size = None
-    ext = None
+class Image:
     url = None
-    date = None
-    type = None
-    preview = None
+    width = None
+    height = None
 
     def __init__(self, v, api, data):
         self.v = v
         self.api = api
         for key in data.keys():
             self.__setattr__(key, data[key])
+
+
+class Sticker:
+    product_id = None
+    sticker_id = None
+    images = None
+    images_with_background = None
+    animation_url = None
+    is_allowed = None
+
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])
+
+    def print(self):
+        pass

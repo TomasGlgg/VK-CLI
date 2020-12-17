@@ -1,7 +1,9 @@
 class City:
-    _id = None
+    id = None
     title = None
 
-    def __init__(self, data):
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
         for key in data.keys():
             self.__setattr__(key, data[key])

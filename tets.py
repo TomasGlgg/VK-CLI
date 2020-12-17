@@ -14,7 +14,7 @@ class TestUser(unittest.TestCase):
         self.v = "5.126"
 
     def test_getUserInfo(self):
-        user = User(self.api, "5.126", "278714389")
+        user = User("5.126", self.api, "278714389")
         user.getUserInfo()
         fields = ["photo_id", "verified", "sex", "bdate", "city", "country", "home_town", "has_photo", "photo_50",
                   "photo_100", "photo_200_orig", "photo_200", "photo_400_orig", "photo_max", "photo_max_orig", "online",

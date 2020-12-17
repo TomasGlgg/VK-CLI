@@ -5,9 +5,15 @@ class Thread:
     show_reply_button = None
     groups_can_post = None
 
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])
+
 
 class Comment:
-    _id = None
+    id = None
     from_id = None
     date = None
     text = None
@@ -17,3 +23,9 @@ class Comment:
     attachments = None
     parents_stack = None
     thread = None
+
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])

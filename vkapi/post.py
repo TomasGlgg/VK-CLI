@@ -5,20 +5,38 @@ class Comments:
     can_close = None
     can_open = None
 
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])
+
 
 class Copyright:
-    _id = None
+    id = None
     link = None
     name = None
     type = None
+
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])
 
 
 class Views:
     count = None
 
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])
+
 
 class Post:
-    _id = None
+    id = None
     owner_id = None
     from_id = None
     created_by = None
@@ -46,3 +64,9 @@ class Post:
     is_favorite = None
     donut = None
     postponed_id = None
+
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])

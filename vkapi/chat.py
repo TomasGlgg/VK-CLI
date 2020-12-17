@@ -1,5 +1,5 @@
 class Chat:
-    _id = None
+    id = None
     type = None
     title = None
     admin_id = None
@@ -10,3 +10,9 @@ class Chat:
     photo_200 = None
     left = None
     kicked = None
+
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])

@@ -1,5 +1,5 @@
 class Video:
-    _id = None
+    id = None
     owner_id = None
     title = None
     description = None
@@ -40,3 +40,12 @@ class Video:
     spectators = None
     likes = None
     reposts = None
+
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])
+
+    def print(self):
+        pass

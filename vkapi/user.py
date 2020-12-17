@@ -1,6 +1,5 @@
 from vkapi.city import City
 from vkapi.country import Country
-from vkapi.photo import Photo
 
 
 class Contacts:
@@ -39,10 +38,11 @@ class CropPhoto:
     crop = None
     rect = None
 
-    def __init__(self, data):
-        self.photo = Photo(data['photo'])
-        self.crop = Crop(data['crop'])
-        self.rect = Rect(data['rect'])
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
+        for key in data.keys():
+            self.__setattr__(key, data[key])
 
 
 class Career:
@@ -55,7 +55,9 @@ class Career:
     until = None
     position = None
 
-    def __init__(self, data):
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
         for key in data.keys():
             if key == "from":
                 self._from = data[key]
@@ -79,7 +81,9 @@ class Military:
     _from = None
     until = None
 
-    def __init__(self, data):
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
         for key in data.keys():
             if key == "from":
                 self._from = data[key]
@@ -92,7 +96,9 @@ class Occupation:
     id = None
     name = None
 
-    def __init__(self, data):
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
         for key in data.keys():
             self.__setattr__(key, data[key])
 
@@ -107,7 +113,9 @@ class Personal:
     smoking = None
     alcohol = None
 
-    def __init__(self, data):
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
         for key in data.keys():
             self.__setattr__(key, data[key])
 
@@ -117,7 +125,9 @@ class Relative:
     name = None
     type = None
 
-    def __init__(self, data):
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
         for key in data.keys():
             self.__setattr__(key, data[key])
 
@@ -135,7 +145,9 @@ class School:
     type = None
     type_str = None
 
-    def __init__(self, data):
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
         for key in data.keys():
             if key == "class":
                 self._class = data[key]
@@ -156,7 +168,9 @@ class University:
     education_form = None
     education_status = None
 
-    def __init__(self, data):
+    def __init__(self, v, api, data):
+        self.v = v
+        self.api = api
         for key in data.keys():
             self.__setattr__(key, data[key])
 
@@ -239,7 +253,7 @@ class User:
     verified = None
     wall_default = None
 
-    def __init__(self, api, v, id):
+    def __init__(self, v, api, id=None):
         self.api = api
         self.v = v
         self.id = id
@@ -254,37 +268,45 @@ class User:
                   "can_write_private_message", "can_send_friend_request", "is_favorite", "is_hidden_from_feed",
                   "timezone", "screen_name", "maiden_name", "crop_photo", "is_friend", "friend_status", "career",
                   "military", "blacklisted", "blacklisted_by_me", "can_be_invited_group"]
-        data = self.api.users.get(user_ids=[self.id], fields=fields, v=self.v)[0]
+
+        if self.id is None:
+            data = self.api.users.get(fields=fields, v=self.v)[0]
+        else:
+            data = self.api.users.get(user_ids=[self.id], fields=fields, v=self.v)[0]
+
         for key in data.keys():
             if key == "career":
                 self.career = list()
                 for item in data[key]:
-                    self.career.append(Career(item))
+                    self.career.append(Career(v=self.v, api=self.api, data=item))
             elif key == "city":
-                self.city = City(data[key])
+                self.city = City(v=self.v, api=self.api, data=data[key])
             elif key == "country":
-                self.country = Country(data[key])
+                self.country = Country(v=self.v, api=self.api, data=data[key])
             elif key == "crop_photo":
-                self.crop_photo = CropPhoto(data[key])
+                self.crop_photo = CropPhoto(v=self.v, api=self.api, data=data[key])
             elif key == "military":
                 self.military = list()
                 for item in data[key]:
-                    self.military.append(Military(item))
+                    self.military.append(Military(v=self.v, api=self.api, data=item))
             elif key == "occupation":
-                self.occupation = Occupation(data[key])
+                self.occupation = Occupation(v=self.v, api=self.api, data=data[key])
             elif key == "personal":
-                self.personal = Personal(data[key])
+                self.personal = Personal(v=self.v, api=self.api, data=data[key])
             elif key == "relatives":
                 self.relatives = list()
                 for item in data[key]:
-                    self.relatives.append(Relative(item))
+                    self.relatives.append(Relative(v=self.v, api=self.api, data=item))
             elif key == "school":
                 self.schools = list()
                 for item in data[key]:
-                    self.schools.append(School(item))
+                    self.schools.append(School(v=self.v, api=self.api, data=item))
             elif key == "universities":
                 self.universities = list()
                 for item in data[key]:
-                    self.universities.append(University(item))
+                    self.universities.append(University(v=self.v, api=self.api, data=item))
             else:
                 self.__setattr__(key, data[key])
+
+    def getName(self):
+        return self.first_name + ' ' + self.last_name
