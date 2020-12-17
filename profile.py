@@ -1,11 +1,15 @@
 from cmd import Cmd
-
 import vk
 
 from parser import Message
+from private_messages.private_dialog import Private_dialog
 
 
-class User(Cmd):
+class Profile(Cmd):
+    profile_info = None
+    token = None
+    api = None
+
     def load_token(self, token):
         self.token = token
 
@@ -40,4 +44,14 @@ class User(Cmd):
             count = str(100)
         conversations = self.api.messages.getConversations(count=count, v='5.52')['items']
         for conversation in conversations:
-            Message(self.api, conversation).print()
+            message = Message(self.api, conversation)
+            message.print()
+
+    def do_select(self, argv):
+        if len(argv.split()) != 1:
+            print('Неверное количество аргументов')
+            return
+        dialog = Private_dialog()
+        dialog.setup_api(self.api, self.profile_info, int(argv.split()[0]))
+        dialog.cmdloop()
+
