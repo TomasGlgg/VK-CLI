@@ -30,6 +30,9 @@ class Profile(Cmd):
         Статус: {self.profile_info['status']}'''
 
     def do_dialogs(self, argv):
+        '''
+        usage: dialogs [count]
+        '''
         if len(argv.split()) > 1:
             print('Неверное количество аргументов')
             return
@@ -42,6 +45,9 @@ class Profile(Cmd):
         self.parser.printConversations(count)
 
     def do_select(self, argv):
+        '''
+        usage: select <chat id>
+        '''
         if len(argv.split()) != 1:
             print('Неверное количество аргументов')
             return
