@@ -2,14 +2,16 @@ from cmd import Cmd
 
 import vk
 
-from messages.dialog import Dialog
-from parser import Message, User
+#from messages.dialog import Dialog
+from parser import Parser
 
 
 class Profile(Cmd):
     profile_info = None
+    peer_info = None
     token = None
     api = None
+    parser = None
 
     def load_token(self, token):
         self.token = token
@@ -17,36 +19,27 @@ class Profile(Cmd):
     def auth(self):
         session = vk.Session(self.token)
         self.api = vk.API(session)
+        self.parser = Parser(self.api)
 
     def setup(self):
-        data = self.api.account.getProfileInfo(v=5.126)
-        self.user = User(data)
+        self.peer_info = self.api.account.getProfileInfo(v=5.126)
 
         # setup prompt
-        self.prompt = '({} {})>'.format(self.user.firs_name, self.user.last_name)
+        self.prompt = '({} {})>'.format(self.peer_info['first_name'], self.peer_info['last_name'])
         # setup banner
-        self.intro = f'''{self.user.firs_name} {self.user.last_name} ({self.user.screen_name}) - {self.user.bdate}\nТелефон: {self.user.phone}, Страна: {self.user.country.title}\nСтатус: {self.user.status}'''
+        self.intro = f'''{self.peer_info['first_name']} {self.peer_info['last_name']} ({self.peer_info['screen_name']}) - {self.peer_info['bdate']}
+        Телефон: {self.peer_info['phone']}, Страна: {self.peer_info['country']['title']}
+        Статус: {self.peer_info['status']}'''
 
     def do_dialogs(self, argv):
         if len(argv.split()) > 1:
             print('Неверное количество аргументов')
             return
-
-        if len(argv) == 0:
-            count = 10
+        elif len(argv) == 1:
+            count = int(argv.split()[0])
+            if count > 100:
+                count = 100
         else:
-            count = argv.split()[0]
-        if int(count) > 100:
-            count = str(100)
-        conversations = self.api.messages.getConversations(count=count, v='5.52')['items']
-        for conversation in conversations:
-            message = Message(self.api, conversation)
-            message.print()
+            count = 10
+        self.parser.printConversations(count)
 
-    def do_select(self, argv):
-        if len(argv.split()) != 1:
-            print('Неверное количество аргументов')
-            return
-        dialog = Dialog()
-        dialog.setup(self.api, self.user, int(argv.split()[0]))
-        dialog.cmdloop()
