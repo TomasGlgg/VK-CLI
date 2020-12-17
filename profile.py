@@ -1,14 +1,12 @@
 from cmd import Cmd
-
 import vk
 
-#from messages.dialog import Dialog
-from parser import Parser
+from conversations_parser import Parser
+from messages.private_dialog import Private_dialog
 
 
 class Profile(Cmd):
     profile_info = None
-    peer_info = None
     token = None
     api = None
     parser = None
@@ -22,14 +20,14 @@ class Profile(Cmd):
         self.parser = Parser(self.api)
 
     def setup(self):
-        self.peer_info = self.api.account.getProfileInfo(v=5.126)
+        self.profile_info = self.api.account.getProfileInfo(v=5.126)
 
         # setup prompt
-        self.prompt = '({} {})>'.format(self.peer_info['first_name'], self.peer_info['last_name'])
+        self.prompt = '({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'])
         # setup banner
-        self.intro = f'''{self.peer_info['first_name']} {self.peer_info['last_name']} ({self.peer_info['screen_name']}) - {self.peer_info['bdate']}
-        Телефон: {self.peer_info['phone']}, Страна: {self.peer_info['country']['title']}
-        Статус: {self.peer_info['status']}'''
+        self.intro = f'''{self.profile_info['first_name']} {self.profile_info['last_name']} ({self.profile_info['screen_name']}) - {self.profile_info['bdate']}
+        Телефон: {self.profile_info['phone']}, Страна: {self.profile_info['country']['title']}
+        Статус: {self.profile_info['status']}'''
 
     def do_dialogs(self, argv):
         if len(argv.split()) > 1:
@@ -43,3 +41,16 @@ class Profile(Cmd):
             count = 10
         self.parser.printConversations(count)
 
+    def do_select(self, argv):
+        if len(argv.split()) != 1:
+            print('Неверное количество аргументов')
+            return
+        conversation_id = int(argv.split()[0])
+        conversation_info = self.api.messages.getConversationsById(peer_ids=[conversation_id], v=5.126)['items'][0]
+        if conversation_info['peer']['type'] == 'user':
+            private_dialog = Private_dialog()
+            private_dialog.setup(self.api, self.profile_info, conversation_id)
+            private_dialog.setupUI()
+            private_dialog.cmdloop()
+        elif conversation_info['peer']['type'] == 'chat':
+            pass  # TODO: chat dialog
