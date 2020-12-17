@@ -56,3 +56,14 @@ VKontakte CLI version
  
  `read <count>`
  
+ 
+ **Выбрать диалог:**
+ 
+ `select <chat id>`
+ 
+ ## chat cmd commands:
+ 
+ **Прочитать сообщения:**
+ 
+ `read <count>`
+ 

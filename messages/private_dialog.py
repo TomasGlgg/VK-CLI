@@ -1,5 +1,6 @@
 from messages.dialog import Dialog
 from datetime import datetime
+from termcolor import colored
 
 from messages.messages_parser import Private_messages_parser
 
@@ -14,12 +15,12 @@ class Private_dialog(Dialog):
         self.prompt = '({} {})->({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'],
                                                  self.chat_info['first_name'], self.chat_info['last_name'])
 
-        self.intro = f'''Диалог с: {self.chat_info['first_name']} {self.chat_info['last_name']}\n'''
+        self.intro = f'''Диалог с: {colored(self.chat_info['first_name'], 'green')} {colored(self.chat_info['last_name'], 'green')}\n'''
         if self.chat_info['online'] == 1:
-            self.intro += 'Online\n'
+            self.intro += colored('Online\n', 'green')
         else:
-            self.intro += 'Последний вход: ' + last_seen.strftime('%Y-%m-%d %H:%M:%S') + '\n'
-        self.intro += f'''Статус: {self.chat_info['status']}'''
+            self.intro += 'Последний вход: ' + colored(last_seen.strftime('%Y-%m-%d %H:%M:%S'), 'red')+ '\n'
+        self.intro += f'''Статус: {colored(self.chat_info['status'], 'cyan')}'''
 
     def do_read(self, argv):
         '''

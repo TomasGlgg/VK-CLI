@@ -1,5 +1,6 @@
 from cmd import Cmd
 import vk
+from termcolor import colored
 
 from conversations_parser import Parser
 from messages.private_dialog import Private_dialog
@@ -25,18 +26,18 @@ class Profile(Cmd):
         # setup prompt
         self.prompt = '({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'])
         # setup banner
-        self.intro = f'''{self.profile_info['first_name']} {self.profile_info['last_name']} ({self.profile_info['screen_name']}) - {self.profile_info['bdate']}
+        self.intro = f'''{colored(self.profile_info['first_name'], 'green')} {colored(self.profile_info['last_name'], 'green')} ({self.profile_info['screen_name']}) - {colored(self.profile_info['bdate'], 'red')}
         Телефон: {self.profile_info['phone']}\n'''
         if 'country' in self.profile_info.keys():
             self.intro += f'''Страна: {self.profile_info['country']['title']}\n'''
-        self.intro += f'''Статус: {self.profile_info['status']}'''
+        self.intro += f'''Статус: {colored(self.profile_info['status'], 'cyan')}'''
 
     def do_dialogs(self, argv):
         '''
         usage: dialogs [count]
         '''
         if len(argv.split()) > 1:
-            print('Неверное количество аргументов')
+            print(colored('Неверное количество аргументов', 'red'))
             return
         elif len(argv) == 1:
             count = int(argv.split()[0])
@@ -51,7 +52,7 @@ class Profile(Cmd):
         usage: select <chat id>
         '''
         if len(argv.split()) != 1:
-            print('Неверное количество аргументов')
+            print(colored('Неверное количество аргументов', 'red'))
             return
         conversation_id = int(argv.split()[0])
         conversation_info = self.api.messages.getConversationsById(peer_ids=[conversation_id], v=5.126)['items'][0]

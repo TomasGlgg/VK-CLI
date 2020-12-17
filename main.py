@@ -1,5 +1,6 @@
 from cmd import Cmd
 from os import listdir
+from termcolor import colored
 
 from profile import Profile
 
@@ -23,7 +24,7 @@ class VKLogin(Cmd):
         with open('tokens.txt', 'r') as f:
             for line in f.readlines():
                 self.tokens.append(line.strip())
-        print('Список токенов загружен')
+        print(colored('Список токенов загружен', 'green'))
 
     # Commands
 
@@ -32,11 +33,11 @@ class VKLogin(Cmd):
         usage: add <token>
         """
         if len(argv.split()) != 1:
-            print("Неправильное количество аргументов")
+            print(colored("Неправильное количество аргументов", 'red'))
             return
         self.tokens.append(argv.split()[0])
         self.save_token_list()
-        print('Добавлено')
+        print(colored('Добавлено', 'green'))
         return
 
     def do_delete(self, argv):
@@ -44,7 +45,7 @@ class VKLogin(Cmd):
         usage: delete <token>
         """
         if len(argv.split()) != 1:
-            print("Неправильное количество аргументов")
+            print(colored("Неправильное количество аргументов", 'red'))
             return
         self.tokens.remove(argv.split()[0])
 
@@ -60,14 +61,14 @@ class VKLogin(Cmd):
         usage: auth <token index>
         """
         if len(argv.split()) != 1:
-            print("Неправильное количество аргументов")
+            print(colored("Неправильное количество аргументов", 'red'))
             return
         if not argv.split()[0].isdigit():
-            print('Неверный аргумент')
+            print(colored('Неверный аргумент', 'red'))
             return
         token_id = int(argv.split()[0])
         if token_id > len(self.tokens):
-            print('Токен не найден')
+            print(colored('Токен не найден', 'red'))
             return
         token = self.tokens[token_id]
         profile = Profile()
