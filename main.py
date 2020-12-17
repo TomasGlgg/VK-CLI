@@ -75,8 +75,16 @@ class VKLogin(Cmd):
         profile.load_token(token)
         profile.auth()
         profile.setup()  # setup settings (banner, prompt)
-        profile.cmdloop()
+        try:
+            profile.cmdloop()
+        except KeyboardInterrupt:
+            print('Выход')
+            exit()
 
 
 if __name__ == '__main__':
-    VKLogin().cmdloop()
+    try:
+        VKLogin().cmdloop()
+    except KeyboardInterrupt:
+        print('\nВыход')
+        exit()

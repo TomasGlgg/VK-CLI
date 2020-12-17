@@ -1,5 +1,6 @@
 from termcolor import colored
 
+
 def _printMessage(message):
     print(message['text'])
     if len(message['attachments']):
@@ -43,4 +44,3 @@ class Parser:
                 self._printChatMessage(conversation)
             else:
                 print('Peer', conversation['conversation']['peer']['type'], 'is not recognized')
-

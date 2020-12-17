@@ -60,6 +60,10 @@ class Profile(Cmd):
             private_dialog = Private_dialog()
             private_dialog.setup(self.api, self.profile_info, conversation_id)
             private_dialog.setupUI()
-            private_dialog.cmdloop()
+            try:
+                private_dialog.cmdloop()
+            except KeyboardInterrupt:
+                print('\nВыход')
+                exit()
         elif conversation_info['peer']['type'] == 'chat':
             pass  # TODO: chat dialog
