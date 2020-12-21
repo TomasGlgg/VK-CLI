@@ -26,16 +26,17 @@ class Profile(Cmd):
         # setup prompt
         self.prompt = '({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'])
         # setup banner
-        self.intro = f'''{colored(self.profile_info['first_name'], 'green')} {colored(self.profile_info['last_name'], 'green')} ({self.profile_info['screen_name']}) - {colored(self.profile_info['bdate'], 'red')}
+        self.intro = f'''{colored(self.profile_info['first_name'], 'green')} {colored(self.profile_info['last_name'],
+                        'green')} ({self.profile_info['screen_name']}) - {colored(self.profile_info['bdate'], 'red')}
         Телефон: {self.profile_info['phone']}\n'''
         if 'country' in self.profile_info.keys():
             self.intro += f'''Страна: {self.profile_info['country']['title']}\n'''
         self.intro += f'''Статус: {colored(self.profile_info['status'], 'cyan')}'''
 
     def do_dialogs(self, argv):
-        '''
+        """
         usage: dialogs [count]
-        '''
+        """
         if len(argv.split()) > 1:
             print(colored('Неверное количество аргументов', 'red'))
             return
@@ -48,9 +49,9 @@ class Profile(Cmd):
         self.parser.printConversations(count)
 
     def do_select(self, argv):
-        '''
+        """
         usage: select <chat id>
-        '''
+        """
         if len(argv.split()) != 1:
             print(colored('Неверное количество аргументов', 'red'))
             return

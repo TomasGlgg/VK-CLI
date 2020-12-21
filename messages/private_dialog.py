@@ -15,17 +15,18 @@ class Private_dialog(Dialog):
         self.prompt = '({} {})->({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'],
                                                  self.chat_info['first_name'], self.chat_info['last_name'])
 
-        self.intro = f'''Диалог с: {colored(self.chat_info['first_name'], 'green')} {colored(self.chat_info['last_name'], 'green')}\n'''
+        self.intro = f'''Диалог с: {colored(self.chat_info['first_name'], 'green')} {colored(self.chat_info['last_name']
+                                                                                             ,'green')}\n'''
         if self.chat_info['online'] == 1:
             self.intro += colored('Online\n', 'green')
         else:
-            self.intro += 'Последний вход: ' + colored(last_seen.strftime('%Y-%m-%d %H:%M:%S'), 'red')+ '\n'
+            self.intro += 'Последний вход: ' + colored(last_seen.strftime('%Y-%m-%d %H:%M:%S'), 'red') + '\n'
         self.intro += f'''Статус: {colored(self.chat_info['status'], 'cyan')}'''
 
     def do_read(self, argv):
-        '''
+        """
         usage: read [count]
-        '''
+        """
         if len(argv.split()) == 0:
             count = 10
         else:
