@@ -20,7 +20,7 @@ class Parser:
         peer_info = self.api.users.get(user_ids=[peer_id], v='5.52')[0]
         print('---------- {} {} ({}):'.format(peer_info['first_name'], peer_info['last_name'], peer_id))
         if conversation['last_message']['from_id'] != peer_id:
-            print('Сообщение ', colored('(Вы):', 'green'), end=' ')
+            print('Сообщение', colored('(Вы):', 'green'), end=' ')
         else:
             print('Сообщение:', end=' ')
         _printMessage(conversation['last_message'])
