@@ -26,12 +26,14 @@ class Profile(Cmd):
         # setup prompt
         self.prompt = '({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'])
         # setup banner
-        self.intro = f'''{colored(self.profile_info['first_name'], 'green')} {colored(self.profile_info['last_name'],
-                        'green')} ({self.profile_info['screen_name']}) - {colored(self.profile_info['bdate'], 'red')}
-        Телефон: {self.profile_info['phone']}\n'''
+        self.intro = f"{colored(self.profile_info['first_name'], 'green')} "
+        self.intro += f"{colored(self.profile_info['last_name'], 'green')} ({self.profile_info['screen_name']}) "
+        self.intro += f"- id{self.profile_info['id']} "
+        self.intro += f"- {colored(self.profile_info['bdate'], 'red')}\n"
+        self.intro += f"   Телефон: {self.profile_info['phone']}\n"
         if 'country' in self.profile_info.keys():
-            self.intro += f'''Страна: {self.profile_info['country']['title']}\n'''
-        self.intro += f'''Статус: {colored(self.profile_info['status'], 'cyan')}'''
+            self.intro += f"    Страна: {self.profile_info['country']['title']}\n"
+        self.intro += f"    Статус: {colored(self.profile_info['status'], 'cyan')}"
 
     def do_dialogs(self, argv):
         """
