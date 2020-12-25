@@ -58,8 +58,8 @@ class Profile(Cmd):
             print(colored('Неверное количество аргументов', 'red'))
             return
         conversation_id = int(argv.split()[0])
-        conversation_info = self.api.messages.getConversationsById(peer_ids=[conversation_id], v=5.126)['items'][0]
-        if conversation_info['peer']['type'] == 'user':
+        #conversation_info = self.api.messages.getConversationsById(peer_ids=[conversation_id], v=5.126)['items'][0]
+        if conversation_id < 2000000000:  # private messages
             private_dialog = Private_dialog()
             private_dialog.setup(self.api, self.profile_info, conversation_id)
             private_dialog.setupUI()
@@ -68,7 +68,7 @@ class Profile(Cmd):
             except KeyboardInterrupt:
                 print('\nВыход')
                 exit()
-        elif conversation_info['peer']['type'] == 'chat':
+        else:  # chat messages
             chat_dialog = Chat_dialog()
             chat_dialog.setup(self.api, self.profile_info, conversation_id)
             chat_dialog.setupUI()
