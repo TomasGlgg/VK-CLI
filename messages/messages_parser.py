@@ -2,7 +2,7 @@ from datetime import datetime
 from termcolor import colored
 
 
-def _print_message(message):
+def _print_private_message(message):
     date = datetime.fromtimestamp(message['date'])
     print('--------', date.strftime('%Y-%m-%d %H:%M:%S'))
     if message['from_id'] != message['peer_id']:
@@ -24,4 +24,12 @@ class Private_messages_parser:
     def print_last_messages(self, count):
         messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, v=5.126)['items']
         for message in messages[::-1]:
-            _print_message(message)
+            _print_private_message(message)
+
+class Chat_messages_parser:
+    def __init__(self, api, chat_id):
+        self.peer_id = chat_id
+        self.api = api
+
+    def print_last_messages(self, count):
+        pass

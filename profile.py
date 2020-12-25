@@ -3,7 +3,7 @@ import vk
 from termcolor import colored
 
 from conversations_parser import Parser
-from messages.private_dialog import Private_dialog
+from messages import Private_dialog, Chat_dialog
 
 
 class Profile(Cmd):
@@ -67,4 +67,11 @@ class Profile(Cmd):
                 print('\nВыход')
                 exit()
         elif conversation_info['peer']['type'] == 'chat':
-            pass  # TODO: chat dialog
+            chat_dialog = Chat_dialog()
+            chat_dialog.setup(self.api, self.profile_info, conversation_id)
+            chat_dialog.setupUI()
+            try:
+                chat_dialog.cmdloop()
+            except KeyboardInterrupt:
+                print('\nВыход')
+                exit()
