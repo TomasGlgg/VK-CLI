@@ -1,7 +1,7 @@
 # VK-CLI
 VKontakte CLI version
 
-## main cmd commands:
+## Команды главной консоли:
 **Показать справку:**
 
 `help`
@@ -36,7 +36,8 @@ VKontakte CLI version
 (Эмиль Иванов)>
 ```
  
- ## user cmd commands:
+
+ ## Команды профиля:
  
  **Показать справку:**
  
@@ -49,21 +50,17 @@ VKontakte CLI version
  **Выбрать диалог:**
  
  `select <chat id>`
- 
- ## chat cmd commands:
- 
- **Прочитать сообщения:**
- 
- `read <count>`
- 
- 
- **Выбрать диалог:**
- 
- `select <chat id>`
- 
- ## chat cmd commands:
+
+
+ ## Команды приватного диалога:
  
  **Прочитать сообщения:**
  
- `read <count>`
- 
+ `read [count]`
+
+
+ ## Команда чата:
+
+ **Прочитать сообщения:**
+
+ `read [count]`
