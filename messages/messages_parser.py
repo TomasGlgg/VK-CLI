@@ -16,7 +16,6 @@ def _print_private_message(message):
         print()
 
 
-
 class Private_messages_parser:
     def __init__(self, api, peer_id):
         self.peer_id = peer_id

@@ -49,7 +49,7 @@ class VKLogin(Cmd):
             return
         self.tokens.remove(argv.split()[0])
 
-    def do_list(self, argv):
+    def do_list(self, _):
         """
         usage: list
         """
@@ -93,5 +93,5 @@ if __name__ == '__main__':
     try:
         VKLogin().cmdloop()
     except KeyboardInterrupt:
-        print('\nВыход')
+        print('\nKeyboardInterrupt, выход')
         exit()
