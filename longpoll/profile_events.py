@@ -32,6 +32,16 @@ class Profile_events:
 
         print(self.chats[event.chat_id], end=' ')
 
+    def _print_text_message(self, event):
+        print('Текст:', event.message)
+        if len(event.attachments):
+            print('Дополнительно:')
+            count = len(event.attachments)//2
+            for i in range(count):
+                attachment_type = event.attachments['attach{}_type'.format(i+1)]
+                attachment_id = event.attachments['attach{}'.format(i+1)]
+                print(attachment_type, '-', attachment_id)
+
     def _print_message(self, event):
         print('----------', colored('Новое сообщение:', 'red'))
 
@@ -53,7 +63,7 @@ class Profile_events:
         elif event.from_group:
             print('группы', event.group_id)  # TODO
 
-        print('Текст:', event.text)
+        self._print_text_message(event)
 
     def start(self):
         print('Получаем события... Для отмены нажмите Ctrl + c')
@@ -63,4 +73,4 @@ class Profile_events:
             elif event.type == VkEventType.MESSAGE_EDIT:
                 print('-------- Сообщение изменено:')
                 print('Номер сообщения: №' + str(event.message_id))
-                print('Текст:', event.message)
+                self._print_text_message(event)
