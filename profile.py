@@ -58,7 +58,7 @@ class Profile(Cmd):
             print(colored('Неверное количество аргументов', 'red'))
             return
         conversation_id = int(argv.split()[0])
-        #conversation_info = self.api.messages.getConversationsById(peer_ids=[conversation_id], v=5.126)['items'][0]
+        # conversation_info = self.api.messages.getConversationsById(peer_ids=[conversation_id], v=5.126)['items'][0]
         if conversation_id < 2000000000:  # private messages
             private_dialog = Private_dialog()
             private_dialog.setup(self.api, self.profile_info, conversation_id)
@@ -77,3 +77,10 @@ class Profile(Cmd):
             except KeyboardInterrupt:
                 print('\nВыход')
                 exit()
+
+    def do_exit(self, _):
+        '''
+        exit
+        '''
+        print('Выход')
+        return True

@@ -81,6 +81,13 @@ class VKLogin(Cmd):
             print('Выход')
             exit()
 
+    def do_exit(self, _):
+        '''
+        exit
+        '''
+        print('Выход')
+        return True
+
 
 if __name__ == '__main__':
     try:

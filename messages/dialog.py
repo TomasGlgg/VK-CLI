@@ -12,3 +12,10 @@ class Dialog(Cmd):
         self.api = api
         self.profile_info = profile_info
         self.chat_id = chat_id
+
+    def do_exit(self, _):
+        '''
+        exit
+        '''
+        print('Выход')
+        return True
