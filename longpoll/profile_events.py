@@ -1,5 +1,6 @@
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
+from termcolor import colored
 
 
 class Profile_events:
@@ -15,21 +16,29 @@ class Profile_events:
 
     def _print_cache_user(self, event):
         if event.user_id not in self.users:
-            user_info = self.api.users.get(user_ids=[event.user_id], name_case='acc', v='5.52')[0]
-            username_acc = user_info['first_name'] + ' ' + user_info['last_name']
+            user_info = self.api.users.get(user_ids=[event.user_id], name_case='gen', v='5.52')[0]
+            username_gen = user_info['first_name'] + ' ' + user_info['last_name']
             user_info = self.api.users.get(user_ids=[event.user_id], name_case='dat', v='5.52')[0]
             username_dat = user_info['first_name'] + ' ' + user_info['last_name']
-            self.users[event.user_id] = [username_acc, username_dat]  # 0 - acc username, 1 - dat username
+            self.users[event.user_id] = [username_gen, username_dat]  # 0 - gen username, 1 - dat username
 
-        print(self.users[event.user_id][int(event.from_me)], end='')
+        print(self.users[event.user_id][int(event.from_me)], end=' ')
+
+    def _print_cache_chat(self, event):
+        if event.chat_id not in self.chats:
+            chat_info = self.api.messages.getChat(chat_id=event.chat_id - 2000000000, v=5.126)
+            chat_title = chat_info['title']
+            self.chats[event.chat_id] = chat_title
+
+        print(self.chats[event.chat_id], end='')
 
     def _print_message(self, event):
-        print('---------- Новое сообщение:')
+        print('----------', colored('Новое сообщение:', 'red'))
 
         if event.from_me:
-            print('Вы - ', end='')
+            print(colored('Вы', 'green'), '- ', end='')
         elif event.to_me:
-            print('От - ', end='')
+            print(colored('От', 'red'), '- ', end='')
 
         if event.from_user:
             self._print_cache_user(event)
@@ -37,9 +46,11 @@ class Profile_events:
 
         elif event.from_chat:
             self._print_cache_user(event)
-            print(' в беседе', event.chat_id)
+            print('в беседе')
+            self._print_cache_chat(event)
+
         elif event.from_group:
-            print('группы', event.group_id)
+            print('группы', event.group_id)  # TODO
 
         print('Текст:', event.text)
 
