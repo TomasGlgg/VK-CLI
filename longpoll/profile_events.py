@@ -60,3 +60,7 @@ class Profile_events:
         for event in self.longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW:
                 self._print_message(event)
+            elif event.type == VkEventType.MESSAGE_EDIT:
+                print('-------- Сообщение изменено:')
+                print('Номер сообщения: №' + str(event.message_id))
+                print('Текст:', event.message)
