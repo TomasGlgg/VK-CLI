@@ -4,6 +4,7 @@ from termcolor import colored
 
 from conversations_parser import Parser
 from messages import Private_dialog, Chat_dialog
+from longpoll.profile_events import Profile_events
 
 
 class Profile(Cmd):
@@ -77,6 +78,13 @@ class Profile(Cmd):
             except KeyboardInterrupt:
                 print('\nВыход')
                 exit()
+
+    def do_events(self, argv):
+        events = Profile_events(self.api)
+        try:
+            events.start()
+        except KeyboardInterrupt:
+            print('\nKeyboardInterrupt, выход')
 
     def do_exit(self, _):
         '''
