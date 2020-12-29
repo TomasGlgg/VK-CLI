@@ -22,6 +22,10 @@ VKontakte CLI version
 
 `auth <token id>`
 
+**Выйти:**
+
+`exit`
+
 ### Пример:
 ```
 Список токенов загружен
@@ -51,6 +55,10 @@ VKontakte CLI version
  
  `select <chat id>`
 
+ **Выйти из профиля:**
+
+ `exit`
+
 
  ## Команды приватного диалога:
  
@@ -58,9 +66,17 @@ VKontakte CLI version
  
  `read [count]`
 
+ **Выйти из приватного диалога:**
+ 
+ `exit`
+
 
  ## Команда чата:
 
  **Прочитать сообщения:**
 
  `read [count]`
+
+ **Выйти из чата:**
+
+ `exit`
