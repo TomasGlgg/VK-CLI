@@ -25,14 +25,14 @@ VKontakte CLI version
 ### Пример:
 ```
 Список токенов загружен
-(Cmd) list
+(VK-CLI)list
 0 7dd020931e...
-(Cmd) auth 0
- Эмиль Иванов - vzlomrtlsoska 25.8.1920
-        Phone: +7 *** *** ** 37, Country: Россия
-        
-        Status:  
-        
+(VK-CLI)auth 0
+Эмиль Иванов (vzlomrtlsoska) - id611955040
+Дата рождения: 25.8.1920
+      Телефон: +7 *** *** ** 37
+       Страна: Россия
+       Статус: 
 (Эмиль Иванов)>
 ```
  
