@@ -40,7 +40,8 @@ class Profile_events:
 
         print(self.chats[event.chat_id], end=' ')
 
-    def _print_text_message(self, event):
+    @staticmethod
+    def _print_text_message(event):
         print('Текст:', event.message)
         if len(event.attachments):
             print('Дополнительно:')
