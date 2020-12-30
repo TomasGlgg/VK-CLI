@@ -55,6 +55,10 @@ VKontakte CLI version
  
  `select <chat id>`
 
+ **Показывать сообщения в реальном времени:**
+
+ `messages [аргументы]`
+
  **Выйти из профиля:**
 
  `exit`
