@@ -80,11 +80,11 @@ class Profile(Cmd):
                 exit()
 
     def do_online(self, argv):
-        '''
+        """
         Вывод сообзщений в реальном времени
         usage: online [аргументы]
         -s     показывать печатающих
-        '''
+        """
         show_typing = False
         argv = argv.split()
         if len(argv) > 1:
@@ -102,9 +102,10 @@ class Profile(Cmd):
         except KeyboardInterrupt:
             print('\nKeyboardInterrupt, выход')
 
-    def do_exit(self, _):
-        '''
+    @staticmethod
+    def do_exit(_):
+        """
         exit
-        '''
+        """
         print('Выход')
         return True

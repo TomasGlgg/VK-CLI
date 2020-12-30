@@ -13,7 +13,8 @@ class Dialog(Cmd):
         self.profile_info = profile_info
         self.chat_id = chat_id
 
-    def do_exit(self, _):
+    @staticmethod
+    def do_exit(_):
         '''
         exit
         '''

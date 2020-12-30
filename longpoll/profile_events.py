@@ -15,9 +15,9 @@ class Profile_events:
         self.longpoll = VkLongPoll(longpoll_api)
 
     def _print_cache_user(self, event, case=None):
-        '''
+        """
         :param case: 0 - nom username, 1 - gen username, 2 - dat username
-        '''
+        """
         if event.user_id not in self.users:
             user_info = self.api.users.get(user_ids=[event.user_id], name_case='nom', v='5.52')[0]
             username_nom = user_info['first_name'] + ' ' + user_info['last_name']
