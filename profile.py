@@ -79,10 +79,26 @@ class Profile(Cmd):
                 print('\nВыход')
                 exit()
 
-    def do_events(self, argv):
+    def do_online(self, argv):
+        '''
+        Вывод сообзщений в реальном времени
+        usage: online [аргументы]
+        -s     показывать печатающих
+        '''
+        show_typing = False
+        argv = argv.split()
+        if len(argv) > 1:
+            print(colored('Неверное количество аргументов', 'red'))
+            return
+        elif len(argv) == 1:
+            if argv[0] == '-s':
+                show_typing = True
+            else:
+                print(colored('Нераспознанный аргумент ' + argv[0], 'red'))
+                return
         events = Profile_events(self.api)
         try:
-            events.start()
+            events.start(show_typing)
         except KeyboardInterrupt:
             print('\nKeyboardInterrupt, выход')
 

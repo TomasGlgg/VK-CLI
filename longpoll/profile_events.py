@@ -14,15 +14,23 @@ class Profile_events:
         longpoll_api._auth_token()
         self.longpoll = VkLongPoll(longpoll_api)
 
-    def _print_cache_user(self, event):
+    def _print_cache_user(self, event, case=None):
+        '''
+        :param case: 0 - nom username, 1 - gen username, 2 - dat username
+        '''
         if event.user_id not in self.users:
+            user_info = self.api.users.get(user_ids=[event.user_id], name_case='nom', v='5.52')[0]
+            username_nom = user_info['first_name'] + ' ' + user_info['last_name']
             user_info = self.api.users.get(user_ids=[event.user_id], name_case='gen', v='5.52')[0]
             username_gen = user_info['first_name'] + ' ' + user_info['last_name']
             user_info = self.api.users.get(user_ids=[event.user_id], name_case='dat', v='5.52')[0]
             username_dat = user_info['first_name'] + ' ' + user_info['last_name']
-            self.users[event.user_id] = [username_gen, username_dat]  # 0 - gen username, 1 - dat username
+            self.users[event.user_id] = [username_nom, username_gen, username_dat]
 
-        print(self.users[event.user_id][int(event.from_me)], end=' ')
+        if case is None:
+            print(self.users[event.user_id][int(event.from_me)+1], end=' ')
+        else:
+            print(self.users[event.user_id][case], end=' ')
 
     def _print_cache_chat(self, event):
         if event.chat_id not in self.chats:
@@ -65,7 +73,7 @@ class Profile_events:
 
         self._print_text_message(event)
 
-    def start(self):
+    def start(self, show_typing):
         print('Получаем события... Для отмены нажмите Ctrl + c')
         for event in self.longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW:
@@ -74,3 +82,6 @@ class Profile_events:
                 print('-------- Сообщение изменено:')
                 print('Номер сообщения: №' + str(event.message_id))
                 self._print_text_message(event)
+            elif event.type == VkEventType.USER_TYPING and show_typing:
+                print('Печатает:', end=' ')
+                self._print_cache_user(event, case=0)  # case - nom
