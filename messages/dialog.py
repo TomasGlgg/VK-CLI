@@ -15,8 +15,8 @@ class Dialog(Cmd):
 
     @staticmethod
     def do_exit(_):
-        '''
+        """
         exit
-        '''
+        """
         print('Выход')
         return True

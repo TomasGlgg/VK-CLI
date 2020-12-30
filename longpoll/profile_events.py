@@ -85,3 +85,4 @@ class Profile_events:
             elif event.type == VkEventType.USER_TYPING and show_typing:
                 print('Печатает:', end=' ')
                 self._print_cache_user(event, case=0)  # case - nom
+                print()
