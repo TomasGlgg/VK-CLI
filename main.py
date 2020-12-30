@@ -30,7 +30,7 @@ class VKLogin(Cmd):
 
     def do_add(self, argv):
         """
-        usage: add <token>
+        usage: add <токен>
         """
         if len(argv.split()) != 1:
             print(colored("Неправильное количество аргументов", 'red'))
@@ -42,7 +42,7 @@ class VKLogin(Cmd):
 
     def do_delete(self, argv):
         """
-        usage: delete <token>
+        usage: delete <токен>
         """
         if len(argv.split()) != 1:
             print(colored("Неправильное количество аргументов", 'red'))
@@ -58,7 +58,7 @@ class VKLogin(Cmd):
 
     def do_auth(self, argv):
         """
-        usage: auth <token index>
+        usage: auth <id токена>
         """
         if len(argv.split()) != 1:
             print(colored("Неправильное количество аргументов", 'red'))

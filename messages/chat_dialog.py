@@ -18,7 +18,7 @@ class Chat_dialog(Dialog):
 
     def do_read(self, argv):
         """
-        usage: read [count]
+        usage: read [кол-во]
         """
         if len(argv.split()) == 0:
             count = 10

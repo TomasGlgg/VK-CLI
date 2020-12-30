@@ -8,7 +8,7 @@ VKontakte CLI version
 
 **Добавить новый токен в список:**
 
-`add <token>`
+`add <токен>`
 
 **Список добавленых токенов:**
 
@@ -16,11 +16,11 @@ VKontakte CLI version
 
 **Удалить токен из списка:**
 
-`delete <token id>`
+`delete <id токена>`
 
 **Авторизоваться с помощью токена:**
 
-`auth <token id>`
+`auth <id токена>`
 
 **Выйти:**
 
@@ -53,7 +53,7 @@ VKontakte CLI version
  
  **Выбрать диалог:**
  
- `select <chat id>`
+ `select <id чата>`
 
  **Показывать сообщения в реальном времени:**
 
@@ -68,7 +68,7 @@ VKontakte CLI version
  
  **Прочитать сообщения:**
  
- `read [count]`
+ `read [кол-во]`
 
  **Выйти из приватного диалога:**
  
@@ -79,7 +79,7 @@ VKontakte CLI version
 
  **Прочитать сообщения:**
 
- `read [count]`
+ `read [кол-во]`
 
  **Выйти из чата:**
 

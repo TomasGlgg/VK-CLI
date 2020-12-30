@@ -38,7 +38,7 @@ class Profile(Cmd):
 
     def do_dialogs(self, argv):
         """
-        usage: dialogs [count]
+        usage: dialogs [кол-во]
         """
         if len(argv.split()) > 1:
             print(colored('Неверное количество аргументов', 'red'))
@@ -53,7 +53,7 @@ class Profile(Cmd):
 
     def do_select(self, argv):
         """
-        usage: select <chat id>
+        usage: select <id чата>
         """
         if len(argv.split()) != 1:
             print(colored('Неверное количество аргументов', 'red'))
