@@ -3,6 +3,7 @@ from datetime import datetime
 from termcolor import colored
 
 from messages.messages_parser import Private_messages_parser
+from longpoll.private_dialog_events import Private_dialog_events
 
 
 class Private_dialog(Dialog):
@@ -32,4 +33,27 @@ class Private_dialog(Dialog):
         else:
             count = int(argv.split()[0])
         self.parser.print_last_messages(count)
+
+    def do_online(self, argv):
+        """
+        Вывод сообщений в реальном времени
+        usage: online [аргументы]
+        -s     показывать печатающих
+        """
+        show_typing = False
+        argv = argv.split()
+        if len(argv) > 1:
+            print(colored('Неверное количество аргументов', 'red'))
+            return
+        elif len(argv) == 1:
+            if argv[0] == '-s':
+                show_typing = True
+            else:
+                print(colored('Нераспознанный аргумент ' + argv[0], 'red'))
+                return
+        events = Private_dialog_events(self.api)
+        try:
+            events.start(show_typing, self.chat_id)
+        except KeyboardInterrupt:
+            print('\nKeyboardInterrupt, выход')
 
