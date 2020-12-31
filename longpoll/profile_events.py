@@ -39,7 +39,8 @@ class Profile_events:
 
     @staticmethod
     def _print_text_message(event):
-        print('Текст:', event.message)
+        if event.message:
+            print('Текст:', event.message)
         if len(event.attachments):
             print('Дополнительно:')
             count = len(event.attachments)//2
