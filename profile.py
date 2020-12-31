@@ -91,7 +91,7 @@ class Profile(Cmd):
                 return
             conversation_id = dialogs_id[int(answer)]
         else:
-            conversation_id = int(argv.split()[0])
+            conversation_id = int(argv[0])
         if conversation_id < 2000000000:  # private messages
             private_dialog = Private_dialog()
             private_dialog.setup(self.api, self.alternative_api, self.profile_info, conversation_id)
