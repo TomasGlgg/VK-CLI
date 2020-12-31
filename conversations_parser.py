@@ -27,7 +27,7 @@ class Parser:
         if conversation['last_message']['from_id'] != peer_id:
             print('Сообщение', colored('(Вы):', 'green'), end=' ')
         else:
-            print('Сообщение', colored('(Собеседник):', 'red'), end=' ')
+            print('Сообщение', colored('(Собеседник):', 'blue'), end=' ')
         _printMessage(conversation['last_message'])
 
     def _printChatMessage(self, conversation):
