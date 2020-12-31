@@ -1,4 +1,5 @@
 from termcolor import colored
+from datetime import datetime
 
 
 def _printMessage(message):
@@ -19,6 +20,8 @@ class Parser:
         peer_id = conversation['conversation']['peer']['id']
         peer_info = self.api.users.get(user_ids=[peer_id], v='5.52')[0]
         print('---------- {} {} ({}):'.format(peer_info['first_name'], peer_info['last_name'], peer_id))
+        date = datetime.fromtimestamp(conversation['last_message']['date'])
+        print(date.strftime('%Y-%m-%d %H:%M:%S'))
         if conversation['last_message']['from_id'] != peer_id:
             print('Сообщение', colored('(Вы):', 'green'), end=' ')
         else:
@@ -32,6 +35,8 @@ class Parser:
         print('---------- Чат: {} ({})'.format(title, chat_id))
         last_peer_info = self.api.users.get(user_ids=[last_peer], v='5.52')[0]
         print('Сообщение от: {} {} ({})'.format(last_peer_info['first_name'], last_peer_info['last_name'], last_peer))
+        date = datetime.fromtimestamp(conversation['last_message']['date'])
+        print(date.strftime('%Y-%m-%d %H:%M:%S'))
         print('Собщение:', end=' ')
         _printMessage(conversation['last_message'])
 
