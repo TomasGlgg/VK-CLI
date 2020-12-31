@@ -53,6 +53,21 @@ class Profile(Cmd):
             count = 10
         self.parser.printConversations(count)
 
+    def do_unread(self, argv):
+        """
+        usage: dialogs [кол-во]
+        """
+        if len(argv.split()) > 1:
+            print(colored('Неверное количество аргументов', 'red'))
+            return
+        elif len(argv) == 1:
+            count = int(argv.split()[0])
+            if count > 100:
+                count = 100
+        else:
+            count = 10
+        self.parser.printConversations(count, filter='unread')
+
     def do_select(self, argv):
         """
         usage: select [id чата]
@@ -71,7 +86,7 @@ class Profile(Cmd):
                 return
             dialogs_id = self.parser.printConversationsShort(int(argv[1]))
             answer = input('Выберите диалог>')
-            if not answer.isdigit() or len(dialogs_id) < int(answer)-1:
+            if not answer.isdigit() or len(dialogs_id) < int(answer) - 1:
                 print(colored('Ошибка', 'red'))
                 return
             conversation_id = dialogs_id[int(answer)]

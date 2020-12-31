@@ -61,8 +61,8 @@ class Parser:
                 print('Peer', conversation['conversation']['peer']['type'], 'is not recognized')
         return dialogs_ids
 
-    def printConversations(self, count):
-        conversations = self.api.messages.getConversations(count=count, v='5.52')['items']
+    def printConversations(self, count, filter='all'):
+        conversations = self.api.messages.getConversations(count=count, filter=filter, v='5.52')['items']
         for conversation in conversations:
             if conversation['conversation']['peer']['type'] == 'user':
                 self._printPrivateMessage(conversation)
