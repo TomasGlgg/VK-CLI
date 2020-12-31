@@ -1,6 +1,7 @@
 from vk_api.longpoll import VkLongPoll, VkEventType
 from termcolor import colored
 from json import loads
+from datetime import datetime
 
 
 class Profile_events:
@@ -63,19 +64,21 @@ class Profile_events:
         elif event.to_me:
             print(colored('От', 'red'), '- ', end='')
 
+
         if event.from_user:
             self._print_cache_user(event)
-            print('- №' + str(event.message_id))
 
         elif event.from_chat:
             self._print_cache_user(event)
             print('в беседе')
             self._print_cache_chat(event)
-            print('- №' + str(event.message_id))
 
         elif event.from_group:
             print('группы', event.group_id)  # TODO
 
+        last_seen = datetime.fromtimestamp(event.timestamp)
+        print('-', last_seen.strftime('%H:%M:%S'), end=' ')
+        print('- №' + str(event.message_id))
         self._print_text_message(event)
 
     def start(self, show_typing):
@@ -84,7 +87,7 @@ class Profile_events:
             if event.type == VkEventType.MESSAGE_NEW:
                 self._print_message(event)
             elif event.type == VkEventType.MESSAGE_EDIT:
-                print('-------- Сообщение изменено:')
+                print('----------', colored('Сообщение изменено:', 'cyan'))
                 print('Номер сообщения: №' + str(event.message_id))
                 self._print_text_message(event)
             elif event.type == VkEventType.USER_TYPING and show_typing:
