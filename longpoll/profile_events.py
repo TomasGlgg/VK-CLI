@@ -26,7 +26,7 @@ class Profile_events:
             self.users[event.user_id] = [username_nom, username_gen, username_dat]
 
         if case is None:
-            print(self.users[event.user_id][int(event.from_me)+1], end=' ')
+            print(self.users[event.user_id][int(event.from_me) + 1], end=' ')
         else:
             print(self.users[event.user_id][case], end=' ')
 
@@ -44,15 +44,15 @@ class Profile_events:
             print('Текст:', event.message)
         if len(event.attachments):
             print('Дополнительно:')
-            count = len(event.attachments)//2
+            count = len(event.attachments) // 2
             if 'reply' in event.attachments:
                 reply_message = loads(event.attachments['reply'])
                 print('Пересылка сообщения', colored('№{}'.format(reply_message['conversation_message_id']), 'cyan'))
             for i in range(count):
-                attach_num = 'attach{}'.format(i+1)
+                attach_num = 'attach{}'.format(i + 1)
                 if attach_num not in event.attachments:
                     break
-                attachment_type = event.attachments[attach_num+'_type']
+                attachment_type = event.attachments[attach_num + '_type']
                 attachment_id = event.attachments[attach_num]
                 print(attachment_type, '-', attachment_id)
 
@@ -64,15 +64,12 @@ class Profile_events:
         elif event.to_me:
             print(colored('От', 'red'), '- ', end='')
 
-
         if event.from_user:
             self._print_cache_user(event)
-
         elif event.from_chat:
             self._print_cache_user(event)
             print('в беседе')
             self._print_cache_chat(event)
-
         elif event.from_group:
             print('группы', event.group_id)  # TODO
 
