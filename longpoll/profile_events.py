@@ -1,5 +1,6 @@
 from vk_api.longpoll import VkLongPoll, VkEventType
 from termcolor import colored
+from json import loads
 
 
 class Profile_events:
@@ -42,6 +43,9 @@ class Profile_events:
         if len(event.attachments):
             print('Дополнительно:')
             count = len(event.attachments)//2
+            if 'reply' in event.attachments:
+                reply_message = loads(event.attachments['reply'])
+                print('Пересылка сообщения', colored('№{}'.format(reply_message['conversation_message_id']), 'cyan'))
             for i in range(count):
                 attach_num = 'attach{}'.format(i+1)
                 if attach_num not in event.attachments:
