@@ -1,6 +1,5 @@
 from cmd import Cmd
 from termcolor import colored
-import vk_api
 from vk_api.utils import get_random_id
 
 
@@ -10,18 +9,13 @@ class Dialog(Cmd):
     chat_id = None
     chat_info = None
     parser = None
-    messages_api = None
+    alternative_api = None
 
-    def setup(self, api, profile_info, chat_id):
+    def setup(self, api, alternative_api, profile_info, chat_id):
         self.api = api
+        self.alternative_api = alternative_api
         self.profile_info = profile_info
         self.chat_id = chat_id
-
-    def _init_messages_api(self):
-        token = self.api._session.access_token
-        api = vk_api.VkApi(token=token)
-        api._auth_token()
-        self.messages_api = api.get_api()
 
     def do_write(self, argv):
         """
@@ -30,9 +24,7 @@ class Dialog(Cmd):
         text = argv
         if len(text) < 1:
             print(colored('Неверное количество аргументов', 'red'))
-        if self.messages_api is None:
-            self._init_messages_api()
-        self.messages_api.messages.send(user_id=self.chat_id, random_id=get_random_id(), message=text)
+        self.alternative_api.get_api().messages.send(user_id=self.chat_id, random_id=get_random_id(), message=text)
 
     @staticmethod
     def do_exit(_):

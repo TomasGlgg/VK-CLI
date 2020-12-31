@@ -51,7 +51,7 @@ class Private_dialog(Dialog):
             else:
                 print(colored('Нераспознанный аргумент ' + argv[0], 'red'))
                 return
-        events = Private_dialog_events(self.api)
+        events = Private_dialog_events(self.api, self.alternative_api)
         try:
             events.start(show_typing, self.chat_id)
         except KeyboardInterrupt:

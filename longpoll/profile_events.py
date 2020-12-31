@@ -1,4 +1,3 @@
-import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from termcolor import colored
 
@@ -7,12 +6,9 @@ class Profile_events:
     users = {}
     chats = {}
 
-    def __init__(self, api):
+    def __init__(self, api, alternative_api):
         self.api = api
-        token = api._session.access_token
-        longpoll_api = vk_api.VkApi(token=token)
-        longpoll_api._auth_token()
-        self.longpoll = VkLongPoll(longpoll_api)
+        self.longpoll = VkLongPoll(alternative_api)
 
     def _print_cache_user(self, event, case=None):
         """

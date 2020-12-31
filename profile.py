@@ -1,5 +1,5 @@
 from cmd import Cmd
-import vk
+import vk, vk_api
 from termcolor import colored
 
 from conversations_parser import Parser
@@ -10,7 +10,8 @@ from longpoll.profile_events import Profile_events
 class Profile(Cmd):
     profile_info = None
     token = None
-    api = None
+    api = None  # vk
+    alternative_api = None  # vk_api
     parser = None
 
     def load_token(self, token):
@@ -19,6 +20,7 @@ class Profile(Cmd):
     def auth(self):
         session = vk.Session(self.token)
         self.api = vk.API(session)
+        self.alternative_api = vk_api.VkApi(token=self.token)
         self.parser = Parser(self.api)
 
     def setup(self):
@@ -62,7 +64,7 @@ class Profile(Cmd):
         # conversation_info = self.api.messages.getConversationsById(peer_ids=[conversation_id], v=5.126)['items'][0]
         if conversation_id < 2000000000:  # private messages
             private_dialog = Private_dialog()
-            private_dialog.setup(self.api, self.profile_info, conversation_id)
+            private_dialog.setup(self.api, self.alternative_api, self.profile_info, conversation_id)
             private_dialog.setupUI()
             try:
                 private_dialog.cmdloop()
@@ -96,7 +98,7 @@ class Profile(Cmd):
             else:
                 print(colored('Нераспознанный аргумент ' + argv[0], 'red'))
                 return
-        events = Profile_events(self.api)
+        events = Profile_events(self.api, self.alternative_api)
         try:
             events.start(show_typing)
         except KeyboardInterrupt:
