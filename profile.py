@@ -103,7 +103,7 @@ class Profile(Cmd):
                 exit()
         else:  # chat messages
             chat_dialog = Chat_dialog()
-            chat_dialog.setup(self.api, self.profile_info, conversation_id)
+            chat_dialog.setup(self.api, self.alternative_api, self.profile_info, conversation_id)
             chat_dialog.setupUI()
             try:
                 chat_dialog.cmdloop()
