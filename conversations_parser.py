@@ -22,6 +22,8 @@ class Parser:
         print('---------- {} {} ({}):'.format(peer_info['first_name'], peer_info['last_name'], peer_id))
         date = datetime.fromtimestamp(conversation['last_message']['date'])
         print(date.strftime('%Y-%m-%d %H:%M:%S'))
+        if 'unread_count' in conversation['conversation']:
+            print(colored('Непрочитанных сообщений: {}'.format(conversation['conversation']['unread_count']), 'red'))
         if conversation['last_message']['from_id'] != peer_id:
             print('Сообщение', colored('(Вы):', 'green'), end=' ')
         else:
