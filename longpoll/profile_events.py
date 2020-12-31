@@ -43,8 +43,11 @@ class Profile_events:
             print('Дополнительно:')
             count = len(event.attachments)//2
             for i in range(count):
-                attachment_type = event.attachments['attach{}_type'.format(i+1)]
-                attachment_id = event.attachments['attach{}'.format(i+1)]
+                attach_num = 'attach{}'.format(i+1)
+                if attach_num not in event.attachments:
+                    break
+                attachment_type = event.attachments[attach_num+'_type']
+                attachment_id = event.attachments[attach_num]
                 print(attachment_type, '-', attachment_id)
 
     def _print_message(self, event):
