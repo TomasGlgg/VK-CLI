@@ -55,13 +55,28 @@ class Profile(Cmd):
 
     def do_select(self, argv):
         """
-        usage: select <id чата>
+        usage: select [id чата]
+               select -p [кол-во]   вывести последние n диалогов и выбрать нужный по номеру
         """
-        if len(argv.split()) != 1:
+        argv = argv.split()
+        if len(argv) > 2 or len(argv) == 0:
             print(colored('Неверное количество аргументов', 'red'))
             return
-        conversation_id = int(argv.split()[0])
-        # conversation_info = self.api.messages.getConversationsById(peer_ids=[conversation_id], v=5.126)['items'][0]
+        if argv[0] == '-p':
+            if len(argv) != 2:
+                print(colored('Неверное количество аргументов', 'red'))
+                return
+            elif not argv[1].isdigit():
+                print(colored('Неверное указание кол-во'))
+                return
+            dialogs_id = self.parser.printConversationsShort(int(argv[1]))
+            answer = input('Выберите диалог>')
+            if not answer.isdigit() or len(dialogs_id) < int(answer)-1:
+                print(colored('Ошибка', 'red'))
+                return
+            conversation_id = dialogs_id[int(answer)]
+        else:
+            conversation_id = int(argv.split()[0])
         if conversation_id < 2000000000:  # private messages
             private_dialog = Private_dialog()
             private_dialog.setup(self.api, self.alternative_api, self.profile_info, conversation_id)

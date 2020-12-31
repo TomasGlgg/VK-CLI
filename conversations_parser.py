@@ -35,6 +35,25 @@ class Parser:
         print('Собщение:', end=' ')
         _printMessage(conversation['last_message'])
 
+    def printConversationsShort(self, count):
+        dialogs_ids = []
+        conversations = self.api.messages.getConversations(count=count, v='5.52')['items']
+        for i, conversation in enumerate(conversations):
+            if conversation['conversation']['peer']['type'] == 'user':
+                peer_id = conversation['conversation']['peer']['id']
+                dialogs_ids.append(peer_id)
+                peer_info = self.api.users.get(user_ids=[peer_id], v='5.52')[0]
+                print('№{}:{} {} ({}):'.format(i, peer_info['first_name'], peer_info['last_name'], peer_id))
+            elif conversation['conversation']['peer']['type'] == 'chat':
+                title = conversation['conversation']['chat_settings']['title']
+                chat_id = conversation['conversation']['peer']['id']
+                dialogs_ids.append(chat_id)
+                print('№{}:Чат: {} - ({})'. format(i, title, chat_id))
+            else:
+                dialogs_ids.append(None)
+                print('Peer', conversation['conversation']['peer']['type'], 'is not recognized')
+        return dialogs_ids
+
     def printConversations(self, count):
         conversations = self.api.messages.getConversations(count=count, v='5.52')['items']
         for conversation in conversations:
