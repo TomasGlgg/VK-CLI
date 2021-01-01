@@ -5,11 +5,11 @@ from termcolor import colored
 def _print_private_message(message):
     date = datetime.fromtimestamp(message['date'])
     print('--------', date.strftime('%Y-%m-%d %H:%M:%S'))
-    if message['from_id'] != message['peer_id']:
-        print('Message', colored('(Вы):', 'green'), message['text'])
+    if message['user_id'] != message['from_id']:
+        print('Message', colored('(Вы):', 'green'), message['body'])
     else:
-        print('Message:', message['text'])
-    if len(message['attachments']):
+        print('Message:', message['body'])
+    if 'attachments' in message:
         print('Дополнительно:', end=' ')
         for attachment in message['attachments']:
             print(colored(attachment['type'], 'cyan'), end=' ')
