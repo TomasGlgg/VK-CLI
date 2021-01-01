@@ -35,8 +35,14 @@ class Parser:
         chat_id = conversation['conversation']['peer']['id']
         last_peer = conversation['last_message']['from_id']
         print('---------- Чат: {} ({})'.format(title, chat_id))
-        last_peer_info = self.api.users.get(user_ids=[last_peer], v='5.52')[0]
-        print('Сообщение от: {} {} ({})'.format(last_peer_info['first_name'], last_peer_info['last_name'], last_peer))
+        if last_peer >= 0:
+            last_peer_info = self.api.users.get(user_ids=[last_peer], v='5.52')[0]
+            print(
+                'Сообщение от: {} {} ({})'.format(last_peer_info['first_name'], last_peer_info['last_name'], last_peer))
+        else:
+            last_peer_info = self.api.groups.getById(group_ids=abs(last_peer), v='5.52')[0]
+            print(
+                'Сообщение от: {} ({})'.format(last_peer_info['name'], last_peer))
         date = datetime.fromtimestamp(conversation['last_message']['date'])
         print(date.strftime('%Y-%m-%d %H:%M:%S'))
         print('Собщение:', end=' ')

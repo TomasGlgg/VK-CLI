@@ -17,13 +17,17 @@ class Profile_events:
         :param case: 0 - nom username, 1 - gen username, 2 - dat username
         """
         if event.user_id not in self.users:
-            user_info = self.api.users.get(user_ids=[event.user_id], name_case='nom', v='5.52')[0]
-            username_nom = user_info['first_name'] + ' ' + user_info['last_name']
-            user_info = self.api.users.get(user_ids=[event.user_id], name_case='gen', v='5.52')[0]
-            username_gen = user_info['first_name'] + ' ' + user_info['last_name']
-            user_info = self.api.users.get(user_ids=[event.user_id], name_case='dat', v='5.52')[0]
-            username_dat = user_info['first_name'] + ' ' + user_info['last_name']
-            self.users[event.user_id] = [username_nom, username_gen, username_dat]
+            if event.user_id > 0:
+                user_info = self.api.users.get(user_ids=[event.user_id], name_case='nom', v='5.52')
+                username_nom = user_info[0]['first_name'] + ' ' + user_info[0]['last_name']
+                user_info = self.api.users.get(user_ids=[event.user_id], name_case='gen', v='5.52')[0]
+                username_gen = user_info['first_name'] + ' ' + user_info['last_name']
+                user_info = self.api.users.get(user_ids=[event.user_id], name_case='dat', v='5.52')[0]
+                username_dat = user_info['first_name'] + ' ' + user_info['last_name']
+                self.users[event.user_id] = [username_nom, username_gen, username_dat]
+            else:
+                group_name = self.api.groups.getById(group_ids=abs(event.user_id), v='5.52')[0]['name']
+                self.users[event.user_id] = [group_name, group_name, group_name]
 
         if case is None:
             print(self.users[event.user_id][int(event.from_me) + 1], end=' ')
