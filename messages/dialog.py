@@ -24,7 +24,7 @@ class Dialog(Cmd):
         text = argv
         if len(text) < 1:
             print(colored('Неверное количество аргументов', 'red'))
-        self.alternative_api.get_api().messages.send(user_id=self.chat_id, random_id=get_random_id(), message=text)
+        self.alternative_api.get_api().messages.send(peer_id=self.chat_id, random_id=get_random_id(), message=text)
 
     @staticmethod
     def do_exit(_):
