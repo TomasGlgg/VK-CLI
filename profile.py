@@ -46,7 +46,7 @@ class Profile(Cmd):
         if len(argv.split()) > 1:
             print(colored('Неверное количество аргументов', 'red'))
             return
-        elif len(argv) == 1:
+        elif len(argv.split()) == 1:
             count = int(argv.split()[0])
             if count > 100:
                 count = 100
