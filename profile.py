@@ -40,6 +40,7 @@ class Profile(Cmd):
 
     def do_dialogs(self, argv):
         """
+        Вывести все диалоги
         usage: dialogs [кол-во]
         """
         if len(argv.split()) > 1:
@@ -55,7 +56,8 @@ class Profile(Cmd):
 
     def do_unread(self, argv):
         """
-        usage: dialogs [кол-во]
+        Вывести все непрочитанные диалоги
+        usage: unread [кол-во]
         """
         if len(argv.split()) > 1:
             print(colored('Неверное количество аргументов', 'red'))
@@ -70,6 +72,7 @@ class Profile(Cmd):
 
     def do_select(self, argv):
         """
+        Выбрать приватный диалог / чат
         usage: select [id чата]
                select -p [кол-во]   вывести последние n диалогов и выбрать нужный по номеру
         """
@@ -142,6 +145,7 @@ class Profile(Cmd):
     @staticmethod
     def do_exit(_):
         """
+        Выйти из текущей консоли
         exit
         """
         print('Выход')

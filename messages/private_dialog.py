@@ -26,6 +26,7 @@ class Private_dialog(Dialog):
 
     def do_read(self, argv):
         """
+        Прочитать сообщения
         usage: read [count]
         """
         if len(argv.split()) == 0:
