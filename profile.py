@@ -43,13 +43,18 @@ class Profile(Cmd):
         Вывести все диалоги
         usage: dialogs [кол-во]
         """
-        if len(argv.split()) > 1:
+        argv = argv.split()
+        if len(argv) > 1:
             print(colored('Неверное количество аргументов', 'red'))
             return
-        elif len(argv.split()) == 1:
-            count = int(argv.split()[0])
-            if count > 100:
-                count = 100
+        elif len(argv) == 1:
+            if argv[0].isdigit():
+                count = int(argv[0])
+                if count > 100:
+                    count = 100
+            else:
+                print(colored('Неверный аргумент', 'red'))
+                return
         else:
             count = 10
         self.parser.printConversations(count)

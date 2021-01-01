@@ -75,4 +75,4 @@ class Parser:
             elif conversation['conversation']['peer']['type'] == 'chat':
                 self._printChatMessage(conversation)
             else:
-                print('Peer', conversation['conversation']['peer']['type'], 'is not recognized')
+                print('--------\nPeer', conversation['conversation']['peer']['type'], 'is not recognized')
