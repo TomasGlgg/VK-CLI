@@ -19,7 +19,8 @@ class Profile(Cmd):
 
     __select_parser = argparse.ArgumentParser(prog='select')
     __select_parser.add_argument('id', metavar='ID', type=int, help='ID диалога', nargs='?')
-    __select_parser.add_argument('-p', '--print', metavar='count', type=int, help='Выбрать из count последних диалогов')
+    __select_parser.add_argument('-p', '--print', metavar='count', type=int, help='Выбрать из count последних диалогов',
+                                 default=10)
 
     def load_token(self, token):
         self.token = token
