@@ -41,7 +41,7 @@ class Chat_messages_parser:
         else:
             peer_info = self.api.users.get(user_ids=[message['from_id']], v=5.52, name_case='gen')[0]
             print('Сообщение от', colored(peer_info['first_name'] + ' ' + peer_info['last_name'], 'red') + ':', end=' ')
-        print(message['text'])
+        print(message['body'])
 
     def print_last_messages(self, count):
         messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, v=5.52)['items']
