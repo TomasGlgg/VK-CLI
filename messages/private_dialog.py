@@ -10,7 +10,7 @@ class Private_dialog(Dialog):
     def setupUI(self):
         self.parser = Private_messages_parser(self.api, self.chat_id)
         fields = ['status', 'last_seen', 'online']
-        self.chat_info = self.api.users.get(user_ids=[self.chat_id], fields=fields, v=5.126)[0]
+        self.chat_info = self.api.users.get(user_ids=[self.chat_id], fields=fields, v=5.52)[0]
         last_seen = datetime.fromtimestamp(self.chat_info['last_seen']['time'])
 
         self.prompt = '({} {})->({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'],

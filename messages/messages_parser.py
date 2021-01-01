@@ -22,7 +22,7 @@ class Private_messages_parser:
         self.api = api
 
     def print_last_messages(self, count):
-        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, v=5.126)['items']
+        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, v=5.52)['items']
         for message in messages[::-1]:
             _print_private_message(message)
 
@@ -39,11 +39,11 @@ class Chat_messages_parser:
         if message['from_id'] == self.profile_id['id']:
             print('Сообщение', colored('(Вы):', 'green'), end=' ')
         else:
-            peer_info = self.api.users.get(user_ids=[message['from_id']], v=5.126, name_case='gen')[0]
+            peer_info = self.api.users.get(user_ids=[message['from_id']], v=5.52, name_case='gen')[0]
             print('Сообщение от', colored(peer_info['first_name'] + ' ' + peer_info['last_name'], 'red') + ':', end=' ')
         print(message['text'])
 
     def print_last_messages(self, count):
-        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, v=5.126)['items']
+        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, v=5.52)['items']
         for message in messages[::-1]:
             self._print_chat_message(message)

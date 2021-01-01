@@ -24,7 +24,7 @@ class Profile(Cmd):
         self.parser = Parser(self.api)
 
     def setup(self):
-        self.profile_info = self.api.account.getProfileInfo(v=5.126)
+        self.profile_info = self.api.account.getProfileInfo(v=5.52)
 
         # setup prompt
         self.prompt = '({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'])
