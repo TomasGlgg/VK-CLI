@@ -30,6 +30,7 @@ class VKLogin(Cmd):
 
     def do_add(self, argv):
         """
+        Добавить токен в список
         usage: add <токен>
         """
         if len(argv.split()) != 1:
@@ -42,6 +43,7 @@ class VKLogin(Cmd):
 
     def do_delete(self, argv):
         """
+        Удалить токен из списка
         usage: delete <токен>
         """
         if len(argv.split()) != 1:
@@ -51,6 +53,7 @@ class VKLogin(Cmd):
 
     def do_list(self, _):
         """
+        Список токенов
         usage: list
         """
         for i, token in enumerate(self.tokens):
@@ -58,6 +61,7 @@ class VKLogin(Cmd):
 
     def do_auth(self, argv):
         """
+        Аутентификация по токену
         usage: auth <id токена>
         """
         if len(argv.split()) != 1:
@@ -83,6 +87,7 @@ class VKLogin(Cmd):
 
     def do_exit(self, _):
         '''
+        Выйти
         exit
         '''
         print('Выход')
