@@ -32,7 +32,7 @@ class Profile_events:
 
     def _print_cache_chat(self, event):
         if event.chat_id not in self.chats:
-            chat_info = self.api.messages.getChat(chat_id=event.chat_id - 2000000000, v=5.126)
+            chat_info = self.api.messages.getChat(chat_id=event.chat_id, v=5.126)
             chat_title = chat_info['title']
             self.chats[event.chat_id] = chat_title
 
