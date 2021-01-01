@@ -90,8 +90,12 @@ class Profile(Cmd):
                 print(colored('Ошибка', 'red'))
                 return
             conversation_id = dialogs_id[int(answer)]
-        else:
+        elif argv[0].isdigit():
             conversation_id = int(argv[0])
+        else:
+            print(colored('Неверный аргумент', 'red'))
+            return
+
         if conversation_id < 2000000000:  # private messages
             private_dialog = Private_dialog()
             private_dialog.setup(self.api, self.alternative_api, self.profile_info, conversation_id)
