@@ -17,13 +17,21 @@ class Profile(Cmd):
     alternative_api = None  # vk_api
     parser = None
 
-    __select_parser = argparse.ArgumentParser(prog='select')
+    __select_parser = argparse.ArgumentParser(prog='select', description='Выбрать диалог')
     __select_parser.add_argument('id', metavar='ID', type=int, help='ID диалога', nargs='?')
-    __select_parser.add_argument('-p', '--print', metavar='count', type=int, help='Выбрать из count последних диалогов',
+    __select_parser.add_argument('-p', '--print', metavar='count', type=int, help='Количество выводимых диалогов',
                                  default=10)
 
-    __online_parser = argparse.ArgumentParser(prog='online')
+    __online_parser = argparse.ArgumentParser(prog='online', description='Получать события профиля (сообщения и т.д.)')
     __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
+
+    __dialogs_parser = argparse.ArgumentParser(prog='dialogs', description='Вывести все диалоги')
+    __dialogs_parser.add_argument('count', metavar='COUNT', type=int, nargs='?',
+                                  help='Количество выводимых диалогов', default=10)
+
+    __unread_parser = argparse.ArgumentParser(prog='unread', description='Вывести непрочитанные')
+    __unread_parser.add_argument('count', metavar='COUNT', type=int, nargs='?',
+                                 help='Количество выводимых диалогов', default=10)
 
     def load_token(self, token):
         self.token = token
@@ -49,42 +57,13 @@ class Profile(Cmd):
             self.intro += f"       Страна: {self.profile_info['country']['title']}\n"
         self.intro += f"       Статус: {colored(self.profile_info['status'], 'cyan')}"
 
+    @Wrapper_cmd_line_arg_parser(parser=__dialogs_parser)
     def do_dialogs(self, argv):
-        """
-        Вывести все диалоги
-        usage: dialogs [кол-во]
-        """
-        argv = argv.split()
-        if len(argv) > 1:
-            print(colored('Неверное количество аргументов', 'red'))
-            return
-        elif len(argv) == 1:
-            if argv[0].isdigit():
-                count = int(argv[0])
-                if count > 100:
-                    count = 100
-            else:
-                print(colored('Неверный аргумент', 'red'))
-                return
-        else:
-            count = 10
-        self.parser.printConversations(count)
+        self.parser.printConversations(argv.count)
 
+    @Wrapper_cmd_line_arg_parser(parser=__unread_parser)
     def do_unread(self, argv):
-        """
-        Вывести все непрочитанные диалоги
-        usage: unread [кол-во]
-        """
-        if len(argv.split()) > 1:
-            print(colored('Неверное количество аргументов', 'red'))
-            return
-        elif len(argv) == 1:
-            count = int(argv.split()[0])
-            if count > 100:
-                count = 100
-        else:
-            count = 10
-        self.parser.printConversations(count, filter='unread')
+        self.parser.printConversations(argv.count, filter='unread')
 
     @Wrapper_cmd_line_arg_parser(parser=__select_parser)
     def do_select(self, argv):
@@ -138,4 +117,3 @@ class Profile(Cmd):
         """
         print('Выход')
         return True
-
