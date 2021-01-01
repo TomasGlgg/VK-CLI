@@ -71,8 +71,9 @@ class Profile_events:
         if event.from_user:
             self._print_cache_user(event)
         elif event.from_chat:
-            self._print_cache_user(event)
-            print('в беседе')
+            if not event.from_me:
+                self._print_cache_user(event)
+            print('в беседе', end=' ')
             self._print_cache_chat(event)
         elif event.from_group:
             print('группы', event.group_id)  # TODO
