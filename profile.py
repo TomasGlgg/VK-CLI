@@ -22,6 +22,9 @@ class Profile(Cmd):
     __select_parser.add_argument('-p', '--print', metavar='count', type=int, help='Выбрать из count последних диалогов',
                                  default=10)
 
+    __online_parser = argparse.ArgumentParser(prog='online')
+    __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
+
     def load_token(self, token):
         self.token = token
 
@@ -119,26 +122,11 @@ class Profile(Cmd):
                 print('\nВыход')
                 exit()
 
+    @Wrapper_cmd_line_arg_parser(parser=__online_parser)
     def do_online(self, argv):
-        """
-        Вывод сообщений в реальном времени
-        usage: online [аргументы]
-        -s     показывать печатающих
-        """
-        show_typing = False
-        argv = argv.split()
-        if len(argv) > 1:
-            print(colored('Неверное количество аргументов', 'red'))
-            return
-        elif len(argv) == 1:
-            if argv[0] == '-s':
-                show_typing = True
-            else:
-                print(colored('Нераспознанный аргумент ' + argv[0], 'red'))
-                return
         events = Profile_events(self.api, self.alternative_api)
         try:
-            events.start(show_typing)
+            events.start(argv.typing)
         except KeyboardInterrupt:
             print('\nKeyboardInterrupt, выход')
 
