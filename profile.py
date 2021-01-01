@@ -1,10 +1,13 @@
 from cmd import Cmd
-import vk, vk_api
+import vk
+import vk_api
 from termcolor import colored
+import argparse
 
 from conversations_parser import Parser
-from messages import Private_dialog, Chat_dialog
 from longpoll.profile_events import Profile_events
+from messages import Private_dialog, Chat_dialog
+from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
 
 class Profile(Cmd):
@@ -13,6 +16,10 @@ class Profile(Cmd):
     api = None  # vk
     alternative_api = None  # vk_api
     parser = None
+
+    __select_parser = argparse.ArgumentParser(prog='select')
+    __select_parser.add_argument('id', metavar='ID', type=int, help='ID диалога', nargs='?')
+    __select_parser.add_argument('-p', '--print', metavar='count', type=int, help='Выбрать из count последних диалогов')
 
     def load_token(self, token):
         self.token = token
@@ -75,34 +82,21 @@ class Profile(Cmd):
             count = 10
         self.parser.printConversations(count, filter='unread')
 
+    @Wrapper_cmd_line_arg_parser(parser=__select_parser)
     def do_select(self, argv):
-        """
-        Выбрать приватный диалог / чат
-        usage: select [id чата]
-               select -p [кол-во]   вывести последние n диалогов и выбрать нужный по номеру
-        """
-        argv = argv.split()
-        if len(argv) > 2 or len(argv) == 0:
-            print(colored('Неверное количество аргументов', 'red'))
-            return
-        if argv[0] == '-p':
-            if len(argv) != 2:
-                count = 10
-            elif not argv[1].isdigit():
-                print(colored('Неверное указание кол-во'))
-                return
-            else:
-                count = int(argv[1])
-            dialogs_id = self.parser.printConversationsShort(count)
+        if argv.print:
+            if argv.print > 100:
+                print('Слишком большое значение запроса последних диалогов')
+            dialogs_id = self.parser.printConversationsShort(argv.print)
             answer = input('Выберите диалог>')
             if not answer.isdigit() or len(dialogs_id) < int(answer) - 1:
                 print(colored('Ошибка', 'red'))
                 return
             conversation_id = dialogs_id[int(answer)]
-        elif argv[0].isdigit():
-            conversation_id = int(argv[0])
+        elif argv.id:
+            conversation_id = argv.id
         else:
-            print(colored('Неверный аргумент', 'red'))
+            print(colored('Неверное количество аргументов', 'red'))
             return
 
         if conversation_id < 2000000000:  # private messages
@@ -155,3 +149,4 @@ class Profile(Cmd):
         """
         print('Выход')
         return True
+
