@@ -79,12 +79,13 @@ class Profile(Cmd):
             return
         if argv[0] == '-p':
             if len(argv) != 2:
-                print(colored('Неверное количество аргументов', 'red'))
-                return
+                count = 10
             elif not argv[1].isdigit():
                 print(colored('Неверное указание кол-во'))
                 return
-            dialogs_id = self.parser.printConversationsShort(int(argv[1]))
+            else:
+                count = int(argv[1])
+            dialogs_id = self.parser.printConversationsShort(count)
             answer = input('Выберите диалог>')
             if not answer.isdigit() or len(dialogs_id) < int(answer) - 1:
                 print(colored('Ошибка', 'red'))
