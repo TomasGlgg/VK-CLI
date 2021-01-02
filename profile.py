@@ -7,7 +7,7 @@ import os
 
 from conversations_parser import Parser
 from longpoll.profile_events import Profile_events
-from messages import Private_dialog, Chat_dialog
+from messages import Private_dialog, Chat_dialog, Group_dialog
 from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
 
@@ -79,13 +79,23 @@ class Profile(Cmd):
                 print(colored('Ошибка', 'red'))
                 return
             conversation_id = dialogs_id[int(answer)]
+            if conversation_id is None:
+                print(colored('Ошибка', 'red'))
         elif argv.id:
             conversation_id = argv.id
         else:
             print(colored('Неверное количество аргументов', 'red'))
             return
 
-        if conversation_id < 2000000000:  # private messages
+        if conversation_id < 0:  # group
+            group_dialog = Group_dialog()
+            group_dialog.setup(self.api, self.alternative_api, self.profile_info, conversation_id)
+            group_dialog.setupUI()
+            try:
+                group_dialog.cmdloop()
+            except KeyboardInterrupt:
+                os.system('cls || clear')
+        elif conversation_id < 2000000000:  # private messages
             private_dialog = Private_dialog()
             private_dialog.setup(self.api, self.alternative_api, self.profile_info, conversation_id)
             private_dialog.setupUI()

@@ -61,7 +61,12 @@ class Parser:
                 title = conversation['conversation']['chat_settings']['title']
                 chat_id = conversation['conversation']['peer']['id']
                 dialogs_ids.append(chat_id)
-                print('№{}:Чат: {} - ({})'. format(i, title, chat_id))
+                print('№{}:Чат: {} ({})'. format(i, title, chat_id))
+            elif conversation['conversation']['peer']['type'] == 'group':
+                group_id = conversation['conversation']['peer']['id']
+                group_info = self.api.groups.getById(group_id=abs(group_id), v=5.52)[0]
+                print('№{}:Группа: {} ({})'.format(i, group_info['name'], group_id))
+                dialogs_ids.append(group_id)
             else:
                 dialogs_ids.append(None)
                 print('Peer', conversation['conversation']['peer']['type'], 'is not recognized')

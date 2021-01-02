@@ -4,12 +4,12 @@ from vk_api.utils import get_random_id
 
 
 class Dialog(Cmd):
-    api = None
-    profile_info = None
-    chat_id = None
+    api = None              # setup
+    profile_info = None     # setup
+    chat_id = None          # setup
     chat_info = None
     parser = None
-    alternative_api = None
+    alternative_api = None  # setup
 
     def setup(self, api, alternative_api, profile_info, chat_id):
         self.api = api

@@ -1,9 +1,9 @@
-from messages.dialog import Dialog
 from datetime import datetime
 from termcolor import colored
 from argparse import ArgumentParser
 
 from messages.messages_parser import Private_messages_parser
+from messages.dialog import Dialog
 from longpoll.private_dialog_events import Private_dialog_events
 from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
