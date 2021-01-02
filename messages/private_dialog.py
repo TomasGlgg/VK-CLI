@@ -1,12 +1,17 @@
 from messages.dialog import Dialog
 from datetime import datetime
 from termcolor import colored
+from argparse import ArgumentParser
 
 from messages.messages_parser import Private_messages_parser
 from longpoll.private_dialog_events import Private_dialog_events
+from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
 
 class Private_dialog(Dialog):
+    __online_parser = ArgumentParser(prog='online', description='Вывод сообщений в реальном времени')
+    __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
+
     def setupUI(self):
         self.parser = Private_messages_parser(self.api, self.chat_id)
         fields = ['status', 'last_seen', 'online']
@@ -35,26 +40,11 @@ class Private_dialog(Dialog):
             count = int(argv.split()[0])
         self.parser.print_last_messages(count)
 
+    @Wrapper_cmd_line_arg_parser(parser=__online_parser)
     def do_online(self, argv):
-        """
-        Вывод сообщений в реальном времени
-        usage: online [аргументы]
-        -s     показывать печатающих
-        """
-        show_typing = False
-        argv = argv.split()
-        if len(argv) > 1:
-            print(colored('Неверное количество аргументов', 'red'))
-            return
-        elif len(argv) == 1:
-            if argv[0] == '-s':
-                show_typing = True
-            else:
-                print(colored('Нераспознанный аргумент ' + argv[0], 'red'))
-                return
         events = Private_dialog_events(self.api, self.alternative_api)
         try:
-            events.start(show_typing, self.chat_id)
+            events.start(argv.typing, self.chat_id)
         except KeyboardInterrupt:
             print('\nKeyboardInterrupt, выход')
 

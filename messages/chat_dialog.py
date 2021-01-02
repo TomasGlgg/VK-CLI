@@ -8,7 +8,7 @@ from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
 
 class Chat_dialog(Dialog):
-    __online_parser = ArgumentParser(prog='online')
+    __online_parser = ArgumentParser(prog='online', description='Вывод сообщений в реальном времени')
     __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
 
     def setupUI(self):
