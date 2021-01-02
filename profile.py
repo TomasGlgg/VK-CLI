@@ -90,8 +90,7 @@ class Profile(Cmd):
             try:
                 private_dialog.cmdloop()
             except KeyboardInterrupt:
-                print('\nВыход')
-                exit()
+                os.system('cls || clear')
         else:  # chat messages
             chat_dialog = Chat_dialog()
             chat_dialog.setup(self.api, self.alternative_api, self.profile_info, conversation_id)
@@ -99,8 +98,7 @@ class Profile(Cmd):
             try:
                 chat_dialog.cmdloop()
             except KeyboardInterrupt:
-                print('\nВыход')
-                exit()
+                os.system('cls || clear')
 
     @Wrapper_cmd_line_arg_parser(parser=__online_parser)
     def do_online(self, argv):
