@@ -1,5 +1,5 @@
 from cmd import Cmd
-from os import listdir
+from os import listdir, system
 from termcolor import colored
 
 from profile import Profile
@@ -84,6 +84,23 @@ class VKLogin(Cmd):
         except KeyboardInterrupt:
             print('\nВыход')
             exit()
+
+    @staticmethod
+    def do_update(_):
+        """
+        Обновить локальный репозиторий
+        """
+        system('git pull')
+        try:
+            from main import VKLogin as Updated_VKLogin
+        except:
+            print('Ошибка запуска обновленного экземпляра')
+        print('Запускаю обновленный экземпляр')
+        try:
+            VKLogin().cmdloop()
+        except KeyboardInterrupt:
+            print('\nKeyboardInterrupt, выход')
+        exit()
 
     @staticmethod
     def do_exit(_):
