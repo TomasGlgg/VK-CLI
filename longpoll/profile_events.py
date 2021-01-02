@@ -72,9 +72,9 @@ class Profile_events:
             print(self._get_cache_user(event))
         elif event.from_chat:
             if not event.from_me:
-                print(self._get_cache_user(event), end=' ')
+                print(colored(self._get_cache_user(event), 'blue'), end=' ')
             print('в беседе', end=' ')
-            print(self._get_cache_chat(event), end=' ')
+            print(colored(self._get_cache_chat(event), 'blue'), end=' ')
         elif event.from_group:
             print('группы', event.group_id, end=' ')  # TODO
 

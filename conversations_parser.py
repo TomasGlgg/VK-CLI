@@ -19,7 +19,7 @@ class Parser:
     def _printPrivateMessage(self, conversation):
         peer_id = conversation['conversation']['peer']['id']
         peer_info = self.api.users.get(user_ids=[peer_id], v=5.52)[0]
-        print('---------- {} {} ({}):'.format(peer_info['first_name'], peer_info['last_name'], peer_id))
+        print(f'---------- {colored(peer_info["first_name"], "blue")} {colored(peer_info["last_name"], "blue")} ({peer_id}):')
         date = datetime.fromtimestamp(conversation['last_message']['date'])
         print(date.strftime('%Y-%m-%d %H:%M:%S'))
         if 'unread_count' in conversation['conversation']:
@@ -31,18 +31,18 @@ class Parser:
         _printMessage(conversation['last_message'])
 
     def _printChatMessage(self, conversation):
-        title = conversation['conversation']['chat_settings']['title']
+        title = colored(conversation['conversation']['chat_settings']['title'], 'blue')
         chat_id = conversation['conversation']['peer']['id']
         last_peer = conversation['last_message']['from_id']
         print('---------- Чат: {} ({})'.format(title, chat_id))
         if last_peer >= 0:
             last_peer_info = self.api.users.get(user_ids=[last_peer], v=5.52)[0]
             print(
-                'Сообщение от: {} {} ({})'.format(last_peer_info['first_name'], last_peer_info['last_name'], last_peer))
+                f'Сообщение от: {colored(last_peer_info["first_name"], "blue")} \
+{colored(last_peer_info["last_name"], "blue")} ({last_peer})')
         else:
             last_peer_info = self.api.groups.getById(group_ids=abs(last_peer), v=5.52)[0]
-            print(
-                'Сообщение от: {} ({})'.format(last_peer_info['name'], last_peer))
+            print(f'Сообщение от: {colored(last_peer_info["name"], "blue")} ({last_peer})')
         date = datetime.fromtimestamp(conversation['last_message']['date'])
         print(date.strftime('%Y-%m-%d %H:%M:%S'))
         print('Собщение:', end=' ')
