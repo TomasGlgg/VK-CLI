@@ -28,7 +28,8 @@ class Private_messages_parser:
             self._print_private_message(message)
             if message['read_state'] == 0 and return_unread_messages_ids:
                 unread_messages_ids.append(message['id'])
-        return unread_messages_ids
+        if return_unread_messages_ids:
+            return unread_messages_ids
 
 
 class Chat_messages_parser:
@@ -84,3 +85,5 @@ class Group_messages_parser:
             self._print_last_message(message)
             if message['read_state'] == 0 and return_unread_messages_ids:
                 unread_messages_ids.append(message['id'])
+        if return_unread_messages_ids:
+            return unread_messages_ids
