@@ -3,6 +3,7 @@ import vk
 import vk_api
 from termcolor import colored
 import argparse
+import os
 
 from conversations_parser import Parser
 from longpoll.profile_events import Profile_events
@@ -108,6 +109,13 @@ class Profile(Cmd):
             events.start(argv.typing)
         except KeyboardInterrupt:
             print('\nKeyboardInterrupt, выход')
+
+    @staticmethod
+    def do_clear(_):
+        """
+        Очистить экран
+        """
+        os.system('cls || clear')
 
     @staticmethod
     def do_exit(_):
