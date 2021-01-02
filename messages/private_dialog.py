@@ -12,6 +12,12 @@ class Private_dialog(Dialog):
     __online_parser = ArgumentParser(prog='online', description='Вывод сообщений в реальном времени')
     __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
 
+    __read_parser = ArgumentParser(prog='read', description='Прочитать сообщения диалога')
+    __read_parser.add_argument('count', metavar='COUNT', type=int, nargs='?',
+                               help='Количество выводимых диалогов', default=10)
+    __read_parser.add_argument('-m', '--mark', dest='mark', action='store_true',
+                               help='Пометить сообщения как прочитанные')
+
     def __set_prompt(self):
         if self.chat_info['online']:
             online_str = colored('Online', 'green')
@@ -41,16 +47,11 @@ class Private_dialog(Dialog):
         self.__set_prompt()
         return line
 
+    @Wrapper_cmd_line_arg_parser(parser=__read_parser)
     def do_read(self, argv):
-        """
-        Прочитать сообщения
-        usage: read [count]
-        """
-        if len(argv.split()) == 0:
-            count = 10
-        else:
-            count = int(argv.split()[0])
-        self.parser.print_last_messages(count)
+        unread_messages_ids = self.parser.print_last_messages(argv.count, return_unread_messages_ids=argv.mark)
+        if argv.mark:
+            self.api.messages.markAsRead(messages_ids=unread_messages_ids, peer_id=self.chat_info['id'], v=5.52)
 
     @Wrapper_cmd_line_arg_parser(parser=__online_parser)
     def do_online(self, argv):

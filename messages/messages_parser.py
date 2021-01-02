@@ -21,10 +21,14 @@ class Private_messages_parser:
         self.peer_id = peer_id
         self.api = api
 
-    def print_last_messages(self, count):
+    def print_last_messages(self, count, return_unread_messages_ids=False):
+        unread_messages_ids = []
         messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, v=5.52)['items']
         for message in messages[::-1]:
             _print_private_message(message)
+            if message['read_state'] == 0 and return_unread_messages_ids:
+                unread_messages_ids.append(message['id'])
+        return unread_messages_ids
 
 
 class Chat_messages_parser:
