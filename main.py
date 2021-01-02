@@ -85,7 +85,8 @@ class VKLogin(Cmd):
             print('\nВыход')
             exit()
 
-    def do_exit(self, _):
+    @staticmethod
+    def do_exit(_):
         '''
         Выйти
         exit
