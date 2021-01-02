@@ -2,30 +2,30 @@ from datetime import datetime
 from termcolor import colored
 
 
-def _print_private_message(message):
-    date = datetime.fromtimestamp(message['date'])
-    print('--------', date.strftime('%Y-%m-%d %H:%M:%S'))
-    if message['user_id'] != message['from_id']:
-        print('Message', colored('(Вы):', 'green'), message['body'])
-    else:
-        print('Message:', message['body'])
-    if 'attachments' in message:
-        print('Дополнительно:', end=' ')
-        for attachment in message['attachments']:
-            print(colored(attachment['type'], 'cyan'), end=' ')
-        print()
-
-
 class Private_messages_parser:
     def __init__(self, api, peer_id):
         self.peer_id = peer_id
         self.api = api
 
+    @staticmethod
+    def _print_private_message(message):
+        date = datetime.fromtimestamp(message['date'])
+        print('--------', date.strftime('%Y-%m-%d %H:%M:%S'))
+        if message['user_id'] != message['from_id']:
+            print('Message', colored('(Вы):', 'green'), message['body'])
+        else:
+            print('Message:', message['body'])
+        if 'attachments' in message:
+            print('Дополнительно:', end=' ')
+            for attachment in message['attachments']:
+                print(colored(attachment['type'], 'cyan'), end=' ')
+            print()
+
     def print_last_messages(self, count, return_unread_messages_ids=False):
         unread_messages_ids = []
         messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, v=5.52)['items']
         for message in messages[::-1]:
-            _print_private_message(message)
+            self._print_private_message(message)
             if message['read_state'] == 0 and return_unread_messages_ids:
                 unread_messages_ids.append(message['id'])
         return unread_messages_ids
@@ -37,7 +37,7 @@ class Chat_messages_parser:
         self.api = api
         self.profile_id = profile_id
 
-    def _print_chat_message(self, message):
+    def _print_last_message(self, message):
         date = datetime.fromtimestamp(message['date'])
         print('--------', date.strftime('%Y-%m-%d %H:%M:%S'))
         if message['from_id'] == self.profile_id['id']:
@@ -50,4 +50,32 @@ class Chat_messages_parser:
     def print_last_messages(self, count):
         messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, v=5.52)['items']
         for message in messages[::-1]:
-            self._print_chat_message(message)
+            self._print_last_message(message)
+
+
+class Group_messages_parser:
+    def __init__(self, api, group_id):
+        self.api = api
+        self.group_id = group_id
+
+    @staticmethod
+    def _print_last_message(message):
+        date = datetime.fromtimestamp(message['date'])
+        print('--------', date.strftime('%Y-%m-%d %H:%M:%S'))
+        if message['user_id'] != message['from_id']:
+            print('Message', colored('(Вы):', 'green'), message['body'])
+        else:
+            print('Message:', message['body'])
+        if 'attachments' in message:
+            print('Дополнительно:', end=' ')
+            for attachment in message['attachments']:
+                print(colored(attachment['type'], 'cyan'), end=' ')
+            print()
+
+    def print_last_messages(self, count, return_unread_messages_ids=False):
+        unread_messages_ids = []
+        messages = self.api.messages.getHistory(peer_id=self.group_id, count=count, v=5.52)['items']
+        for message in messages[::-1]:
+            self._print_last_message(message)
+            if message['read_state'] == 0 and return_unread_messages_ids:
+                unread_messages_ids.append(message['id'])
