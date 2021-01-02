@@ -12,7 +12,7 @@ class Chat_dialog_events(Profile_events):
             print(colored('Вы', 'green'), '- ', end='')
         elif event.to_me:
             print(colored('От', 'red'), '- ', end='')
-            self._print_cache_user(event)
+            self._get_cache_user(event)
         last_seen = datetime.fromtimestamp(event.timestamp)
         print(last_seen.strftime('%H:%M:%S'), end=' ')
         print('- №' + str(event.message_id))
@@ -30,6 +30,6 @@ class Chat_dialog_events(Profile_events):
                 print('Номер сообщения: №' + str(event.message_id))
                 self._print_text_message(event)
             elif event.type == VkEventType.USER_TYPING_IN_CHAT and event.chat_id == chat_id:
-                self._print_cache_user(event)
+                self._get_cache_user(event)
                 print('печатает...')
 

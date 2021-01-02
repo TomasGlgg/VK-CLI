@@ -12,7 +12,7 @@ class Profile_events:
         self.api = api
         self.longpoll = VkLongPoll(alternative_api)
 
-    def _print_cache_user(self, event, case=None):
+    def _get_cache_user(self, event, case=None):
         """
         :param case: 0 - nom username, 1 - gen username, 2 - dat username
         """
@@ -30,17 +30,17 @@ class Profile_events:
                 self.users[event.user_id] = [group_name, group_name, group_name]
 
         if case is None:
-            print(self.users[event.user_id][int(event.from_me) + 1], end=' ')
+            return self.users[event.user_id][int(event.from_me) + 1]
         else:
-            print(self.users[event.user_id][case], end=' ')
+            return self.users[event.user_id][case]
 
-    def _print_cache_chat(self, event):
+    def _get_cache_chat(self, event):
         if event.chat_id not in self.chats:
             chat_info = self.api.messages.getChat(chat_id=event.chat_id, v=5.52)
             chat_title = chat_info['title']
             self.chats[event.chat_id] = chat_title
 
-        print(self.chats[event.chat_id], end=' ')
+        return self.chats[event.chat_id]
 
     @staticmethod
     def _print_text_message(event):
@@ -69,21 +69,21 @@ class Profile_events:
             print(colored('От', 'red'), '- ', end='')
 
         if event.from_user:
-            self._print_cache_user(event)
+            print(self._get_cache_user(event))
         elif event.from_chat:
             if not event.from_me:
-                self._print_cache_user(event)
+                print(self._get_cache_user(event), end=' ')
             print('в беседе', end=' ')
-            self._print_cache_chat(event)
+            print(self._get_cache_chat(event), end=' ')
         elif event.from_group:
-            print('группы', event.group_id)  # TODO
+            print('группы', event.group_id, end=' ')  # TODO
 
         last_seen = datetime.fromtimestamp(event.timestamp)
         print('-', last_seen.strftime('%H:%M:%S'), end=' ')
         print('- №' + str(event.message_id))
         self._print_text_message(event)
 
-    def start(self, show_typing):
+    def start(self, show_typing, line):
         print('Получаем события... Для отмены нажмите Ctrl + c')
         for event in self.longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW:
@@ -94,5 +94,8 @@ class Profile_events:
                 self._print_text_message(event)
             elif event.type == VkEventType.USER_TYPING and show_typing:
                 print('Печатает:', end=' ')
-                self._print_cache_user(event, case=0)  # case - nom
-                print()
+                print(self._get_cache_user(event, case=0))  # case - nom
+            elif event.type == VkEventType.USER_ONLINE and line:
+                print(self._get_cache_user(event, case=0), 'теперь online')
+            elif event.type == VkEventType.USER_OFFLINE and line:
+                print(self._get_cache_user(event, case=0), 'ушел в offline')
