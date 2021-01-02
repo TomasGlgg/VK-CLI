@@ -11,6 +11,12 @@ class Chat_dialog(Dialog):
     __online_parser = ArgumentParser(prog='online', description='Вывод сообщений в реальном времени')
     __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
 
+    __read_parser = ArgumentParser(prog='read', description='Прочитать сообщения диалога')
+    __read_parser.add_argument('count', metavar='COUNT', type=int, nargs='?',
+                               help='Количество выводимых диалогов', default=10)
+    __read_parser.add_argument('-m', '--mark', dest='mark', action='store_true',
+                               help='Пометить сообщения как прочитанные')
+
     def setupUI(self):
         self.parser = Chat_messages_parser(self.api, self.chat_id, self.profile_info)
         self.chat_info = self.api.messages.getChat(chat_id=self.chat_id - 2000000000, v=5.52)
@@ -22,16 +28,11 @@ class Chat_dialog(Dialog):
         Количество учатсников: {colored(self.chat_info['members_count'], 'cyan')}
         '''
 
+    @Wrapper_cmd_line_arg_parser(parser=__read_parser)
     def do_read(self, argv):
-        """
-        Прочитать сообщения
-        usage: read [кол-во]
-        """
-        if len(argv.split()) == 0:
-            count = 10
-        else:
-            count = int(argv.split()[0])
-        self.parser.print_last_messages(count)
+        unread_messages_ids = self.parser.print_last_messages(argv.count, return_unread_messages_ids=argv.mark)
+        if argv.mark and unread_messages_ids:
+            self.api.messages.markAsRead(message_ids=unread_messages_ids, peer_id=self.chat_info['id'], v=5.52)
 
     @Wrapper_cmd_line_arg_parser(parser=__online_parser)
     def do_online(self, argv):
