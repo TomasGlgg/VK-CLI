@@ -82,8 +82,7 @@ class VKLogin(Cmd):
         try:
             profile.cmdloop()
         except KeyboardInterrupt:
-            print('\nВыход')
-            exit()
+            system('cls || clear')
 
     @staticmethod
     def do_update(_):
