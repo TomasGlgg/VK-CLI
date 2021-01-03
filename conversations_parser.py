@@ -16,38 +16,61 @@ class Parser:
     def __init__(self, api):
         self.api = api
 
-    def _print_private_message(self, conversation):
+    @staticmethod
+    def _find_profile(conversations, peer_id, key='profiles'):
+        peer_info = None
+        for profile in conversations[key]:
+            if profile['id'] == peer_id:
+                return profile
+        if peer_info is None:
+            raise RuntimeError('Неизвестная ошибка')
+
+    def _print_private_message(self, conversations, i):
+        conversation = conversations['items'][i]
         peer_id = conversation['conversation']['peer']['id']
-        peer_info = self.api.users.get(user_ids=[peer_id], v=self.api.VK_API_VERSION)[0]
-        print(f'---------- {colored(peer_info["first_name"], "blue")} {colored(peer_info["last_name"], "blue")} \
-({peer_id}):')
+        peer_info = self._find_profile(conversations, peer_id)
+        print('-'*10, '{} {} ({})'.format(colored(peer_info['first_name'], 'blue'),
+              colored(peer_info['last_name'], 'blue'), peer_id))
         date = datetime.fromtimestamp(conversation['last_message']['date'])
         print(date.strftime('%Y-%m-%d %H:%M:%S'))
-        if 'unread_count' in conversation['conversation']:
-            print(colored('Непрочитанных сообщений: {}'.format(conversation['conversation']['unread_count']), 'red'))
         if conversation['last_message']['out']:
-            print('Сообщение', colored('(Вы):', 'green'), end=' ')
+            print('Сообщение', colored('(Вы)'+':', 'green'), end=' ')
         else:
-            print('Сообщение', colored('(Собеседник):', 'blue'), end=' ')
+            print('Сообщение', colored('(Собеседник)', 'blue')+':', end=' ')
         _print_message(conversation['last_message'])
 
-    def _print_chat_message(self, conversation):
+    def _print_chat_message(self, conversations, i):
+        conversation = conversations['items'][i]
         title = colored(conversation['conversation']['chat_settings']['title'], 'blue')
         chat_id = conversation['conversation']['peer']['id']
         last_peer = conversation['last_message']['from_id']
         print('---------- Чат: {} ({})'.format(title, chat_id))
         if last_peer >= 0:
-            last_peer_info = self.api.users.get(user_ids=[last_peer], v=self.api.VK_API_VERSION)[0]
+            last_peer_info = self._find_profile(conversations, last_peer)
             print(
                 f'Сообщение от: {colored(last_peer_info["first_name"], "blue")} \
 {colored(last_peer_info["last_name"], "blue")} ({last_peer})')
         else:
-            last_peer_info = self.api.groups.getById(group_ids=abs(last_peer), v=self.api.VK_API_VERSION)[0]
+            last_peer_info = self._find_profile(conversations, last_peer, key='groups')
             print(f'Сообщение от: {colored(last_peer_info["name"], "blue")} ({last_peer})')
         date = datetime.fromtimestamp(conversation['last_message']['date'])
         print(date.strftime('%Y-%m-%d %H:%M:%S'))
         print('Собщение:', end=' ')
         _print_message(conversation['last_message'])
+
+    def _print_group_message(self, conversations, i):
+        conversation = conversations['items'][i]
+        group_id = conversation['conversation']['peer']['local_id']
+        group_info = self._find_profile(conversations, group_id, key='groups')
+        print('-' * 10, '{} ({})'.format(colored(group_info['name'], 'blue'), group_id))
+        date = datetime.fromtimestamp(conversation['last_message']['date'])
+        print(date.strftime('%Y-%m-%d %H:%M:%S'))
+        if conversation['last_message']['out']:
+            print('Сообщение', colored('(Вы)' + ':', 'green'), end=' ')
+        else:
+            print('Сообщение', colored('(Группа)', 'blue') + ':', end=' ')
+        _print_message(conversation['last_message'])
+
 
     def print_conversations_short(self, count):
         dialogs_ids = []
@@ -74,11 +97,14 @@ class Parser:
         return dialogs_ids
 
     def print_conversations(self, count, filter='all'):
-        conversations = self.api.messages.getConversations(count=count, filter=filter, v=self.api.VK_API_VERSION)['items']
-        for conversation in conversations:
-            if conversation['conversation']['peer']['type'] == 'user':
-                self._print_private_message(conversation)
-            elif conversation['conversation']['peer']['type'] == 'chat':
-                self._print_chat_message(conversation)
+        conversations = self.api.messages.getConversations(count=count, filter=filter,
+                                                           v=self.api.VK_API_VERSION, extended=True)
+        for i in range(count):
+            if conversations['items'][i]['conversation']['peer']['type'] == 'user':
+                self._print_private_message(conversations, i)
+            elif conversations['items'][i]['conversation']['peer']['type'] == 'chat':
+                self._print_chat_message(conversations, i)
+            elif conversations['items'][i]['conversation']['peer']['type'] == 'group':
+                self._print_group_message(conversations, i)
             else:
-                print('--------\nPeer', conversation['conversation']['peer']['type'], 'is not recognized')
+                print('--------\nPeer', conversations['items'][i]['conversation']['peer']['type'], 'is not recognized')
