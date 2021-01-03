@@ -24,7 +24,7 @@ class Parser:
             if profile['id'] == peer_id:
                 return profile
         if peer_info is None:
-            raise RuntimeError('Неизвестная ошибка')
+            raise LookupError('Неизвестная ошибка')
 
     def _print_private_message(self, conversations, i):
         conversation = conversations['items'][i]
@@ -75,21 +75,21 @@ class Parser:
 
     def print_conversations_short(self, count):
         dialogs_ids = []
-        conversations = self.api.messages.getConversations(count=count, v=self.api.VK_API_VERSION)['items']
-        for i, conversation in enumerate(conversations):
+        conversations = self.api.messages.getConversations(count=count, v=self.api.VK_API_VERSION, extended=True)
+        for i, conversation in enumerate(conversations['items']):
             if conversation['conversation']['peer']['type'] == 'user':
                 peer_id = conversation['conversation']['peer']['id']
-                dialogs_ids.append(peer_id)
-                peer_info = self.api.users.get(user_ids=[peer_id], v=self.api.VK_API_VERSION)[0]
+                peer_info = self._find_profile(conversations, peer_id)
                 print('№{}:{} {} ({}):'.format(i, peer_info['first_name'], peer_info['last_name'], peer_id))
+                dialogs_ids.append(peer_id)
             elif conversation['conversation']['peer']['type'] == 'chat':
                 title = conversation['conversation']['chat_settings']['title']
                 chat_id = conversation['conversation']['peer']['id']
-                dialogs_ids.append(chat_id)
                 print('№{}:Чат: {} ({})'.format(i, title, chat_id))
+                dialogs_ids.append(chat_id)
             elif conversation['conversation']['peer']['type'] == 'group':
                 group_id = conversation['conversation']['peer']['id']
-                group_info = self.api.groups.getById(group_id=abs(group_id), v=self.api.VK_API_VERSION)['groups'][0]
+                group_info = self._find_profile(conversations, abs(group_id), key='groups')
                 print('№{}:Группа: {} ({})'.format(i, group_info['name'], group_id))
                 dialogs_ids.append(group_id)
             else:
