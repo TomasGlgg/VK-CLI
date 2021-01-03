@@ -2,7 +2,7 @@ from termcolor import colored
 from datetime import datetime
 
 
-def _printMessage(message):
+def _print_message(message):
     print(message['text'])
     if len(message['attachments']):
         for attachment in message['attachments']:
@@ -16,7 +16,7 @@ class Parser:
     def __init__(self, api):
         self.api = api
 
-    def _printPrivateMessage(self, conversation):
+    def _print_private_message(self, conversation):
         peer_id = conversation['conversation']['peer']['id']
         peer_info = self.api.users.get(user_ids=[peer_id], v=self.api.VK_API_VERSION)[0]
         print(f'---------- {colored(peer_info["first_name"], "blue")} {colored(peer_info["last_name"], "blue")} \
@@ -29,9 +29,9 @@ class Parser:
             print('Сообщение', colored('(Вы):', 'green'), end=' ')
         else:
             print('Сообщение', colored('(Собеседник):', 'blue'), end=' ')
-        _printMessage(conversation['last_message'])
+        _print_message(conversation['last_message'])
 
-    def _printChatMessage(self, conversation):
+    def _print_chat_message(self, conversation):
         title = colored(conversation['conversation']['chat_settings']['title'], 'blue')
         chat_id = conversation['conversation']['peer']['id']
         last_peer = conversation['last_message']['from_id']
@@ -47,9 +47,9 @@ class Parser:
         date = datetime.fromtimestamp(conversation['last_message']['date'])
         print(date.strftime('%Y-%m-%d %H:%M:%S'))
         print('Собщение:', end=' ')
-        _printMessage(conversation['last_message'])
+        _print_message(conversation['last_message'])
 
-    def printConversationsShort(self, count):
+    def print_conversations_short(self, count):
         dialogs_ids = []
         conversations = self.api.messages.getConversations(count=count, v=self.api.VK_API_VERSION)['items']
         for i, conversation in enumerate(conversations):
@@ -73,12 +73,14 @@ class Parser:
                 print('Peer', conversation['conversation']['peer']['type'], 'is not recognized')
         return dialogs_ids
 
+
+
     def printConversations(self, count, filter='all'):
         conversations = self.api.messages.getConversations(count=count, filter=filter, v=self.api.VK_API_VERSION)['items']
         for conversation in conversations:
             if conversation['conversation']['peer']['type'] == 'user':
-                self._printPrivateMessage(conversation)
+                self._print_private_message(conversation)
             elif conversation['conversation']['peer']['type'] == 'chat':
-                self._printChatMessage(conversation)
+                self._print_chat_message(conversation)
             else:
                 print('--------\nPeer', conversation['conversation']['peer']['type'], 'is not recognized')
