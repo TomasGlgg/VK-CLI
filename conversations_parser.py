@@ -3,7 +3,8 @@ from datetime import datetime
 
 
 def _print_message(message):
-    print(message['text'])
+    if message['text']:
+        print(message['text'])
     if len(message['attachments']):
         for attachment in message['attachments']:
             print('Дополнительно:', colored(attachment['type'], 'cyan'), end=' ')
@@ -29,14 +30,14 @@ class Parser:
         conversation = conversations['items'][i]
         peer_id = conversation['conversation']['peer']['id']
         peer_info = self._find_profile(conversations, peer_id)
-        print('-'*10, '{} {} ({})'.format(colored(peer_info['first_name'], 'blue'),
-              colored(peer_info['last_name'], 'blue'), peer_id))
+        print('-' * 10, '{} {} ({})'.format(colored(peer_info['first_name'], 'blue'),
+                                            colored(peer_info['last_name'], 'blue'), peer_id))
         date = datetime.fromtimestamp(conversation['last_message']['date'])
         print(date.strftime('%Y-%m-%d %H:%M:%S'))
-        if conversation['last_message']['out']:
-            print('Сообщение', colored('(Вы)'+':', 'green'), end=' ')
+        if conversation['last_message']['out'] and conversation['last_message']['text']:
+            print('Сообщение', colored('(Вы)' + ':', 'green'), end=' ')
         else:
-            print('Сообщение', colored('(Собеседник)', 'blue')+':', end=' ')
+            print('Сообщение', colored('(Собеседник)', 'blue') + ':', end=' ')
         _print_message(conversation['last_message'])
 
     def _print_chat_message(self, conversations, i):
@@ -55,7 +56,8 @@ class Parser:
             print(f'Сообщение от: {colored(last_peer_info["name"], "blue")} ({last_peer})')
         date = datetime.fromtimestamp(conversation['last_message']['date'])
         print(date.strftime('%Y-%m-%d %H:%M:%S'))
-        print('Собщение:', end=' ')
+        if conversation['last_message']['text']:
+            print('Собщение:', end=' ')
         _print_message(conversation['last_message'])
 
     def _print_group_message(self, conversations, i):
@@ -65,12 +67,11 @@ class Parser:
         print('-' * 10, '{} ({})'.format(colored(group_info['name'], 'blue'), group_id))
         date = datetime.fromtimestamp(conversation['last_message']['date'])
         print(date.strftime('%Y-%m-%d %H:%M:%S'))
-        if conversation['last_message']['out']:
+        if conversation['last_message']['out'] and conversation['last_message']['text']:
             print('Сообщение', colored('(Вы)' + ':', 'green'), end=' ')
         else:
             print('Сообщение', colored('(Группа)', 'blue') + ':', end=' ')
         _print_message(conversation['last_message'])
-
 
     def print_conversations_short(self, count):
         dialogs_ids = []
@@ -85,7 +86,7 @@ class Parser:
                 title = conversation['conversation']['chat_settings']['title']
                 chat_id = conversation['conversation']['peer']['id']
                 dialogs_ids.append(chat_id)
-                print('№{}:Чат: {} ({})'. format(i, title, chat_id))
+                print('№{}:Чат: {} ({})'.format(i, title, chat_id))
             elif conversation['conversation']['peer']['type'] == 'group':
                 group_id = conversation['conversation']['peer']['id']
                 group_info = self.api.groups.getById(group_id=abs(group_id), v=self.api.VK_API_VERSION)['groups'][0]
