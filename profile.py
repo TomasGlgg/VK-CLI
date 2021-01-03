@@ -42,11 +42,12 @@ class Profile(Cmd):
     def auth(self):
         session = vk.Session(self.token)
         self.api = vk.API(session)
+        self.api.VK_API_VERSION = 5.139
         self.alternative_api = vk_api.VkApi(token=self.token)
         self.parser = Parser(self.api)
 
     def setup(self):
-        self.profile_info = self.api.account.getProfileInfo(v=5.52)
+        self.profile_info = self.api.account.getProfileInfo(v=self.api.VK_API_VERSION)
 
         # setup prompt
         self.prompt = '({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'])

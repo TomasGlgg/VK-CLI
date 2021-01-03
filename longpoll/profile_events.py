@@ -18,15 +18,15 @@ class Profile_events:
         """
         if event.user_id not in self.users:
             if event.user_id > 0:
-                user_info = self.api.users.get(user_ids=[event.user_id], name_case='nom', v=5.52)
+                user_info = self.api.users.get(user_ids=[event.user_id], name_case='nom', v=self.api.VK_API_VERSION)
                 username_nom = user_info[0]['first_name'] + ' ' + user_info[0]['last_name']
-                user_info = self.api.users.get(user_ids=[event.user_id], name_case='gen', v=5.52)[0]
+                user_info = self.api.users.get(user_ids=[event.user_id], name_case='gen', v=self.api.VK_API_VERSION)[0]
                 username_gen = user_info['first_name'] + ' ' + user_info['last_name']
-                user_info = self.api.users.get(user_ids=[event.user_id], name_case='dat', v=5.52)[0]
+                user_info = self.api.users.get(user_ids=[event.user_id], name_case='dat', v=self.api.VK_API_VERSION)[0]
                 username_dat = user_info['first_name'] + ' ' + user_info['last_name']
                 self.users[event.user_id] = [username_nom, username_gen, username_dat]
             else:
-                group_name = self.api.groups.getById(group_ids=abs(event.user_id), v=5.52)[0]['name']
+                group_name = self.api.groups.getById(group_ids=abs(event.user_id), v=self.api.VK_API_VERSION)[0]['name']
                 self.users[event.user_id] = [group_name, group_name, group_name]
 
         if case is None:
@@ -36,7 +36,7 @@ class Profile_events:
 
     def _get_cache_chat(self, event):
         if event.chat_id not in self.chats:
-            chat_info = self.api.messages.getChat(chat_id=event.chat_id, v=5.52)
+            chat_info = self.api.messages.getChat(chat_id=event.chat_id, v=self.api.VK_API_VERSION)
             chat_title = chat_info['title']
             self.chats[event.chat_id] = chat_title
 

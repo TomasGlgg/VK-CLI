@@ -24,8 +24,4 @@ class Group_dialog(Dialog):
 
     @Wrapper_cmd_line_arg_parser(parser=__read_parser)
     def do_read(self, argv):
-        unread_messages_ids = self.parser.print_last_messages(argv.count, return_unread_messages_ids=argv.mark)
-        if argv.mark and unread_messages_ids:
-            self.api.messages.markAsRead(message_ids=unread_messages_ids, peer_id=self.chat_info['id'], v=5.52)
-
-
+        self.parser.print_last_messages(argv.count, mark_unreads_messages=argv.mark)

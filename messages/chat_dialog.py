@@ -19,7 +19,7 @@ class Chat_dialog(Dialog):
 
     def setupUI(self):
         self.parser = Chat_messages_parser(self.api, self.chat_id, self.profile_info)
-        self.chat_info = self.api.messages.getChat(chat_id=self.chat_id - 2000000000, v=5.52)
+        self.chat_info = self.api.messages.getChat(chat_id=self.chat_id - 2000000000, v=self.api.VK_API_VERSION)
         self.prompt = '({} {})->({})>'.format(self.profile_info['first_name'], self.profile_info['last_name'],
                                               self.chat_info['title'])
 
@@ -30,9 +30,7 @@ class Chat_dialog(Dialog):
 
     @Wrapper_cmd_line_arg_parser(parser=__read_parser)
     def do_read(self, argv):
-        unread_messages_ids = self.parser.print_last_messages(argv.count, return_unread_messages_ids=argv.mark)
-        if argv.mark and unread_messages_ids:
-            self.api.messages.markAsRead(message_ids=unread_messages_ids, peer_id=self.chat_info['id'], v=5.52)
+        self.parser.print_last_messages(argv.count, mark_unreads_messages=argv.mark)
 
     @Wrapper_cmd_line_arg_parser(parser=__online_parser)
     def do_online(self, argv):

@@ -30,7 +30,7 @@ class Private_dialog(Dialog):
     def setupUI(self):
         self.parser = Private_messages_parser(self.api, self.chat_id)
         fields = ['status', 'last_seen', 'online']
-        self.chat_info = self.api.users.get(user_ids=[self.chat_id], fields=fields, v=5.52)[0]
+        self.chat_info = self.api.users.get(user_ids=[self.chat_id], fields=fields, v=self.api.VK_API_VERSION)[0]
         last_seen = datetime.fromtimestamp(self.chat_info['last_seen']['time'])
 
         self.intro = f'''Диалог с: {colored(self.chat_info['first_name'], 'green')} {colored(self.chat_info['last_name']
@@ -43,15 +43,14 @@ class Private_dialog(Dialog):
         self.__set_prompt()
 
     def precmd(self, line: str) -> str:
-        self.chat_info['online'] = self.api.users.get(user_ids=[self.chat_id], fields='online', v=5.52)[0]['online']
+        self.chat_info['online'] = self.api.users.get(user_ids=[self.chat_id], fields='online',
+                                                      v=self.api.VK_API_VERSION)[0]['online']
         self.__set_prompt()
         return line
 
     @Wrapper_cmd_line_arg_parser(parser=__read_parser)
     def do_read(self, argv):
-        unread_messages_ids = self.parser.print_last_messages(argv.count, return_unread_messages_ids=argv.mark)
-        if argv.mark and unread_messages_ids:
-            self.api.messages.markAsRead(message_ids=unread_messages_ids, peer_id=self.chat_info['id'], v=5.52)
+        self.parser.print_last_messages(argv.count, mark_unreads_messages=argv.mark)
 
     @Wrapper_cmd_line_arg_parser(parser=__online_parser)
     def do_online(self, argv):
