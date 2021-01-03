@@ -63,18 +63,18 @@ class Profile(Cmd):
 
     @Wrapper_cmd_line_arg_parser(parser=__dialogs_parser)
     def do_dialogs(self, argv):
-        self.parser.printConversations(argv.count)
+        self.parser.print_conversations(argv.count)
 
     @Wrapper_cmd_line_arg_parser(parser=__unread_parser)
     def do_unread(self, argv):
-        self.parser.printConversations(argv.count, filter='unread')
+        self.parser.print_conversations(argv.count, filter='unread')
 
     @Wrapper_cmd_line_arg_parser(parser=__select_parser)
     def do_select(self, argv):
         if argv.print:
             if argv.print > 100:
                 print('Слишком большое значение запроса последних диалогов')
-            dialogs_id = self.parser.printConversationsShort(argv.print)
+            dialogs_id = self.parser.print_conversations_short(argv.print)
             answer = input('Выберите диалог>')
             if not answer.isdigit() or len(dialogs_id) < int(answer) - 1:
                 print(colored('Ошибка', 'red'))

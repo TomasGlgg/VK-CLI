@@ -73,9 +73,7 @@ class Parser:
                 print('Peer', conversation['conversation']['peer']['type'], 'is not recognized')
         return dialogs_ids
 
-
-
-    def printConversations(self, count, filter='all'):
+    def print_conversations(self, count, filter='all'):
         conversations = self.api.messages.getConversations(count=count, filter=filter, v=self.api.VK_API_VERSION)['items']
         for conversation in conversations:
             if conversation['conversation']['peer']['type'] == 'user':
