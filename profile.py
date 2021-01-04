@@ -56,7 +56,8 @@ class Profile(Cmd):
         self.intro += f"{colored(self.profile_info['last_name'], 'green')} ({self.profile_info['screen_name']}) "
         self.intro += f"- id{self.profile_info['id']}\n"
         self.intro += f"Дата рождения: {colored(self.profile_info['bdate'], 'red')}\n"
-        self.intro += f"      Телефон: {self.profile_info['phone']}\n"
+        if 'phone' in self.profile_info:
+            self.intro += f"      Телефон: {self.profile_info['phone']}\n"
         if 'country' in self.profile_info.keys():
             self.intro += f"       Страна: {self.profile_info['country']['title']}\n"
         self.intro += f"       Статус: {colored(self.profile_info['status'], 'cyan')}"
