@@ -41,13 +41,15 @@ class Chat_messages_parser:
 
     def _print_last_message(self, message):
         date = datetime.fromtimestamp(message['date'])
-        print('--------', date.strftime('%Y-%m-%d %H:%M:%S'))
+        print('-------- {} - №{}'.format(date.strftime('%Y-%m-%d %H:%M:%S'), message['id']))
         if message['text']:
             if message['out']:
                 print('Сообщение', colored('(Вы):', 'green'), end=' ')
             else:
-                peer_info = self.api.users.get(user_ids=[message['from_id']], v=self.api.VK_API_VERSION, name_case='gen')[0]
-                print('Сообщение от', colored(peer_info['first_name'] + ' ' + peer_info['last_name'], 'red') + ':', end=' ')
+                peer_info = self.api.users.get(user_ids=[message['from_id']], v=self.api.VK_API_VERSION,
+                                               name_case='gen')[0]
+                print('Сообщение от', colored(peer_info['first_name'] + ' ' + peer_info['last_name'], 'red') + ':',
+                      end=' ')
             print(message['text'])
         if message['attachments']:
             print('Дополнительно:', end=' ')
