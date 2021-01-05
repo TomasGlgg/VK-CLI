@@ -95,8 +95,7 @@ class Group_messages_parser:
             print()
 
     def print_last_messages(self, count, mark_unreads_messages=False):
-        messages = self.api.messages.getHistory(peer_id=self.group_id, count=count, extended=True,
-                                                v=self.api.VK_API_VERSION)
+        messages = self.api.messages.getHistory(peer_id=self.group_id, count=count, v=self.api.VK_API_VERSION)
         for message in messages['items'][::-1]:
             self._print_last_message(message)
         if mark_unreads_messages and messages['conversations'][0]['is_marked_unread']:
