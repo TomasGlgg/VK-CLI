@@ -42,12 +42,18 @@ class Chat_messages_parser:
     def _print_last_message(self, message):
         date = datetime.fromtimestamp(message['date'])
         print('--------', date.strftime('%Y-%m-%d %H:%M:%S'))
-        if message['out']:
-            print('Сообщение', colored('(Вы):', 'green'), end=' ')
-        else:
-            peer_info = self.api.users.get(user_ids=[message['from_id']], v=self.api.VK_API_VERSION, name_case='gen')[0]
-            print('Сообщение от', colored(peer_info['first_name'] + ' ' + peer_info['last_name'], 'red') + ':', end=' ')
-        print(message['text'])
+        if message['text']:
+            if message['out']:
+                print('Сообщение', colored('(Вы):', 'green'), end=' ')
+            else:
+                peer_info = self.api.users.get(user_ids=[message['from_id']], v=self.api.VK_API_VERSION, name_case='gen')[0]
+                print('Сообщение от', colored(peer_info['first_name'] + ' ' + peer_info['last_name'], 'red') + ':', end=' ')
+            print(message['text'])
+        if message['attachments']:
+            print('Дополнительно:', end=' ')
+            for attachment in message['attachments']:
+                print(colored(attachment['type'], 'cyan'), end=' ')
+            print()
 
     def print_last_messages(self, count, mark_unreads_messages=False):
         messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, extended=True,
