@@ -2,6 +2,17 @@ from datetime import datetime
 from termcolor import colored
 
 
+def _get_profile_name(response, id):
+    if id >= 0:
+        for profile in response['profiles']:
+            if profile['id'] == id:
+                return '{} {} ({})'.format(profile['first_name'], profile['last_name'], id)
+    else:
+        for group in response['group']:
+            if group['id'] == id:
+                return '{} ({})'.format(group['name'], id)
+
+
 class Private_messages_parser:
     def __init__(self, api, peer_id):
         self.peer_id = peer_id
@@ -23,8 +34,7 @@ class Private_messages_parser:
             print()
 
     def print_last_messages(self, count, mark_unreads_messages=False):
-        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, extended=True,
-                                                v=self.api.VK_API_VERSION)
+        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, v=self.api.VK_API_VERSION)
         for message in messages['items'][::-1]:
             self._print_private_message(message)
         if mark_unreads_messages:
@@ -39,17 +49,14 @@ class Chat_messages_parser:
         self.api = api
         self.profile_id = profile_id
 
-    def _print_last_message(self, message):
+    def _print_last_message(self, message, messages):
         date = datetime.fromtimestamp(message['date'])
         print('-------- {} - №{}'.format(date.strftime('%Y-%m-%d %H:%M:%S'), message['id']))
         if message['text']:
             if message['out']:
                 print('Сообщение', colored('(Вы):', 'green'), end=' ')
             else:
-                peer_info = self.api.users.get(user_ids=[message['from_id']], v=self.api.VK_API_VERSION,
-                                               name_case='gen')[0]
-                print('Сообщение от', colored(peer_info['first_name'] + ' ' + peer_info['last_name'], 'red') + ':',
-                      end=' ')
+                print('Сообщение от', colored(_get_profile_name(messages, message['from_id']), 'red') + ':', end=' ')
             print(message['text'])
         if message['attachments']:
             print('Дополнительно:', end=' ')
@@ -61,7 +68,7 @@ class Chat_messages_parser:
         messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, extended=True,
                                                 v=self.api.VK_API_VERSION)
         for message in messages['items'][::-1]:
-            self._print_last_message(message)
+            self._print_last_message(message, messages)
         if mark_unreads_messages and messages['conversations'][0]['is_marked_unread']:
             self.api.messages.markAsRead(start_message_id=messages['conversations'][0]['last_message_id'],
                                          peer_id=self.peer_id, mark_conversation_as_read=True,
@@ -96,17 +103,6 @@ class Group_messages_parser:
             self.api.messages.markAsRead(start_message_id=messages['conversations'][0]['last_message_id'],
                                          peer_id=self.group_id, mark_conversation_as_read=True,
                                          v=self.api.VK_API_VERSION)
-
-
-def _get_profile_name(response, id):
-    if id >= 0:
-        for profile in response['profiles']:
-            if profile['id'] == id:
-                return '{} {} ({})'.format(profile['first_name'], profile['last_name'], id)
-    else:
-        for group in response['group']:
-            if group['id'] == id:
-                return '{} ({})'.format(group['name'], id)
 
 
 def _print_reply_message(message, messages_details, offset=1):
