@@ -96,3 +96,42 @@ class Group_messages_parser:
             self.api.messages.markAsRead(start_message_id=messages['conversations'][0]['last_message_id'],
                                          peer_id=self.group_id, mark_conversation_as_read=True,
                                          v=self.api.VK_API_VERSION)
+
+
+def _get_profile_name(response, id):
+    if id >= 0:
+        for profile in response['profiles']:
+            if profile['id'] == id:
+                return '{} {} ({})'.format(profile['first_name'], profile['last_name'], id)
+    else:
+        for group in response['group']:
+            if group['id'] == id:
+                return '{} ({})'.format(group['name'], id)
+
+
+def _print_reply_message(message, messages_details, offset=1):
+    date = datetime.fromtimestamp(message['date'])
+    print(' '*offset, '---------- №{} - {}'.format(message['id'], date.strftime('%Y-%m-%d %H:%M:%S')), sep='')
+    print(' '*offset, 'Пишет: ', colored(_get_profile_name(messages_details, message['from_id']), 'blue'), sep='')
+    print(' '*offset, 'Сообщение:', sep='')
+    for line in message['text'].split('\n'):
+        print(' '*offset, '|', line, sep='')
+    if 'reply_message' in message:
+        print(' '*offset, 'Пересланное сообщение:', sep='')
+        _print_reply_message(message['reply_message'], messages_details, offset+1)
+
+
+def print_messages_details(api, message_ids):
+    messages_details = api.messages.getById(message_ids=message_ids, extended=True, v=api.VK_API_VERSION)
+    for message in messages_details['items']:
+        if message['peer_id'] > 2000000000:
+            date = datetime.fromtimestamp(message['date'])
+            print(
+                '---------- Чат: №{} - {}'.format(message['peer_id'] - 2000000000, date.strftime('%Y-%m-%d %H:%M:%S')))
+            print('Пишет:', colored(_get_profile_name(messages_details, message['from_id']), 'blue'))
+        print('Сообщение:', message['text'])
+        if 'reply_message' in message:
+            print('Пересланное сообщение:')
+            _print_reply_message(message['reply_message'], messages_details)
+
+
