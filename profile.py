@@ -20,8 +20,8 @@ class Profile(Cmd):
 
     __select_parser = argparse.ArgumentParser(prog='select', description='Выбрать диалог')
     __select_parser.add_argument('id', metavar='ID', type=int, help='ID диалога', nargs='?')
-    __select_parser.add_argument('-p', '--print', metavar='count', type=int, help='Количество выводимых диалогов',
-                                 default=10)
+    __select_parser.add_argument('-c', '--count', metavar='count', type=int, help='Количество выводимых диалогов',
+                                 default=5)
 
     __online_parser = argparse.ArgumentParser(prog='online', description='Получать события профиля (сообщения и т.д.)')
     __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
@@ -30,11 +30,11 @@ class Profile(Cmd):
 
     __dialogs_parser = argparse.ArgumentParser(prog='dialogs', description='Вывести все диалоги')
     __dialogs_parser.add_argument('count', metavar='COUNT', type=int, nargs='?',
-                                  help='Количество выводимых диалогов', default=10)
+                                  help='Количество выводимых диалогов', default=5)
 
     __unread_parser = argparse.ArgumentParser(prog='unread', description='Вывести непрочитанные')
     __unread_parser.add_argument('count', metavar='COUNT', type=int, nargs='?',
-                                 help='Количество выводимых диалогов', default=10)
+                                 help='Количество выводимых диалогов', default=5)
 
     def load_token(self, token):
         self.token = token
