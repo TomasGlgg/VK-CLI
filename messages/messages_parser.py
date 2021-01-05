@@ -10,11 +10,12 @@ class Private_messages_parser:
     @staticmethod
     def _print_private_message(message):
         date = datetime.fromtimestamp(message['date'])
-        print('--------', date.strftime('%Y-%m-%d %H:%M:%S'))
-        if message['out']:
-            print('Message', colored('(Вы):', 'green'), message['text'])
-        else:
-            print('Message:', message['text'])
+        print('-------- {} - №{}'.format(date.strftime('%Y-%m-%d %H:%M:%S'), message['id']))
+        if message['text']:
+            if message['out']:
+                print('Сообщение', colored('(Вы):', 'green'), message['text'])
+            else:
+                print('Сообщение', colored('(Собеседник):', 'blue'), message['text'])
         if message['attachments']:
             print('Дополнительно:', end=' ')
             for attachment in message['attachments']:
