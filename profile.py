@@ -72,10 +72,10 @@ class Profile(Cmd):
 
     @Wrapper_cmd_line_arg_parser(parser=__select_parser)
     def do_select(self, argv):
-        if argv.print:
-            if argv.print > 100:
+        if argv.count:
+            if argv.count > 100:
                 print('Слишком большое значение запроса последних диалогов')
-            dialogs_id = self.parser.print_conversations_short(argv.print)
+            dialogs_id = self.parser.print_conversations_short(argv.count)
             answer = input('Выберите диалог>')
             if not answer.isdigit() or len(dialogs_id) < int(answer) - 1:
                 print(colored('Ошибка', 'red'))
