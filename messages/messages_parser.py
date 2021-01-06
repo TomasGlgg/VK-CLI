@@ -8,6 +8,7 @@ def _get_profile_name(response, id):
             if profile['id'] == id:
                 return '{} {} ({})'.format(profile['first_name'], profile['last_name'], id)
     else:
+        id = abs(id)
         for group in response['groups']:
             if group['id'] == id:
                 return '{} ({})'.format(group['name'], id)
@@ -22,11 +23,15 @@ class Private_messages_parser:
     def _print_private_message(message):
         date = datetime.fromtimestamp(message['date'])
         print('-------- {} - №{}'.format(date.strftime('%Y-%m-%d %H:%M:%S'), message['id']))
+        if message['out']:
+            print('Сообщение', colored('(Вы):', 'green'), end='')
+        else:
+            print('Сообщение', colored('(Собеседник):', 'blue'), end='')
         if message['text']:
-            if message['out']:
-                print('Сообщение', colored('(Вы):', 'green'), message['text'])
-            else:
-                print('Сообщение', colored('(Собеседник):', 'blue'), message['text'])
+            print(message['text'])
+        else:
+            print()
+
         if message['attachments']:
             print('Дополнительно:', end=' ')
             for attachment in message['attachments']:
@@ -53,12 +58,15 @@ class Chat_messages_parser:
     def _print_last_message(message, messages):
         date = datetime.fromtimestamp(message['date'])
         print('-------- {} - №{}'.format(date.strftime('%Y-%m-%d %H:%M:%S'), message['id']))
+        if message['out']:
+            print('Сообщение', colored('(Вы):', 'green'), end=' ')
+        else:
+            print('Сообщение от', colored(_get_profile_name(messages, message['from_id']), 'red') + ':', end=' ')
         if message['text']:
-            if message['out']:
-                print('Сообщение', colored('(Вы):', 'green'), end=' ')
-            else:
-                print('Сообщение от', colored(_get_profile_name(messages, message['from_id']), 'red') + ':', end=' ')
             print(message['text'])
+        else:
+            print()
+
         if message['attachments']:
             print('Дополнительно:', end=' ')
             for attachment in message['attachments']:
@@ -86,9 +94,14 @@ class Group_messages_parser:
         date = datetime.fromtimestamp(message['date'])
         print('--------', date.strftime('%Y-%m-%d %H:%M:%S'))
         if message['out']:
-            print('Message', colored('(Вы):', 'green'), message['text'])
+            print('Сообщение', colored('(Вы):', 'green'), end='')
         else:
-            print('Message:', message['text'])
+            print('Сообщение', colored('(Собеседник):', 'blue'), end='')
+        if message['text']:
+            print(message['text'])
+        else:
+            print()
+
         if 'attachments' in message:
             print('Дополнительно:', end=' ')
             for attachment in message['attachments']:
