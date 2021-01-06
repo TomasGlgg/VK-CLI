@@ -7,7 +7,7 @@ import os
 
 from conversations_parser import Parser
 from longpoll.profile_events import Profile_events
-from messages import Private_dialog, Chat_dialog, Group_dialog, print_messages_details
+from messages import Private_dialog, Chat_dialog, Group_dialog, print_message_details
 from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
 
@@ -36,9 +36,9 @@ class Profile(Cmd):
     __unread_parser.add_argument('count', metavar='COUNT', type=int, nargs='?',
                                  help='Количество выводимых диалогов', default=5)
 
-    __messages_details_parser = argparse.ArgumentParser(prog='messages_details',
+    __message_details_parser = argparse.ArgumentParser(prog='message_details',
                                                        description='Показать подробности сообщения')
-    __messages_details_parser.add_argument('ids', metavar='IDs', type=int, nargs='+',
+    __message_details_parser.add_argument('ids', metavar='IDs', type=int, nargs='+',
                                           help='ID/IDs сообщения/сообщений (разделенных через пробел)')
 
     def load_token(self, token):
@@ -127,10 +127,10 @@ class Profile(Cmd):
         except KeyboardInterrupt:
             print('\nKeyboardInterrupt, выход')
 
-    @Wrapper_cmd_line_arg_parser(parser=__messages_details_parser)
-    def do_messages_details(self, argv):
+    @Wrapper_cmd_line_arg_parser(parser=__message_details_parser)
+    def do_message_details(self, argv):
         message_ids = argv.ids
-        print_messages_details(self.api, message_ids)
+        print_message_details(self.api, message_ids)
 
     @staticmethod
     def do_clear(_):

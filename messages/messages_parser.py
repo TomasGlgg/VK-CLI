@@ -128,7 +128,7 @@ def _print_fwd_messages(fwd_messages, messages_details):
     pass
 
 
-def print_messages_details(api, message_ids):
+def print_message_details(api, message_ids):
     messages_details = api.messages.getById(message_ids=message_ids, extended=True, v=api.VK_API_VERSION)
     for message in messages_details['items']:
         if message['peer_id'] > 2000000000:
