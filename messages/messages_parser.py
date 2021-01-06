@@ -49,7 +49,8 @@ class Chat_messages_parser:
         self.api = api
         self.profile_id = profile_id
 
-    def _print_last_message(self, message, messages):
+    @staticmethod
+    def _print_last_message(message, messages):
         date = datetime.fromtimestamp(message['date'])
         print('-------- {} - №{}'.format(date.strftime('%Y-%m-%d %H:%M:%S'), message['id']))
         if message['text']:
