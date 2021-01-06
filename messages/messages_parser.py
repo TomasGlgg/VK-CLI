@@ -8,7 +8,7 @@ def _get_profile_name(response, id):
             if profile['id'] == id:
                 return '{} {} ({})'.format(profile['first_name'], profile['last_name'], id)
     else:
-        for group in response['group']:
+        for group in response['groups']:
             if group['id'] == id:
                 return '{} ({})'.format(group['name'], id)
 
@@ -109,11 +109,23 @@ def _print_reply_message(message, messages_details, offset=1):
     print(' '*offset, '---------- №{} - {}'.format(message['id'], date.strftime('%Y-%m-%d %H:%M:%S')), sep='')
     print(' '*offset, 'Пишет: ', colored(_get_profile_name(messages_details, message['from_id']), 'blue'), sep='')
     print(' '*offset, 'Сообщение:', sep='')
-    for line in message['text'].split('\n'):
-        print(' '*offset, '|', line, sep='')
+    if '\n' in message['text']:
+        for line in message['text'].split('\n'):
+            print(' '*offset, '|', line, sep='')
+    else:
+        print(' '*offset, message['text'], sep='')
     if 'reply_message' in message:
-        print(' '*offset, 'Пересланное сообщение:', sep='')
-        _print_reply_message(message['reply_message'], messages_details, offset+1)
+        if message['reply_message'] is list:
+            for i, reply_message in enumerate(message['reply_message']):
+                print(' ' * offset, 'Пересланное сообщение №{}:'.format(i), sep='')
+                _print_reply_message(reply_message, messages_details, offset + 1)
+        else:
+            print(' '*offset, 'Пересланное сообщение:', sep='')
+            _print_reply_message(message['reply_message'], messages_details, offset+1)
+
+
+def _print_fwd_messages(fwd_messages, messages_details):
+    pass
 
 
 def print_messages_details(api, message_ids):
@@ -123,10 +135,21 @@ def print_messages_details(api, message_ids):
             date = datetime.fromtimestamp(message['date'])
             print(
                 '---------- Чат: №{} - {}'.format(message['peer_id'] - 2000000000, date.strftime('%Y-%m-%d %H:%M:%S')))
-            print('Пишет:', colored(_get_profile_name(messages_details, message['from_id']), 'blue'))
-        print('Сообщение:', message['text'])
+        print('Пишет:', colored(_get_profile_name(messages_details, message['from_id']), 'blue'))
+        print('Диалог с:', colored(_get_profile_name(messages_details, message['peer_id']), 'blue'))
+        print('Сообщение:')
+        if '\n' in message['text']:
+            for line in message['text'].split('\n'):
+                print('|', line, sep='')
+        else:
+            print(message['text'], sep='')
         if 'reply_message' in message:
-            print('Пересланное сообщение:')
-            _print_reply_message(message['reply_message'], messages_details)
+            if message['reply_message'] is list:
+                for i, reply_message in enumerate(message['reply_message']):
+                    print('Пересланное сообщение №{}:'.format(i))
+                    _print_reply_message(reply_message, messages_details)
+            else:
+                print('Пересланное сообщение:', sep='')
+                _print_reply_message(message['reply_message'], messages_details)
 
 
