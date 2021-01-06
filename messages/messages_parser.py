@@ -27,6 +27,8 @@ class Private_messages_parser:
             print('Сообщение', colored('(Вы):', 'green'), end='')
         else:
             print('Сообщение', colored('(Собеседник):', 'blue'), end='')
+        if '\n' in message['text']:
+            print()
         if message['text']:
             print(message['text'])
         else:
@@ -62,6 +64,8 @@ class Chat_messages_parser:
             print('Сообщение', colored('(Вы):', 'green'), end=' ')
         else:
             print('Сообщение от', colored(_get_profile_name(messages, message['from_id']), 'red') + ':', end=' ')
+        if '\n' in message['text']:
+            print()
         if message['text']:
             print(message['text'])
         else:
@@ -97,6 +101,8 @@ class Group_messages_parser:
             print('Сообщение', colored('(Вы):', 'green'), end='')
         else:
             print('Сообщение', colored('(Собеседник):', 'blue'), end='')
+        if '\n' in message['text']:
+            print()
         if message['text']:
             print(message['text'])
         else:
