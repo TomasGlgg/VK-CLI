@@ -8,9 +8,8 @@ def _get_profile_name(response, id):
             if profile['id'] == id:
                 return '{} {} ({})'.format(profile['first_name'], profile['last_name'], id)
     else:
-        id = abs(id)
         for group in response['groups']:
-            if group['id'] == id:
+            if group['id'] == abs(id):
                 return '{} ({})'.format(group['name'], id)
 
 
