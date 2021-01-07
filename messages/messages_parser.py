@@ -127,12 +127,13 @@ def _print_reply_message(message, messages_details, offset=1):
     date = datetime.fromtimestamp(message['date'])
     print(' '*offset, '---------- №{} - {}'.format(message['id'], date.strftime('%Y-%m-%d %H:%M:%S')), sep='')
     print(' '*offset, 'Пишет: ', colored(_get_profile_name(messages_details, message['from_id']), 'blue'), sep='')
-    print(' '*offset, 'Сообщение:', sep='')
+    print(' '*offset, 'Сообщение:', sep='', end=' ')
     if '\n' in message['text']:
+        print()
         for line in message['text'].split('\n'):
             print(' '*offset, '|', line, sep='')
     else:
-        print(' '*offset, message['text'], sep='')
+        print(message['text'], sep='')
     if 'reply_message' in message:
         if message['reply_message'] is list:
             for i, reply_message in enumerate(message['reply_message']):
@@ -156,8 +157,9 @@ def print_message_details(api, message_ids):
                 '---------- Чат: №{} - {}'.format(message['peer_id'] - 2000000000, date.strftime('%Y-%m-%d %H:%M:%S')))
         print('Пишет:', colored(_get_profile_name(messages_details, message['from_id']), 'blue'))
         print('Диалог с:', colored(_get_profile_name(messages_details, message['peer_id']), 'blue'))
-        print('Сообщение:')
+        print('Сообщение:', end='')
         if '\n' in message['text']:
+            print()
             for line in message['text'].split('\n'):
                 print('|', line, sep='')
         else:
