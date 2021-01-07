@@ -7,7 +7,7 @@ import os
 
 from conversations_parser import Parser
 from longpoll.profile_events import Profile_events
-from messages import Private_dialog, Chat_dialog, Group_dialog, print_message_details
+from messages import Private_dialog, Chat_dialog, Group_dialog, Message_details
 from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
 
@@ -130,7 +130,8 @@ class Profile(Cmd):
     @Wrapper_cmd_line_arg_parser(parser=__message_details_parser)
     def do_message_details(self, argv):
         message_ids = argv.ids
-        print_message_details(self.api, message_ids)
+        message_details = Message_details(self.api)
+        message_details.print_message_details(message_ids)
 
     @staticmethod
     def do_clear(_):
