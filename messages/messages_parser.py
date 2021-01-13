@@ -121,7 +121,7 @@ class Group_messages_parser(Messages_parser):
 class Message_details(Messages_parser):
     def _print_reply_message(self, message, messages_details, offset=1):
         date = datetime.fromtimestamp(message['date'])
-        print(' ' * offset, '---------- №{} - {}'.format(message['id'], date.strftime('%Y-%m-%d %H:%M:%S')), sep='')
+        print(' ' * offset, '---------- {}'.format(date.strftime('%Y-%m-%d %H:%M:%S')), sep='')
         print(' ' * offset, 'Пишет: ', colored(self._get_profile_name(messages_details, message['from_id']), 'blue'), sep='')
         print(' ' * offset, 'Сообщение:', sep='', end=' ')
         if '\n' in message['text']:
