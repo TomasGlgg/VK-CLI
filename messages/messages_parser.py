@@ -140,7 +140,7 @@ class Message_details(Messages_parser):
                 self._print_reply_message(message['reply_message'], messages_details, offset + 1)
 
     def _print_fwd_messages(self, fwd_messages, messages_details):
-        print(colored('Скрипт пока не умеет работать с такими типами сообщений :(', 'red'))
+        print(colored('Скрипт пока не умеет работать с такими типами сообщений :(', 'red'))  # TODO
 
     def print_message_details(self, message_ids):
         messages_details = self.api.messages.getById(message_ids=message_ids, extended=True, v=self.api.VK_API_VERSION)
@@ -162,3 +162,6 @@ class Message_details(Messages_parser):
             if 'reply_message' in message:
                 print('Ответ на сообщение:', sep='')
                 self._print_reply_message(message['reply_message'], messages_details)
+            if 'fwd_messages' in message:
+                print('Пересланные сообщения:')
+                self._print_fwd_messages(message['fwd_messages'], messages_details)
