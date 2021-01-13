@@ -69,7 +69,7 @@ class Profile_events:
             print(colored('От', 'red'), '- ', end='')
 
         if event.from_user:
-            print(self._get_cache_user(event))
+            print(self._get_cache_user(event), end=' ')
         elif event.from_chat:
             if not event.from_me:
                 print(colored(self._get_cache_user(event), 'blue'), end=' ')
