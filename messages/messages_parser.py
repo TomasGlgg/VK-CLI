@@ -140,7 +140,7 @@ class Message_details(Messages_parser):
                 self._print_reply_message(message['reply_message'], messages_details, offset + 1)
 
     def _print_fwd_messages(self, fwd_messages, messages_details):
-        pass
+        raise
 
     def print_message_details(self, message_ids):
         messages_details = self.api.messages.getById(message_ids=message_ids, extended=True, v=self.api.VK_API_VERSION)

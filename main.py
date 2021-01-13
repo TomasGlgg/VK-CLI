@@ -44,12 +44,12 @@ class VKLogin(Cmd):
     def do_delete(self, argv):
         """
         Удалить токен из списка
-        usage: delete <токен>
+        usage: delete <id>
         """
         if len(argv.split()) != 1:
             print(colored("Неправильное количество аргументов", 'red'))
             return
-        self.tokens.remove(argv.split()[0])
+        self.tokens.pop(int(argv.split()[0]))
 
     def do_list(self, _):
         """
