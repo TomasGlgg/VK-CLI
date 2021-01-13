@@ -77,7 +77,9 @@ class VKLogin(Cmd):
         token = self.tokens[token_id]
         profile = Profile()
         profile.load_token(token)
-        profile.auth()
+        if not profile.auth():
+            print(colored('Ошибка аутентификации', 'red'))
+            return
         profile.setup()  # setup settings (banner, prompt)
         try:
             profile.cmdloop()

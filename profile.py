@@ -50,6 +50,11 @@ class Profile(Cmd):
         self.api.VK_API_VERSION = 5.139
         self.alternative_api = vk_api.VkApi(token=self.token)
         self.parser = Parser(self.api)
+        try:
+            self.api.account.getInfo(v=self.api.VK_API_VERSION)  # test token
+        except vk.exceptions.VkAPIError:
+            return False
+        return True
 
     def setup(self):
         self.profile_info = self.api.account.getProfileInfo(v=self.api.VK_API_VERSION)
