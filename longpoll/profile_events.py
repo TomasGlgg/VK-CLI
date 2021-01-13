@@ -69,7 +69,7 @@ class Profile_events:
             print(colored('От', 'red'), '- ', end='')
 
         if event.from_user:
-            print(self._get_cache_user(event), end=' ')
+            print(colored(self._get_cache_user(event), 'blue'), end=' ')
         elif event.from_chat:
             if not event.from_me:
                 print(colored(self._get_cache_user(event), 'blue'), end=' ')
@@ -94,7 +94,7 @@ class Profile_events:
                 self._print_text_message(event)
             elif event.type == VkEventType.USER_TYPING and show_typing:
                 print('Печатает:', end=' ')
-                print(self._get_cache_user(event, case=0))  # case - nom
+                print(colored(self._get_cache_user(event, case=0), 'blue'))  # case - nom
             elif event.type == VkEventType.USER_ONLINE and line:
                 print(self._get_cache_user(event, case=0), 'теперь online')
             elif event.type == VkEventType.USER_OFFLINE and line:
