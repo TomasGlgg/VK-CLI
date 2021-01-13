@@ -1,12 +1,17 @@
 from cmd import Cmd
 from os import listdir, system
 from termcolor import colored
+import argparse
 
 from profile import Profile
+from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
 
 class VKLogin(Cmd):
     tokens = []
+
+    __auth_parser = argparse.ArgumentParser(prog='auth', description='Авторизоваться')
+    __auth_parser.add_argument('id', metavar='ID', type=int, help='ID токена')
 
     def preloop(self):
         Cmd.preloop(self)
@@ -59,18 +64,9 @@ class VKLogin(Cmd):
         for i, token in enumerate(self.tokens):
             print(i, token[:10] + '...')
 
+    @Wrapper_cmd_line_arg_parser(parser=__auth_parser)
     def do_auth(self, argv):
-        """
-        Аутентификация по токену
-        usage: auth <id токена>
-        """
-        if len(argv.split()) != 1:
-            print(colored("Неправильное количество аргументов", 'red'))
-            return
-        if not argv.split()[0].isdigit():
-            print(colored('Неверный аргумент', 'red'))
-            return
-        token_id = int(argv.split()[0])
+        token_id = argv.id
         if token_id > len(self.tokens):
             print(colored('Токен не найден', 'red'))
             return
