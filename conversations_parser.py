@@ -19,12 +19,10 @@ class Parser:
 
     @staticmethod
     def _find_profile(conversations, peer_id, key='profiles'):
-        peer_info = None
         for profile in conversations[key]:
-            if profile['id'] == peer_id:
+            if profile['id'] == abs(peer_id):
                 return profile
-        if peer_info is None:
-            raise LookupError('Неизвестная ошибка')
+        raise LookupError('Неизвестная ошибка')
 
     def _print_private_message(self, conversations, i):
         conversation = conversations['items'][i]
