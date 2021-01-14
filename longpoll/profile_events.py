@@ -83,11 +83,17 @@ class Profile_events:
         print('- №' + str(event.message_id))
         self._print_text_message(event)
 
-    def start(self, show_typing, line):
+    def _mark_as_read(self, message_id, peer_id):
+        self.api.messages.markAsRead(start_message_id=message_id, peer_id=peer_id, mark_conversation_as_read=True,
+                                     v=self.api.VK_API_VERSION)
+
+    def start(self, show_typing, line, mark_as_read):
         print('Получаем события... Для отмены нажмите Ctrl + c')
         for event in self.longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW:
                 self._print_message(event)
+                if mark_as_read:
+                    self._mark_as_read(event.message_id, event.peer_id)
             elif event.type == VkEventType.MESSAGE_EDIT:
                 print('----------', colored('Сообщение изменено:', 'cyan'))
                 print('Номер сообщения: №' + str(event.message_id))

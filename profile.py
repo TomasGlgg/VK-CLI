@@ -27,6 +27,8 @@ class Profile(Cmd):
     __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
     __online_parser.add_argument('-l', '--line', dest='line', action='store_true',
                                  help='Показывать вход/выход в online')
+    __online_parser.add_argument('-r', '--read', dest='read', action='store_true',
+                                 help='Помечать сообщения как прочитанные')
 
     __dialogs_parser = argparse.ArgumentParser(prog='dialogs', description='Вывести все диалоги')
     __dialogs_parser.add_argument('count', metavar='COUNT', type=int, nargs='?',
@@ -131,7 +133,7 @@ class Profile(Cmd):
     def do_online(self, argv):
         events = Profile_events(self.api, self.alternative_api)
         try:
-            events.start(argv.typing, argv.line)
+            events.start(argv.typing, argv.line, argv.read)
         except KeyboardInterrupt:
             print('\nKeyboardInterrupt, выход')
 

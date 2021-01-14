@@ -10,6 +10,8 @@ from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 class Chat_dialog(Dialog):
     __online_parser = ArgumentParser(prog='online', description='Вывод сообщений в реальном времени')
     __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
+    __online_parser.add_argument('-r', '--read', dest='read', action='store_true',
+                                 help='Помечать сообщения как прочитанные')
 
     __read_parser = ArgumentParser(prog='read', description='Прочитать сообщения диалога')
     __read_parser.add_argument('count', metavar='COUNT', type=int, nargs='?',
@@ -36,6 +38,6 @@ class Chat_dialog(Dialog):
     def do_online(self, argv):
         events = Chat_dialog_events(self.api, self.alternative_api)
         try:
-            events.start(argv.typing, self.chat_id)
+            events.start(self.chat_id, argv.typing, argv.read)
         except KeyboardInterrupt:
             print('\nKeyboardInterrupt, выход')
