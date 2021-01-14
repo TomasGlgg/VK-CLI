@@ -102,7 +102,6 @@ class Profile(Cmd):
             if conversation_id is None:
                 print(colored('Ошибка', 'red'))
 
-
         if conversation_id < 0:  # group
             group_dialog = Group_dialog()
             group_dialog.setup(self.api, self.alternative_api, self.profile_info, conversation_id)
