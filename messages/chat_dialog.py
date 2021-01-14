@@ -12,6 +12,8 @@ class Chat_dialog(Dialog):
     __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
     __online_parser.add_argument('-r', '--read', dest='read', action='store_true',
                                  help='Помечать сообщения как прочитанные')
+    __online_parser.add_argument('-s', '--sound', dest='sound', action='store_true',
+                                 help='Воспроизводить звук сообщения')
 
     __read_parser = ArgumentParser(prog='read', description='Прочитать сообщения диалога')
     __read_parser.add_argument('count', metavar='COUNT', type=int, nargs='?',
@@ -38,6 +40,6 @@ class Chat_dialog(Dialog):
     def do_online(self, argv):
         events = Chat_dialog_events(self.api, self.alternative_api)
         try:
-            events.start(self.chat_id, argv.typing, argv.read)
+            events.start(self.chat_id, argv.typing, argv.read, argv.sound)
         except KeyboardInterrupt:
             print('\nKeyboardInterrupt, выход')

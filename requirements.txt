@@ -2,3 +2,4 @@ vk
 vk_api
 requests
 termcolor
+playsound

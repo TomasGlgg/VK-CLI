@@ -2,6 +2,7 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 from termcolor import colored
 from json import loads
 from datetime import datetime
+from playsound import playsound
 
 
 class Profile_events:
@@ -87,11 +88,13 @@ class Profile_events:
         self.api.messages.markAsRead(start_message_id=message_id, peer_id=peer_id, mark_conversation_as_read=True,
                                      v=self.api.VK_API_VERSION)
 
-    def start(self, show_typing, line, mark_as_read):
+    def start(self, show_typing, line, mark_as_read, play_sound):
         print('Получаем события... Для отмены нажмите Ctrl + c')
         for event in self.longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW:
                 self._print_message(event)
+                if play_sound and event.to_me:
+                    playsound('new_message.mp3')
                 if mark_as_read:
                     self._mark_as_read(event.message_id, event.peer_id)
             elif event.type == VkEventType.MESSAGE_EDIT:
