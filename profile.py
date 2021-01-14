@@ -74,11 +74,17 @@ class Profile(Cmd):
 
     @Wrapper_cmd_line_arg_parser(parser=__dialogs_parser)
     def do_dialogs(self, argv):
-        self.parser.print_conversations(argv.count)
+        count = argv.count
+        if count > 100:
+            count = 100
+        self.parser.print_conversations(count)
 
     @Wrapper_cmd_line_arg_parser(parser=__unread_parser)
     def do_unread(self, argv):
-        self.parser.print_conversations(argv.count, filter='unread')
+        count = argv.count
+        if count > 100:
+            count = 100
+        self.parser.print_conversations(count, filter='unread')
 
     @Wrapper_cmd_line_arg_parser(parser=__select_parser)
     def do_select(self, argv):
@@ -136,7 +142,10 @@ class Profile(Cmd):
     def do_message_details(self, argv):
         message_ids = argv.ids
         message_details = Message_details(self.api)
-        message_details.print_message_details(message_ids)
+        try:
+            message_details.print_message_details(message_ids)
+        except vk.exceptions.VkAPIError:
+            print(colored('Ошибка', 'red'))
 
     @staticmethod
     def do_clear(_):
