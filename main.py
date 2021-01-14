@@ -55,6 +55,7 @@ class VKLogin(Cmd):
             print(colored("Неправильное количество аргументов", 'red'))
             return
         self.tokens.pop(int(argv.split()[0]))
+        self.save_token_list()
 
     def do_list(self, _):
         """
