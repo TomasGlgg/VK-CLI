@@ -31,15 +31,19 @@ class Private_dialog(Dialog):
         self.parser = Private_messages_parser(self.api, self.chat_id)
         fields = ['status', 'last_seen', 'online']
         self.chat_info = self.api.users.get(user_ids=[self.chat_id], fields=fields, v=self.api.VK_API_VERSION)[0]
-        last_seen = datetime.fromtimestamp(self.chat_info['last_seen']['time'])
+        if 'last_seen' in self.chat_info:
+            last_seen = datetime.fromtimestamp(self.chat_info['last_seen']['time'])
+        else:
+            last_seen = None
 
         self.intro = f'''Диалог с: {colored(self.chat_info['first_name'], 'green')} {colored(self.chat_info['last_name']
                                                                                              , 'green')}\n'''
         if self.chat_info['online'] == 1:
             self.intro += colored('Online\n', 'green')
-        else:
+        elif last_seen is not None:
             self.intro += 'Последний вход: ' + colored(last_seen.strftime('%Y-%m-%d %H:%M:%S'), 'red') + '\n'
-        self.intro += f'''Статус: {colored(self.chat_info['status'], 'cyan')}'''
+        if 'status' in self.chat_info:
+            self.intro += f'''Статус: {colored(self.chat_info['status'], 'cyan')}'''
         self.__set_prompt()
 
     def precmd(self, line: str) -> str:
