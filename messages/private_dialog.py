@@ -10,7 +10,8 @@ from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
 class Private_dialog(Dialog):
     __online_parser = ArgumentParser(prog='online', description='Вывод сообщений в реальном времени')
-    __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
+    __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true',
+                                 help='Показывать, когда собеседник печатает')
     __online_parser.add_argument('-r', '--read', dest='read', action='store_true',
                                  help='Помечать сообщения как прочитанные')
     __online_parser.add_argument('-s', '--sound', dest='sound', action='store_true',
