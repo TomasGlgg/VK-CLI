@@ -88,7 +88,9 @@ class Profile(Cmd):
 
     @Wrapper_cmd_line_arg_parser(parser=__select_parser)
     def do_select(self, argv):
-        if argv.count:
+        if argv.id:
+            conversation_id = argv.id
+        else:
             if argv.count > 100:
                 print('Слишком большое значение запроса последних диалогов')
             dialogs_id = self.parser.print_conversations_short(argv.count)
@@ -99,11 +101,7 @@ class Profile(Cmd):
             conversation_id = dialogs_id[int(answer)]
             if conversation_id is None:
                 print(colored('Ошибка', 'red'))
-        elif argv.id:
-            conversation_id = argv.id
-        else:
-            print(colored('Неверное количество аргументов', 'red'))
-            return
+
 
         if conversation_id < 0:  # group
             group_dialog = Group_dialog()
