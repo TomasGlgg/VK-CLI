@@ -12,14 +12,14 @@ class Profile_events:
         self.api = api
         self.longpoll = VkLongPoll(alternative_api)
 
-    def _get_cache_user(self, event, case=None):
+    def _get_cached_user_name(self, event, case=None):
         """
         :param case: 0 - nom username, 1 - gen username, 2 - dat username
         """
         if event.user_id not in self.users:
             if event.user_id > 0:
-                user_info = self.api.users.get(user_ids=[event.user_id], name_case='nom', v=self.api.VK_API_VERSION)
-                username_nom = user_info[0]['first_name'] + ' ' + user_info[0]['last_name']
+                user_info = self.api.users.get(user_ids=[event.user_id], name_case='nom', v=self.api.VK_API_VERSION)[0]
+                username_nom = user_info['first_name'] + ' ' + user_info['last_name']
                 user_info = self.api.users.get(user_ids=[event.user_id], name_case='gen', v=self.api.VK_API_VERSION)[0]
                 username_gen = user_info['first_name'] + ' ' + user_info['last_name']
                 user_info = self.api.users.get(user_ids=[event.user_id], name_case='dat', v=self.api.VK_API_VERSION)[0]
@@ -35,7 +35,7 @@ class Profile_events:
         else:
             return self.users[event.user_id][case]
 
-    def _get_cache_chat(self, event):
+    def _get_cached_chat_name(self, event):
         if event.chat_id not in self.chats:
             chat_info = self.api.messages.getChat(chat_id=event.chat_id, v=self.api.VK_API_VERSION)
             chat_title = chat_info['title']
@@ -44,7 +44,7 @@ class Profile_events:
         return self.chats[event.chat_id]
 
     @staticmethod
-    def _print_text_message(event):
+    def _print_text_from_message(event):
         if event.message:
             print('Текст:', event.message)
         if len(event.attachments):
@@ -70,18 +70,18 @@ class Profile_events:
             print(colored('От', 'red'), '- ', end='')
 
         if event.from_user:
-            print(colored(self._get_cache_user(event), 'blue'), end=' ')
+            print(colored(self._get_cached_user_name(event), 'blue'), end=' ')
         elif event.from_chat:
             if not event.from_me:
-                print(colored(self._get_cache_user(event), 'blue'), end=' ')
+                print(colored(self._get_cached_user_name(event), 'blue'), end=' ')
             print('в беседе', end=' ')
-            print(colored(self._get_cache_chat(event), 'blue'), end=' ')
+            print(colored(self._get_cached_chat_name(event), 'blue'), end=' ')
         elif event.from_group:
             print('группы', event.group_id, end=' ')  # TODO
 
         print('-', event.datetime, end=' ')
         print('- №' + str(event.message_id))
-        self._print_text_message(event)
+        self._print_text_from_message(event)
 
     def _mark_as_read(self, message_id, peer_id):
         self.api.messages.markAsRead(start_message_id=message_id, peer_id=peer_id, mark_conversation_as_read=True,
@@ -99,11 +99,11 @@ class Profile_events:
             elif event.type == VkEventType.MESSAGE_EDIT:
                 print('----------', colored('Сообщение изменено:', 'cyan'))
                 print('Номер сообщения: №' + str(event.message_id))
-                self._print_text_message(event)
+                self._print_text_from_message(event)
             elif event.type == VkEventType.USER_TYPING and show_typing:
                 print('Печатает:', end=' ')
-                print(colored(self._get_cache_user(event, case=0), 'blue'))  # case - nom
+                print(colored(self._get_cached_user_name(event, case=0), 'blue'))  # case - nom
             elif event.type == VkEventType.USER_ONLINE and line:
-                print(self._get_cache_user(event, case=0), 'теперь online')
+                print(self._get_cached_user_name(event, case=0), 'теперь online')
             elif event.type == VkEventType.USER_OFFLINE and line:
-                print(self._get_cache_user(event, case=0), 'ушел в offline')
+                print(self._get_cached_user_name(event, case=0), 'ушел в offline')

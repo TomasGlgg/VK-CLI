@@ -2,15 +2,6 @@ from termcolor import colored
 from datetime import datetime
 
 
-def _print_message(message):
-    if message['text']:
-        print(message['text'])
-    if len(message['attachments']):
-        for attachment in message['attachments']:
-            print('Дополнительно:', colored(attachment['type'], 'cyan'), end=' ')
-        print()
-
-
 class Parser:
     api = None
 
@@ -24,6 +15,15 @@ class Parser:
                 return profile
         raise LookupError('Неизвестная ошибка')
 
+    @staticmethod
+    def _print_message(message):
+        if message['text']:
+            print(message['text'])
+        if len(message['attachments']):
+            for attachment in message['attachments']:
+                print('Дополнительно:', colored(attachment['type'], 'cyan'), end=' ')
+            print()
+
     def _print_private_message(self, conversations, i):
         conversation = conversations['items'][i]
         peer_id = conversation['conversation']['peer']['id']
@@ -36,7 +36,7 @@ class Parser:
             print('Сообщение', colored('(Вы)' + ':', 'green'), end=' ')
         else:
             print('Сообщение', colored('(Собеседник)', 'blue') + ':', end=' ')
-        _print_message(conversation['last_message'])
+        self._print_message(conversation['last_message'])
 
     def _print_chat_message(self, conversations, i):
         conversation = conversations['items'][i]
@@ -56,7 +56,7 @@ class Parser:
         print(date.strftime('%Y-%m-%d %H:%M:%S'))
         if conversation['last_message']['text']:
             print('Собщение:', end=' ')
-        _print_message(conversation['last_message'])
+        self._print_message(conversation['last_message'])
 
     def _print_group_message(self, conversations, i):
         conversation = conversations['items'][i]
@@ -69,7 +69,7 @@ class Parser:
             print('Сообщение', colored('(Вы)' + ':', 'green'), end=' ')
         else:
             print('Сообщение', colored('(Группа)', 'blue') + ':', end=' ')
-        _print_message(conversation['last_message'])
+        self._print_message(conversation['last_message'])
 
     def print_conversations_short(self, count):
         dialogs_ids = []

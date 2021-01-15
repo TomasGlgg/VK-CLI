@@ -17,7 +17,7 @@ class Private_dialog_events(Profile_events):
             elif event.type == VkEventType.MESSAGE_EDIT and event.peer_id == peer_id:
                 print('---------- Сообщение изменено:')
                 print('Номер сообщения: №' + str(event.message_id))
-                self._print_text_message(event)
+                self._print_text_from_message(event)
             elif event.type == VkEventType.USER_TYPING and show_typing and event.peer_id == peer_id:
                 print('Собеседник печатает...')
 
