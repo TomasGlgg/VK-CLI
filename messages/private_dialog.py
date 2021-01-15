@@ -1,6 +1,7 @@
 from datetime import datetime
 from termcolor import colored
 from argparse import ArgumentParser
+from requests.exceptions import ReadTimeout
 
 from messages.messages_parser import Private_messages_parser
 from messages.dialog import Dialog
@@ -64,7 +65,11 @@ class Private_dialog(Dialog):
     @Wrapper_cmd_line_arg_parser(parser=__online_parser)
     def do_online(self, argv):
         events = Private_dialog_events(self.api, self.alternative_api)
-        try:
-            events.start(self.chat_id, argv.typing, argv.read, argv.sound)
-        except KeyboardInterrupt:
-            print('\nKeyboardInterrupt, выход')
+        while True:
+            try:
+                events.start(self.chat_id, argv.typing, argv.read, argv.sound)
+            except KeyboardInterrupt:
+                print('\nKeyboardInterrupt, выход')
+            except ReadTimeout:
+                continue
+            return

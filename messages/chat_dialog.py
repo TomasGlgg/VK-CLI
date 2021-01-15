@@ -1,6 +1,7 @@
 from messages.dialog import Dialog
 from termcolor import colored
 from argparse import ArgumentParser
+from requests.exceptions import ReadTimeout
 
 from messages.messages_parser import Chat_messages_parser
 from longpoll.chat_dialog_events import Chat_dialog_events
@@ -39,7 +40,11 @@ class Chat_dialog(Dialog):
     @Wrapper_cmd_line_arg_parser(parser=__online_parser)
     def do_online(self, argv):
         events = Chat_dialog_events(self.api, self.alternative_api)
-        try:
-            events.start(self.chat_id, argv.typing, argv.read, argv.sound)
-        except KeyboardInterrupt:
-            print('\nKeyboardInterrupt, выход')
+        while True:
+            try:
+                events.start(self.chat_id, argv.typing, argv.read, argv.sound)
+            except KeyboardInterrupt:
+                print('\nKeyboardInterrupt, выход')
+            except ReadTimeout:
+                continue
+            return
