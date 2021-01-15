@@ -1,7 +1,6 @@
 from vk_api.longpoll import VkLongPoll, VkEventType
 from termcolor import colored
 from json import loads
-from datetime import datetime
 from playsound import playsound
 
 
@@ -80,8 +79,7 @@ class Profile_events:
         elif event.from_group:
             print('группы', event.group_id, end=' ')  # TODO
 
-        last_seen = datetime.fromtimestamp(event.timestamp)
-        print('-', last_seen.strftime('%H:%M:%S'), end=' ')
+        print('-', event.datetime, end=' ')
         print('- №' + str(event.message_id))
         self._print_text_message(event)
 
