@@ -27,7 +27,8 @@ class Profile_events:
                 username_dat = user_info['first_name'] + ' ' + user_info['last_name']
                 self.users[event.user_id] = [username_nom, username_gen, username_dat]
             else:
-                group_name = self.api.groups.getById(group_ids=abs(event.user_id), v=self.api.VK_API_VERSION)[0]['name']
+                group_name = self.api.groups.getById(group_ids=abs(event.user_id),
+                                                     v=self.api.VK_API_VERSION)['groups'][0]['name']
                 self.users[event.user_id] = [group_name, group_name, group_name]
 
         if case is None:
