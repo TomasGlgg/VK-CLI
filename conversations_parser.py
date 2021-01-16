@@ -98,7 +98,7 @@ class Parser:
     def print_conversations(self, count, filter='all'):
         conversations = self.api.messages.getConversations(count=count, filter=filter,
                                                            v=self.api.VK_API_VERSION, extended=True)
-        for i in range(count):
+        for i in range(conversations['count']):
             if conversations['items'][i]['conversation']['peer']['type'] == 'user':
                 self._print_private_message(conversations, i)
             elif conversations['items'][i]['conversation']['peer']['type'] == 'chat':
