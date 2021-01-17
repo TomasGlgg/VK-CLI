@@ -24,8 +24,7 @@ class Parser:
                 print('Дополнительно:', colored(attachment['type'], 'cyan'), end=' ')
             print()
 
-    def _print_private_message(self, conversations, i):
-        conversation = conversations['items'][i]
+    def _print_private_message(self, conversations, conversation):
         peer_id = conversation['conversation']['peer']['id']
         peer_info = self._find_profile(conversations, peer_id)
         print('-' * 10, '{} {} ({})'.format(colored(peer_info['first_name'], 'blue'),
@@ -38,8 +37,7 @@ class Parser:
             print('Сообщение', colored('(Собеседник)', 'blue') + ':', end=' ')
         self._print_message(conversation['last_message'])
 
-    def _print_chat_message(self, conversations, i):
-        conversation = conversations['items'][i]
+    def _print_chat_message(self, conversations, conversation):
         title = colored(conversation['conversation']['chat_settings']['title'], 'blue')
         chat_id = conversation['conversation']['peer']['id']
         last_peer = conversation['last_message']['from_id']
@@ -58,8 +56,7 @@ class Parser:
             print('Собщение:', end=' ')
         self._print_message(conversation['last_message'])
 
-    def _print_group_message(self, conversations, i):
-        conversation = conversations['items'][i]
+    def _print_group_message(self, conversations, conversation):
         group_id = conversation['conversation']['peer']['local_id']
         group_info = self._find_profile(conversations, group_id, key='groups')
         print('-' * 10, '{} ({})'.format(colored(group_info['name'], 'blue'), group_id))
@@ -98,12 +95,12 @@ class Parser:
     def print_conversations(self, count, filter='all'):
         conversations = self.api.messages.getConversations(count=count, filter=filter,
                                                            v=self.api.VK_API_VERSION, extended=True)
-        for i in range(conversations['count']):
-            if conversations['items'][i]['conversation']['peer']['type'] == 'user':
-                self._print_private_message(conversations, i)
-            elif conversations['items'][i]['conversation']['peer']['type'] == 'chat':
-                self._print_chat_message(conversations, i)
-            elif conversations['items'][i]['conversation']['peer']['type'] == 'group':
-                self._print_group_message(conversations, i)
+        for conversation in conversations['items']:
+            if conversation['conversation']['peer']['type'] == 'user':
+                self._print_private_message(conversations, conversation)
+            elif conversation['conversation']['peer']['type'] == 'chat':
+                self._print_chat_message(conversations, conversation)
+            elif conversation['conversation']['peer']['type'] == 'group':
+                self._print_group_message(conversations, conversation)
             else:
-                print('--------\nPeer', conversations['items'][i]['conversation']['peer']['type'], 'is not recognized')
+                print('--------\nPeer', conversation['conversation']['peer']['type'], 'is not recognized')
