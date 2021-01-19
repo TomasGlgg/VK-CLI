@@ -5,7 +5,7 @@ from longpoll.profile_events import Profile_events
 
 
 class Private_dialog_events(Profile_events):
-    def start(self, peer_id, show_typing, mark_as_read, play_sound):
+    def _start(self, peer_id, show_typing, mark_as_read, play_sound):
         print('Получаем события... Для отмены нажмите Ctrl + c')
         for event in self.longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW and event.peer_id == peer_id:

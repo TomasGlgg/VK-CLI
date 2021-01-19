@@ -4,7 +4,6 @@ import vk_api
 from termcolor import colored
 import argparse
 import os
-from requests.exceptions import ReadTimeout
 
 from conversations_parser import Parser
 from longpoll.profile_events import Profile_events
@@ -135,14 +134,7 @@ class Profile(Cmd):
     @Wrapper_cmd_line_arg_parser(parser=__online_parser)
     def do_online(self, argv):
         events = Profile_events(self.api, self.alternative_api)
-        while True:
-            try:
-                events.start(argv.typing, argv.line, argv.read, argv.sound)
-            except KeyboardInterrupt:
-                print('\nKeyboardInterrupt, выход')
-            except ReadTimeout:
-                continue
-            return
+        events.start(argv.typing, argv.line, argv.read, argv.sound)
 
     @Wrapper_cmd_line_arg_parser(parser=__message_details_parser)
     def do_message_details(self, argv):

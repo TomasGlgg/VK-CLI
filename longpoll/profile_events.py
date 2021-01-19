@@ -2,6 +2,7 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 from termcolor import colored
 from json import loads
 from playsound import playsound
+from requests.exceptions import ReadTimeout
 
 
 class Profile_events:
@@ -87,8 +88,7 @@ class Profile_events:
         self.api.messages.markAsRead(start_message_id=message_id, peer_id=peer_id, mark_conversation_as_read=True,
                                      v=self.api.VK_API_VERSION)
 
-    def start(self, show_typing, line, mark_as_read, play_sound):
-        print('Получаем события... Для отмены нажмите Ctrl + c')
+    def _start(self, show_typing, line, mark_as_read, play_sound):
         for event in self.longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW:
                 self._print_message(event)
@@ -107,3 +107,14 @@ class Profile_events:
                 print(self._get_cached_user_name(event, case=0), 'теперь online')
             elif event.type == VkEventType.USER_OFFLINE and line:
                 print(self._get_cached_user_name(event, case=0), 'ушел в offline')
+
+    def start(self, *args):
+        print('Получаем события... Для отмены нажмите Ctrl + c')
+        while True:
+            try:
+                self._start(*args)
+            except ReadTimeout:
+                print('Разрыв связи, переподключение..')
+            except KeyboardInterrupt:
+                print('\nKeyboardInterrupt, выход')
+                return

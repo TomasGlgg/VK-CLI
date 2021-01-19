@@ -17,7 +17,7 @@ class Chat_dialog_events(Profile_events):
         print('- №' + str(event.message_id))
         self._print_text_from_message(event)
 
-    def start(self, chat_id, show_typing, mark_as_read, play_sound):
+    def _start(self, chat_id, show_typing, mark_as_read, play_sound):
         if chat_id >= 2000000000:
             chat_id -= 2000000000
         print('Получаем события... Для отмены нажмите Ctrl + c')
