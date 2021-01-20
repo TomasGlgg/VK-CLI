@@ -1,6 +1,7 @@
 from vk_api.longpoll import VkEventType
 from termcolor import colored
 from playsound import playsound
+from datetime import datetime
 
 from longpoll.profile_events import Profile_events
 
@@ -13,7 +14,8 @@ class Chat_dialog_events(Profile_events):
         elif event.to_me:
             print(colored('От', 'red'), '- ', end='')
             self._get_cached_user_name(event)
-        print(event.datetime, end=' ')
+        date = datetime.fromtimestamp(event.timestamp)
+        print(date.strftime('%H:%M:%S'), end=' ')
         print('- №' + str(event.message_id))
         self._print_text_from_message(event)
 

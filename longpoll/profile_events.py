@@ -3,6 +3,7 @@ from termcolor import colored
 from json import loads
 from playsound import playsound
 from requests.exceptions import ReadTimeout
+from datetime import datetime
 
 
 class Profile_events:
@@ -80,7 +81,8 @@ class Profile_events:
         elif event.from_group:
             print('группы', event.group_id, end=' ')  # TODO
 
-        print('-', event.datetime, end=' ')
+        date = datetime.fromtimestamp(event.timestamp)
+        print('-', date.strftime('%Y-%m-%d %H:%M:%S'), end=' ')
         print('- №' + str(event.message_id))
         self._print_text_from_message(event)
 
