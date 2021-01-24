@@ -68,7 +68,7 @@ class VKLogin(Cmd):
     @Wrapper_cmd_line_arg_parser(parser=__auth_parser)
     def do_auth(self, argv):
         token_id = argv.id
-        if token_id > len(self.tokens):
+        if token_id+1 > len(self.tokens):
             print(colored('Токен не найден', 'red'))
             return
         token = self.tokens[token_id]
