@@ -67,7 +67,9 @@ class Profile(Cmd):
         self.prompt = '({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'])
         # setup banner
         self.intro = f"{colored(self.profile_info['first_name'], 'green')} "
-        self.intro += f"{colored(self.profile_info['last_name'], 'green')} ({self.profile_info['screen_name']}) "
+        self.intro += f"{colored(self.profile_info['last_name'], 'green')} "
+        if 'screen_name' in self.profile_info:
+            self.intro += f"({self.profile_info['screen_name']})"
         self.intro += f"- id{self.profile_info['id']}\n"
         self.intro += f"Дата рождения: {colored(self.profile_info['bdate'], 'red')}\n"
         if 'phone' in self.profile_info:
