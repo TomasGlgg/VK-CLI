@@ -9,6 +9,7 @@ from datetime import datetime
 class Profile_events:
     users = {}
     chats = {}
+    groups = {}
 
     def __init__(self, api, alternative_api):
         self.api = api
@@ -45,6 +46,15 @@ class Profile_events:
 
         return self.chats[event.chat_id]
 
+    def _get_cached_group_name(self, event):
+        group_id = abs(event.peer_id)
+        if group_id not in self.groups:
+            group_info = self.api.groups.getById(group_ids=[group_id], v=self.api.VK_API_VERSION)
+            group_name = group_info['groups'][0]['name']
+            self.groups[group_id] = group_name
+
+        return self.groups[group_id]
+
     @staticmethod
     def _print_text_from_message(event):
         if event.message:
@@ -79,7 +89,7 @@ class Profile_events:
             print('в беседе', end=' ')
             print(colored(self._get_cached_chat_name(event), 'blue'), end=' ')
         elif event.from_group:
-            print('группы', event.group_id, end=' ')  # TODO
+            print('группы', colored(self._get_cached_group_name(event), 'blue'), end=' ')
 
         date = datetime.fromtimestamp(event.timestamp)
         print('-', date.strftime('%Y-%m-%d %H:%M:%S'), end=' ')
