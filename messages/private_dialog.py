@@ -16,6 +16,7 @@ class Private_dialog(Dialog):
                                  help='Помечать сообщения как прочитанные')
     __online_parser.add_argument('-s', '--sound', dest='sound', action='store_true',
                                  help='Воспроизводить звук сообщения')
+    __online_parser.add_argument('-d', '--dump', metavar='FILENAME', help='Сохранять диалог в файл')
 
     __read_parser = ArgumentParser(prog='read', description='Прочитать сообщения диалога')
     __read_parser.add_argument('count', metavar='COUNT', type=int, nargs='?',
@@ -64,4 +65,4 @@ class Private_dialog(Dialog):
     @Wrapper_cmd_line_arg_parser(parser=__online_parser)
     def do_online(self, argv):
         events = Private_dialog_events(self.api, self.alternative_api)
-        events.start(self.chat_id, argv.typing, argv.read, argv.sound)
+        events.start(self.chat_id, self.profile_info['id'], argv.typing, argv.read, argv.sound, argv.dump)
