@@ -1,6 +1,5 @@
 from termcolor import colored
 from argparse import ArgumentParser
-from requests.exceptions import ReadTimeout
 
 from longpoll.private_dialog_events import Private_dialog_events
 from messages.messages_parser import Group_messages_parser

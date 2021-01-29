@@ -1,7 +1,6 @@
 from datetime import datetime
 from termcolor import colored
 from argparse import ArgumentParser
-from requests.exceptions import ReadTimeout
 
 from messages.messages_parser import Private_messages_parser
 from messages.dialog import Dialog
