@@ -12,7 +12,8 @@ class Private_dialog_events(Profile_events):
         else:
             online = self.api.users.get(user_ids=[profile_id], fields=['online'],
                                         v=self.api.VK_API_VERSION)[0]['online']
-        dump_string = '{} {} {} {}\n'.format(event.timestamp, int(event.from_me), online, event.text)
+        dump_string = '{} {} {} {} {}\n'.format(event.timestamp, int(event.from_me), online, len(event.text),
+                                                event.text)
         file = open(filename, 'a')  # append dump string
         file.write(dump_string)
         file.close()
