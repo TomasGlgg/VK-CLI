@@ -25,7 +25,7 @@ class Private_dialog_events(Profile_events):
                     playsound('new_message.mp3')
                 if mark_as_read:
                     self._mark_as_read(event.message_id, peer_id)
-                if dump:
+                if dump and event.text:
                     self._save_event(event, dump, profile_id)
             elif event.type == VkEventType.MESSAGE_EDIT and event.peer_id == peer_id:
                 print('---------- Сообщение изменено:')
