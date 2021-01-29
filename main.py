@@ -93,6 +93,7 @@ class VKLogin(Cmd):
             from main import VKLogin as Updated_VKLogin
         except:
             print('Ошибка запуска обновленного экземпляра')
+            return
         print('Запускаю обновленный экземпляр')
         try:
             VKLogin().cmdloop()
@@ -102,10 +103,10 @@ class VKLogin(Cmd):
 
     @staticmethod
     def do_exit(_):
-        '''
+        """
         Выйти
         exit
-        '''
+        """
         print('Выход')
         return True
 
