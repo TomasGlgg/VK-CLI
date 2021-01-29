@@ -13,6 +13,10 @@ class VKLogin(Cmd):
     __auth_parser = argparse.ArgumentParser(prog='auth', description='Авторизоваться')
     __auth_parser.add_argument('id', metavar='ID', type=int, help='ID токена')
 
+    __list_parser = argparse.ArgumentParser(prog='list', description='Список токенов')
+    __list_parser.add_argument('-s', '--token-status', dest='token_status', action='store_true',
+                               help='Выводить действительность токена')
+
     def preloop(self):
         Cmd.preloop(self)
         self.load_tokens()
@@ -57,13 +61,19 @@ class VKLogin(Cmd):
         self.tokens.pop(int(argv.split()[0]))
         self.save_token_list()
 
-    def do_list(self, _):
-        """
-        Список токенов
-        usage: list
-        """
+    @Wrapper_cmd_line_arg_parser(parser=__list_parser)
+    def do_list(self, argv):
         for i, token in enumerate(self.tokens):
-            print(i, token[:10] + '...')
+            print(i, token[:10] + '...', end=' ')
+            if argv.token_status:
+                profile = Profile()
+                profile.load_token(token)
+                valid = profile.auth()
+                if valid:
+                    print(colored('Действительный', 'green'), end='')
+                else:
+                    print(colored('Не действительный', 'red'), end='')
+            print()
 
     @Wrapper_cmd_line_arg_parser(parser=__auth_parser)
     def do_auth(self, argv):
