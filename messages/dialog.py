@@ -31,6 +31,7 @@ class Dialog(Cmd):
         """
         if self._stealth_protection():
             print(colored('Сработала stealth защита'))
+            return
         text = argv
         if len(text) < 1:
             print(colored('Неверное количество аргументов', 'red'))
