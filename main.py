@@ -51,28 +51,14 @@ class VKLogin(Cmd):
 
     @Wrapper_cmd_line_arg_parser(parser=__add_parser)
     def do_add(self, argv):
-        """
-        Добавить токен в список
-        usage: add <токен>
-        """
-        if len(argv.split()) != 1:
-            print(colored("Неправильное количество аргументов", 'red'))
-            return
-        self.tokens.append(argv.split()[0])
+        self.tokens.append(argv.token)
         self.__save_token_list()
         print(colored('Добавлено', 'green'))
         return
 
     @Wrapper_cmd_line_arg_parser(parser=__delete_parser)
     def do_delete(self, argv):
-        """
-        Удалить токен из списка
-        usage: delete <id>
-        """
-        if len(argv.split()) != 1:
-            print(colored("Неправильное количество аргументов", 'red'))
-            return
-        self.tokens.pop(int(argv.split()[0]))
+        self.tokens.pop(argv.id)
         self.__save_token_list()
 
     @Wrapper_cmd_line_arg_parser(parser=__list_parser)
