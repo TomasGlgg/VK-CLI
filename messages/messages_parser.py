@@ -51,7 +51,7 @@ class Private_messages_parser(Messages_parser):
         for message in messages['items'][::-1]:
             self._print_private_message(message)
         if mark_unreads_messages:
-            self.api.messages.markAsRead(start_message_id=messages['conversations'][0]['last_message_id'],
+            self.api.messages.markAsRead(start_message_id=messages['items'][0]['id'],
                                          peer_id=self.peer_id, mark_conversation_as_read=True,
                                          v=self.api.VK_API_VERSION)
 
