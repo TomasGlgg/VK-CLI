@@ -34,6 +34,14 @@ class Chat_dialog_events(Profile_events):
                 print('---------- Сообщение изменено:')
                 print('Номер сообщения: №' + str(event.message_id))
                 self._print_text_from_message(event)
+            elif event.type == VkEventType.MESSAGE_FLAGS_SET and event.chat_id == chat_id:
+                flag_bin = self.bin_with_padding(event.mask)
+                if flag_bin[7] == '1':
+                    print('----------',  colored('Сообщение удалено', 'red'), end='')
+                    if flag_bin[17] == '1':
+                        print(' (для всех)', end='')
+                    print(':')
+                    print('Номер сообщения: №{}'.format(event.message_id, 'cyan'))
             elif event.type == VkEventType.USER_TYPING_IN_CHAT and event.chat_id == chat_id:
                 self._get_cached_user_name(event)
                 print('печатает...')

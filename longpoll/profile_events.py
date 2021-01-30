@@ -15,6 +15,12 @@ class Profile_events:
         self.api = api
         self.longpoll = VkLongPoll(alternative_api)
 
+    @staticmethod
+    def bin_with_padding(num):
+        num_bin = bin(num)[2:]
+        num_bin = '0' * (19 - len(num_bin)) + num_bin
+        return num_bin[::-1]
+
     def _get_cached_user_name(self, event, case=None):
         """
         :param case: 0 - nom username, 1 - gen username, 2 - dat username
@@ -112,6 +118,14 @@ class Profile_events:
                 print('----------', colored('Сообщение изменено:', 'cyan'))
                 print('Номер сообщения: №' + str(event.message_id))
                 self._print_text_from_message(event)
+            elif event.type == VkEventType.MESSAGE_FLAGS_SET:
+                flag_bin = self.bin_with_padding(event.mask)
+                if flag_bin[7] == '1':
+                    print('----------',  colored('Сообщение удалено', 'red'), end='')
+                    if flag_bin[17] == '1':
+                        print(' (для всех)', end='')
+                    print(':')
+                    print('Номер сообщения: №{}'.format(event.message_id, 'cyan'))
             elif event.type == VkEventType.USER_TYPING and show_typing:
                 print('Печатает:', end=' ')
                 print(colored(self._get_cached_user_name(event, case=0), 'blue'))  # case - nom
