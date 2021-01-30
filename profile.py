@@ -60,7 +60,8 @@ class Profile(Cmd):
             return False
         return True
 
-    def setup(self):
+    def setup(self, stealth):
+        self.api.stealth = stealth
         self.profile_info = self.api.account.getProfileInfo(v=self.api.VK_API_VERSION)
 
         # setup prompt
@@ -78,8 +79,19 @@ class Profile(Cmd):
             self.intro += f"       Страна: {self.profile_info['country']['title']}\n"
         self.intro += f"       Статус: {colored(self.profile_info['status'], 'cyan')}"
 
+    def _stealth_protection(self):
+        if self.api.stealth:
+            online = self.api.users.get(user_ids=self.profile_info['id'], fields=['online'],
+                                        v=self.api.VK_API_VERSION)[0]['online']
+            if not online:
+                return True
+        return False
+
     @Wrapper_cmd_line_arg_parser(parser=__dialogs_parser)
     def do_dialogs(self, argv):
+        if self._stealth_protection():
+            print(colored('Сработала stealth защита', 'red'))
+            return
         count = argv.count
         if count > 100:
             count = 100
@@ -87,6 +99,9 @@ class Profile(Cmd):
 
     @Wrapper_cmd_line_arg_parser(parser=__unread_parser)
     def do_unread(self, argv):
+        if self._stealth_protection():
+            print(colored('Сработала stealth защита.', 'red'))
+            return
         count = argv.count
         if count > 100:
             count = 100
@@ -96,7 +111,7 @@ class Profile(Cmd):
     def do_select(self, argv):
         if argv.id:
             conversation_id = argv.id
-        else:
+        elif self._stealth_protection():
             if argv.count > 100:
                 print('Слишком большое значение запроса последних диалогов')
             dialogs_id = self.parser.print_conversations_short(argv.count)
@@ -107,6 +122,9 @@ class Profile(Cmd):
             conversation_id = dialogs_id[int(answer)]
             if conversation_id is None:
                 print(colored('Ошибка', 'red'))
+        else:
+            print(colored('Сработала stealth защита. Выберите альтернативный вариант выбора диалога', 'red'))
+            return
 
         if conversation_id < 0:  # group
             group_dialog = Group_dialog()

@@ -11,6 +11,14 @@ class Dialog(Cmd):
     parser = None
     alternative_api = None  # setup
 
+    def _stealth_protection(self):
+        if self.api.stealth:
+            online = self.api.users.get(user_ids=self.profile_info['id'], fields=['online'],
+                                        v=self.api.VK_API_VERSION)[0]['online']
+            if not online:
+                return True
+        return False
+
     def setup(self, api, alternative_api, profile_info, chat_id):
         self.api = api
         self.alternative_api = alternative_api
@@ -21,6 +29,8 @@ class Dialog(Cmd):
         """
         write [СООБЩЕНИЕ]
         """
+        if self._stealth_protection():
+            print(colored('Сработала stealth защита'))
         text = argv
         if len(text) < 1:
             print(colored('Неверное количество аргументов', 'red'))

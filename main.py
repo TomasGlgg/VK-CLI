@@ -9,6 +9,7 @@ from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
 class VKLogin(Cmd):
     tokens = []
+    stealth = None
 
     __auth_parser = argparse.ArgumentParser(prog='auth', description='Авторизоваться')
     __auth_parser.add_argument('id', metavar='ID', type=int, help='ID токена')
@@ -34,6 +35,11 @@ class VKLogin(Cmd):
             for line in f.readlines():
                 self.tokens.append(line.strip())
         print(colored('Список токенов загружен', 'green'))
+
+    def load_options(self, args):
+        if args.stealth:
+            print(colored('Активирован режим stealth', 'red'))
+            self.stealth = args.stealth
 
     # Commands
 
@@ -78,7 +84,7 @@ class VKLogin(Cmd):
     @Wrapper_cmd_line_arg_parser(parser=__auth_parser)
     def do_auth(self, argv):
         token_id = argv.id
-        if token_id+1 > len(self.tokens):
+        if token_id + 1 > len(self.tokens):
             print(colored('Токен не найден', 'red'))
             return
         token = self.tokens[token_id]
@@ -87,7 +93,7 @@ class VKLogin(Cmd):
         if not profile.auth():
             print(colored('Ошибка аутентификации', 'red'))
             return
-        profile.setup()  # setup settings (banner, prompt)
+        profile.setup(self.stealth)  # setup settings (banner, prompt)
         try:
             profile.cmdloop()
         except KeyboardInterrupt:
@@ -122,8 +128,15 @@ class VKLogin(Cmd):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Консольная версия VK')
+    parser.add_argument('-s', '--stealth', dest='stealth', action='store_true',
+                        help='Не использовать методы (в случае, если пользователь не в сети), которые могут вывести '
+                             'аккаунт в online')
+    args = parser.parse_args()
     try:
-        VKLogin().cmdloop()
+        vk = VKLogin()
+        vk.load_options(args)
+        vk.cmdloop()
     except KeyboardInterrupt:
         print('\nKeyboardInterrupt, выход')
         exit()
