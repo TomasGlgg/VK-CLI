@@ -23,13 +23,13 @@ class Profile(Cmd):
     __select_parser.add_argument('-c', '--count', metavar='count', type=int, help='Количество выводимых диалогов',
                                  default=5)
 
-    __online_parser = argparse.ArgumentParser(prog='online', description='Получать события профиля (сообщения и т.д.)')
-    __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
-    __online_parser.add_argument('-l', '--line', dest='line', action='store_true',
+    __events_parser = argparse.ArgumentParser(prog='events', description='Получать события профиля (сообщения и т.д.)')
+    __events_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
+    __events_parser.add_argument('-l', '--line', dest='line', action='store_true',
                                  help='Показывать вход/выход в online')
-    __online_parser.add_argument('-r', '--read', dest='read', action='store_true',
+    __events_parser.add_argument('-r', '--read', dest='read', action='store_true',
                                  help='Помечать сообщения как прочитанные')
-    __online_parser.add_argument('-s', '--sound', dest='sound', action='store_true',
+    __events_parser.add_argument('-s', '--sound', dest='sound', action='store_true',
                                  help='Воспроизводить звук сообщения')
 
     __dialogs_parser = argparse.ArgumentParser(prog='dialogs', description='Вывести все диалоги')
@@ -70,7 +70,7 @@ class Profile(Cmd):
         self.intro += f"{colored(self.profile_info['last_name'], 'green')} "
         if 'screen_name' in self.profile_info:
             self.intro += f"({self.profile_info['screen_name']})"
-        self.intro += f"- id{self.profile_info['id']}\n"
+        self.intro += f" - id{self.profile_info['id']}\n"
         self.intro += f"Дата рождения: {colored(self.profile_info['bdate'], 'red')}\n"
         if 'phone' in self.profile_info:
             self.intro += f"      Телефон: {self.profile_info['phone']}\n"
@@ -133,8 +133,8 @@ class Profile(Cmd):
             except KeyboardInterrupt:
                 os.system('cls || clear')
 
-    @Wrapper_cmd_line_arg_parser(parser=__online_parser)
-    def do_online(self, argv):
+    @Wrapper_cmd_line_arg_parser(parser=__events_parser)
+    def do_events(self, argv):
         events = Profile_events(self.api, self.alternative_api)
         events.start(argv.typing, argv.line, argv.read, argv.sound)
 

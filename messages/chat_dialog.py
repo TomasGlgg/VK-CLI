@@ -9,11 +9,11 @@ from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
 
 class Chat_dialog(Dialog):
-    __online_parser = ArgumentParser(prog='online', description='Вывод сообщений в реальном времени')
-    __online_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
-    __online_parser.add_argument('-r', '--read', dest='read', action='store_true',
+    __events_parser = ArgumentParser(prog='events', description='Вывод сообщений в реальном времени')
+    __events_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
+    __events_parser.add_argument('-r', '--read', dest='read', action='store_true',
                                  help='Помечать сообщения как прочитанные')
-    __online_parser.add_argument('-s', '--sound', dest='sound', action='store_true',
+    __events_parser.add_argument('-s', '--sound', dest='sound', action='store_true',
                                  help='Воспроизводить звук сообщения')
 
     __read_parser = ArgumentParser(prog='read', description='Прочитать сообщения диалога')
@@ -37,8 +37,8 @@ class Chat_dialog(Dialog):
     def do_read(self, argv):
         self.parser.print_last_messages(argv.count, mark_unreads_messages=argv.mark)
 
-    @Wrapper_cmd_line_arg_parser(parser=__online_parser)
-    def do_online(self, argv):
+    @Wrapper_cmd_line_arg_parser(parser=__events_parser)
+    def do_events(self, argv):
         events = Chat_dialog_events(self.api, self.alternative_api)
         while True:
             try:
