@@ -46,7 +46,6 @@ class Private_messages_parser(Messages_parser):
                 print(colored(attachment['type'], 'cyan'), end=' ')
             print()
 
-
     def print_last_messages(self, count, mark_unreads_messages=False):
         messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, v=self.api.VK_API_VERSION)
         for message in messages['items'][::-1]:
@@ -61,6 +60,8 @@ class Chat_messages_parser(Messages_parser):
     def _print_last_message(self, message, messages):
         date = datetime.fromtimestamp(message['date'])
         print('-------- {} - №{}'.format(date.strftime('%Y-%m-%d %H:%M:%S'), message['id']))
+        if 'reply_message' in message:
+            print('Ответ на сообщение №{}'.format(colored(message['reply_message']['id'], 'cyan')))
         if message['out']:
             print('Сообщение', colored('(Вы):', 'green'), end=' ')
         else:
