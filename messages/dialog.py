@@ -30,7 +30,7 @@ class Dialog(Cmd):
         write [СООБЩЕНИЕ]
         """
         if self._stealth_protection():
-            print(colored('Сработала stealth защита'))
+            print(colored('Сработала stealth защита', 'red'))
             return
         text = argv
         if len(text) < 1:
