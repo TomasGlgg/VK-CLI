@@ -116,7 +116,7 @@ class Profile_events:
                     self._mark_as_read(event.message_id, event.peer_id)
             elif event.type == VkEventType.MESSAGE_EDIT:
                 print('----------', colored('Сообщение изменено:', 'cyan'))
-                print('Номер сообщения: №' + str(event.message_id))
+                print('Номер сообщения: №'.format(colored(event.message_id, 'cyan')))
                 self._print_text_from_message(event)
             elif event.type == VkEventType.MESSAGE_FLAGS_SET:
                 flag_bin = self.bin_with_padding(event.mask)

@@ -32,7 +32,7 @@ class Chat_dialog_events(Profile_events):
                     self._mark_as_read(event.message_id, event.peer_id)
             elif event.type == VkEventType.MESSAGE_EDIT and event.from_chat and event.chat_id == chat_id:
                 print('---------- Сообщение изменено:')
-                print('Номер сообщения: №' + str(event.message_id))
+                print('Номер сообщения: №'.format(colored(event.message_id, 'cyan')))
                 self._print_text_from_message(event)
             elif event.type == VkEventType.MESSAGE_FLAGS_SET and event.chat_id == chat_id:
                 flag_bin = self.bin_with_padding(event.mask)
