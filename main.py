@@ -11,6 +11,12 @@ class VKLogin(Cmd):
     tokens = []
     stealth = None
 
+    __add_parser = argparse.ArgumentParser(prog='add', description='Добавить токен')
+    __add_parser.add_argument('token', metavar='TOKEN', help='Токен')
+
+    __delete_parser = argparse.ArgumentParser(prog='delete', description='Удалить токен')
+    __delete_parser.add_argument('id', metavar='ID', type=int, help='ID токена')
+
     __auth_parser = argparse.ArgumentParser(prog='auth', description='Авторизоваться')
     __auth_parser.add_argument('id', metavar='ID', type=int, help='ID токена')
 
@@ -23,7 +29,7 @@ class VKLogin(Cmd):
         self.load_tokens()
         self.prompt = '(VK-CLI)'
 
-    def save_token_list(self):
+    def __save_token_list(self):
         with open('tokens.txt', 'w') as f:
             for token in self.tokens:
                 f.write(token + '\n')
@@ -43,6 +49,7 @@ class VKLogin(Cmd):
 
     # Commands
 
+    @Wrapper_cmd_line_arg_parser(parser=__add_parser)
     def do_add(self, argv):
         """
         Добавить токен в список
@@ -52,10 +59,11 @@ class VKLogin(Cmd):
             print(colored("Неправильное количество аргументов", 'red'))
             return
         self.tokens.append(argv.split()[0])
-        self.save_token_list()
+        self.__save_token_list()
         print(colored('Добавлено', 'green'))
         return
 
+    @Wrapper_cmd_line_arg_parser(parser=__delete_parser)
     def do_delete(self, argv):
         """
         Удалить токен из списка
@@ -65,7 +73,7 @@ class VKLogin(Cmd):
             print(colored("Неправильное количество аргументов", 'red'))
             return
         self.tokens.pop(int(argv.split()[0]))
-        self.save_token_list()
+        self.__save_token_list()
 
     @Wrapper_cmd_line_arg_parser(parser=__list_parser)
     def do_list(self, argv):
@@ -101,9 +109,7 @@ class VKLogin(Cmd):
 
     @staticmethod
     def do_update(_):
-        """
-        Обновить локальный репозиторий
-        """
+        """Обновить локальный репозиторий (зависит от git)"""
         system('git pull')
         try:
             from main import VKLogin as Updated_VKLogin
