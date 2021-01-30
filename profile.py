@@ -111,7 +111,7 @@ class Profile(Cmd):
     def do_select(self, argv):
         if argv.id:
             conversation_id = argv.id
-        elif self._stealth_protection():
+        elif not self._stealth_protection():
             if argv.count > 100:
                 print('Слишком большое значение запроса последних диалогов')
             dialogs_id = self.parser.print_conversations_short(argv.count)
