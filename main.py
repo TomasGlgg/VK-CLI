@@ -37,6 +37,7 @@ class VKLogin(Cmd):
         Cmd.preloop(self)
         self.load_tokens()
         self.prompt = '(VK-CLI)'
+        self.doc_header = 'Доступные команды (для справки по конкретной команде наберите help КОМАНДА или КОМАНДА -h)'
 
     def __save_token_list(self):
         with open('tokens.txt', 'w') as f:

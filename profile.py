@@ -70,6 +70,7 @@ class Profile(Cmd):
         return True
 
     def setup(self, stealth):
+        self.doc_header = 'Доступные команды (для справки по конкретной команде наберите help КОМАНДА или КОМАНДА -h)'
         self.api.stealth = stealth
         self.profile_info = self.api.account.getProfileInfo(v=self.api.VK_API_VERSION)
         online = self.api.users.get(user_ids=self.profile_info['id'], fields=['online'],

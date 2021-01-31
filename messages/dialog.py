@@ -24,6 +24,7 @@ class Dialog(Cmd):
         self.alternative_api = alternative_api
         self.profile_info = profile_info
         self.chat_id = chat_id
+        self.doc_header = 'Доступные команды (для справки по конкретной команде наберите help КОМАНДА или КОМАНДА -h)'
 
     def do_write(self, argv):
         """
