@@ -11,6 +11,15 @@ from messages import Private_dialog, Chat_dialog, Group_dialog, Message_details
 from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
 
+def clear():
+    if os.name in ('nt', 'dos'):
+        os.system("cls")
+    elif os.name in ('linux', 'osx', 'posix'):
+        os.system("clear")
+    else:
+        print("\n" * 100)
+
+
 class Profile(Cmd):
     profile_info = None
     token = None
@@ -136,7 +145,7 @@ class Profile(Cmd):
             try:
                 group_dialog.cmdloop()
             except KeyboardInterrupt:
-                os.system('cls || clear')
+                clear()
         elif conversation_id < 2000000000:  # private messages
             private_dialog = Private_dialog()
             private_dialog.setup(self.api, self.alternative_api, self.profile_info, conversation_id)
@@ -144,7 +153,7 @@ class Profile(Cmd):
             try:
                 private_dialog.cmdloop()
             except KeyboardInterrupt:
-                os.system('cls || clear')
+                clear()
         else:  # chat messages
             chat_dialog = Chat_dialog()
             chat_dialog.setup(self.api, self.alternative_api, self.profile_info, conversation_id)
@@ -152,7 +161,7 @@ class Profile(Cmd):
             try:
                 chat_dialog.cmdloop()
             except KeyboardInterrupt:
-                os.system('cls || clear')
+                clear()
 
     @Wrapper_cmd_line_arg_parser(parser=__events_parser)
     def do_events(self, argv):

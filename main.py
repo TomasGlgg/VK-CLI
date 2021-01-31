@@ -1,10 +1,19 @@
 from cmd import Cmd
-from os import listdir, system
+import os
 from termcolor import colored
 import argparse
 
 from profile import Profile
 from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
+
+
+def clear():
+    if os.name in ('nt', 'dos'):
+        os.system("cls")
+    elif os.name in ('linux', 'osx', 'posix'):
+        os.system("clear")
+    else:
+        print("\n" * 100)
 
 
 class VKLogin(Cmd):
@@ -35,7 +44,7 @@ class VKLogin(Cmd):
                 f.write(token + '\n')
 
     def load_tokens(self):
-        if 'tokens.txt' not in listdir():
+        if 'tokens.txt' not in os.listdir():
             return
         with open('tokens.txt', 'r') as f:
             for line in f.readlines():
@@ -91,12 +100,12 @@ class VKLogin(Cmd):
         try:
             profile.cmdloop()
         except KeyboardInterrupt:
-            system('cls || clear')
+            clear()
 
     @staticmethod
     def do_update(_):
         """Обновить локальный репозиторий (зависит от git)"""
-        system('git pull')
+        os.system('git pull')
         try:
             from main import VKLogin as Updated_VKLogin
         except:
