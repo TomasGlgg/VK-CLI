@@ -25,7 +25,9 @@ class VKLogin(Cmd):
     __add_parser.add_argument('token', metavar='TOKEN', help='Токен')
 
     __delete_parser = argparse.ArgumentParser(prog='delete', description='Удалить токен')
-    __delete_parser.add_argument('id', metavar='ID', type=int, help='ID токена')
+    __delete_parser.add_argument('id', metavar='ID', type=int, help='ID токена', nargs='?')
+    __delete_parser.add_argument('-i', '--all-invalid', dest='invalid', action='store_true',
+                                 help='Удалить все недействительные токены')
 
     __auth_parser = argparse.ArgumentParser(prog='auth', description='Авторизоваться')
     __auth_parser.add_argument('id', metavar='ID', type=int, help='ID токена')
@@ -48,9 +50,9 @@ class VKLogin(Cmd):
     def load_tokens(self):
         if 'tokens.txt' not in os.listdir():
             return
-        token_regex = r'[\da-f]{85}'
-        tokens = open('tokens.txt', 'r').read()
-        self.tokens = re.findall(token_regex, tokens)
+        token_regex = r'[0-9a-fA-F]{85}'
+        raw_tokens = open('tokens.txt', 'r').read()
+        self.tokens = re.findall(token_regex, raw_tokens)
         cprint('Список токенов загружен', 'green')
 
     def load_options(self, args):
@@ -69,7 +71,22 @@ class VKLogin(Cmd):
 
     @Wrapper_cmd_line_arg_parser(parser=__delete_parser)
     def do_delete(self, argv):
-        self.tokens.pop(argv.id)
+        if argv.invalid:
+            for i, token in list(enumerate(self.tokens))[::-1]:
+                print(i, token[:10] + '...', end=' ')
+                profile = Profile()
+                profile.load_token(token)
+                valid = profile.auth()
+                if valid:
+                    cprint('Действительный', 'green')
+                else:
+                    self.tokens.pop(i)
+                    cprint('Не действительный, удалено', 'red')
+        elif argv.id:
+            self.tokens.pop(argv.id)
+        else:
+            self.__delete_parser.print_help()
+            return
         self.__save_token_list()
 
     @Wrapper_cmd_line_arg_parser(parser=__list_parser)
