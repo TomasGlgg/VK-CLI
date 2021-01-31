@@ -1,7 +1,7 @@
 from cmd import Cmd
 import vk
 import vk_api
-from termcolor import colored
+from termcolor import colored, cprint
 import argparse
 import os
 
@@ -102,7 +102,7 @@ class Profile(Cmd):
     @Wrapper_cmd_line_arg_parser(parser=__dialogs_parser)
     def do_dialogs(self, argv):
         if self._stealth_protection():
-            print(colored('Сработала stealth защита', 'red'))
+            cprint('Сработала stealth защита', 'red')
             return
         count = argv.count
         if count > 100:
@@ -112,7 +112,7 @@ class Profile(Cmd):
     @Wrapper_cmd_line_arg_parser(parser=__unread_parser)
     def do_unread(self, argv):
         if self._stealth_protection():
-            print(colored('Сработала stealth защита.', 'red'))
+            cprint('Сработала stealth защита.', 'red')
             return
         count = argv.count
         if count > 100:
@@ -129,13 +129,13 @@ class Profile(Cmd):
             dialogs_id = self.parser.print_conversations_short(argv.count)
             answer = input('Выберите диалог>')
             if not answer.isdigit() or len(dialogs_id) < int(answer) - 1:
-                print(colored('Ошибка', 'red'))
+                cprint('Ошибка', 'red')
                 return
             conversation_id = dialogs_id[int(answer)]
             if conversation_id is None:
-                print(colored('Ошибка', 'red'))
+                cprint('Ошибка', 'red')
         else:
-            print(colored('Сработала stealth защита. Выберите альтернативный вариант выбора диалога', 'red'))
+            cprint('Сработала stealth защита. Выберите альтернативный вариант выбора диалога', 'red')
             return
 
         if conversation_id < 0:  # group
@@ -175,7 +175,7 @@ class Profile(Cmd):
         try:
             message_details.print_message_details(message_ids)
         except vk.exceptions.VkAPIError:
-            print(colored('Ошибка', 'red'))
+            cprint('Ошибка', 'red')
 
     @staticmethod
     def do_clear(_):

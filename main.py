@@ -1,6 +1,6 @@
 from cmd import Cmd
 import os
-from termcolor import colored
+from termcolor import cprint, colored
 import argparse
 
 from profile import Profile
@@ -49,11 +49,11 @@ class VKLogin(Cmd):
         with open('tokens.txt', 'r') as f:
             for line in f.readlines():
                 self.tokens.append(line.strip())
-        print(colored('Список токенов загружен', 'green'))
+        cprint('Список токенов загружен', 'green')
 
     def load_options(self, args):
         if args.stealth:
-            print(colored('Активирован режим stealth', 'red'))
+            cprint('Активирован режим stealth', 'red')
             self.stealth = args.stealth
 
     # Commands
@@ -62,7 +62,7 @@ class VKLogin(Cmd):
     def do_add(self, argv):
         self.tokens.append(argv.token)
         self.__save_token_list()
-        print(colored('Добавлено', 'green'))
+        cprint('Добавлено', 'green')
         return
 
     @Wrapper_cmd_line_arg_parser(parser=__delete_parser)
@@ -88,13 +88,13 @@ class VKLogin(Cmd):
     def do_auth(self, argv):
         token_id = argv.id
         if token_id + 1 > len(self.tokens):
-            print(colored('Токен не найден', 'red'))
+            cprint('Токен не найден', 'red')
             return
         token = self.tokens[token_id]
         profile = Profile()
         profile.load_token(token)
         if not profile.auth():
-            print(colored('Ошибка аутентификации', 'red'))
+            cprint('Ошибка аутентификации', 'red')
             return
         profile.setup(self.stealth)  # setup settings (banner, prompt)
         try:

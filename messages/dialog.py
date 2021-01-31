@@ -1,5 +1,5 @@
 from cmd import Cmd
-from termcolor import colored
+from termcolor import cprint
 from vk_api.utils import get_random_id
 
 
@@ -30,11 +30,11 @@ class Dialog(Cmd):
         write [СООБЩЕНИЕ]
         """
         if self._stealth_protection():
-            print(colored('Сработала stealth защита', 'red'))
+            cprint('Сработала stealth защита', 'red')
             return
         text = argv
         if len(text) < 1:
-            print(colored('Неверное количество аргументов', 'red'))
+            cprint('Неверное количество аргументов', 'red')
         self.alternative_api.get_api().messages.send(peer_id=self.chat_id, random_id=get_random_id(), message=text)
 
     @staticmethod
