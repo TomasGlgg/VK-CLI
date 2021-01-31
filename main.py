@@ -21,6 +21,7 @@ def clear():
 class VKLogin(Cmd):
     tokens = []
     stealth = None
+    default_app_id = 6121396  # Admin
 
     __add_parser = argparse.ArgumentParser(prog='add', description='Добавить токен')
     __add_parser.add_argument('token', metavar='TOKEN', help='Токен')
@@ -36,6 +37,11 @@ class VKLogin(Cmd):
     __list_parser = argparse.ArgumentParser(prog='list', description='Список токенов')
     __list_parser.add_argument('-s', '--token-status', dest='token_status', action='store_true',
                                help='Выводить действительность токена')
+
+    __login_parser = argparse.ArgumentParser(prog='login', description='Авторизоваться по логину и паролю')
+    __login_parser.add_argument('login', metavar='LOGIN', help='Логин')
+    __login_parser.add_argument('password', metavar='PASSWORD', help='Пароль')
+    __login_parser.add_argument('app_id', metavar='APPID', type=int, default=default_app_id, nargs='?', help='ID приложения')
 
     token_regex = re.compile(r'[0-9a-fA-F]{85}')
 
@@ -130,10 +136,10 @@ class VKLogin(Cmd):
         except KeyboardInterrupt:
             clear()
 
+    @Wrapper_cmd_line_arg_parser(parser=__login_parser)
     def do_login(self, args):
-        login, password = args.split()
         try:
-            session = vk.AuthSession(app_id=6121396, user_login=login, user_password=password)
+            session = vk.AuthSession(app_id=args.app_id, user_login=args.login, user_password=args.password)
         except vk.exceptions.VkAuthError:
             cprint('Ошибка авторизации', 'red')
             return
