@@ -36,6 +36,8 @@ class VKLogin(Cmd):
     __list_parser.add_argument('-s', '--token-status', dest='token_status', action='store_true',
                                help='Выводить действительность токена')
 
+    token_regex = re.compile(r'[0-9a-fA-F]{85}')
+
     def preloop(self):
         Cmd.preloop(self)
         self.load_tokens()
@@ -50,9 +52,8 @@ class VKLogin(Cmd):
     def load_tokens(self):
         if 'tokens.txt' not in os.listdir():
             return
-        token_regex = r'[0-9a-fA-F]{85}'
         raw_tokens = open('tokens.txt', 'r').read()
-        self.tokens = re.findall(token_regex, raw_tokens)
+        self.tokens = re.findall(self.token_regex, raw_tokens)
         cprint('Список токенов загружен', 'green')
 
     def load_options(self, args):
@@ -64,6 +65,13 @@ class VKLogin(Cmd):
 
     @Wrapper_cmd_line_arg_parser(parser=__add_parser)
     def do_add(self, argv):
+        token = argv.token.strip()
+        if re.fullmatch(self.token_regex, token) is None:
+            cprint('Токен не найден', 'red')
+            return
+        if token in self.tokens:
+            cprint('Токен уже добавлен', 'red')
+            return
         self.tokens.append(argv.token)
         self.__save_token_list()
         cprint('Добавлено', 'green')
