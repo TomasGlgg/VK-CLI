@@ -34,7 +34,7 @@ class Profile(Cmd):
 
     __events_parser = argparse.ArgumentParser(prog='events', description='Получать события профиля (сообщения и т.д.)')
     __events_parser.add_argument('-t', '--typing', dest='typing', action='store_true', help='Показывать печатающих')
-    __events_parser.add_argument('-l', '--line', dest='line', action='store_true',
+    __events_parser.add_argument('-o', '--online', dest='online', action='store_true',
                                  help='Показывать вход/выход в online')
     __events_parser.add_argument('-r', '--read', dest='read', action='store_true',
                                  help='Помечать сообщения как прочитанные')
@@ -59,12 +59,11 @@ class Profile(Cmd):
 
     def auth(self):
         session = vk.Session(self.token)
-        self.api = vk.API(session)
-        self.api.VK_API_VERSION = 5.139
+        self.api = vk.API(session, v=5.139)
         self.alternative_api = vk_api.VkApi(token=self.token)
         self.parser = Parser(self.api)
         try:
-            self.api.account.getInfo(v=self.api.VK_API_VERSION)  # test token
+            self.api.account.getInfo()  # test token
         except vk.exceptions.VkAPIError:
             return False
         return True
@@ -72,9 +71,8 @@ class Profile(Cmd):
     def setup(self, stealth):
         self.doc_header = 'Доступные команды (для справки по конкретной команде наберите help КОМАНДА или КОМАНДА -h)'
         self.api.stealth = stealth
-        self.profile_info = self.api.account.getProfileInfo(v=self.api.VK_API_VERSION)
-        online = self.api.users.get(user_ids=self.profile_info['id'], fields=['online'],
-                                    v=self.api.VK_API_VERSION)[0]['online']
+        self.profile_info = self.api.account.getProfileInfo()
+        online = self.api.users.get(user_ids=self.profile_info['id'], fields=['online'])[0]['online']
 
         # setup prompt
         self.prompt = '({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'])
@@ -94,8 +92,7 @@ class Profile(Cmd):
 
     def _stealth_protection(self):
         if self.api.stealth:
-            online = self.api.users.get(user_ids=self.profile_info['id'], fields=['online'],
-                                        v=self.api.VK_API_VERSION)[0]['online']
+            online = self.api.users.get(user_ids=self.profile_info['id'], fields=['online'])[0]['online']
             if not online:
                 return True
         return False
@@ -167,7 +164,7 @@ class Profile(Cmd):
     @Wrapper_cmd_line_arg_parser(parser=__events_parser)
     def do_events(self, argv):
         events = Profile_events(self.api, self.alternative_api)
-        events.start(argv.typing, argv.line, argv.read, argv.sound)
+        events.start(argv.typing, argv.online, argv.read, argv.sound)
 
     @Wrapper_cmd_line_arg_parser(parser=__message_details_parser)
     def do_message_details(self, argv):

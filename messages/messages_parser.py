@@ -10,7 +10,7 @@ class Messages_parser:
 
     def _get_profile_name(self, response, id):
         if id >= 2000000000:
-            chat_title = self.api.messages.getChat(chat_id=id - 2000000000, v=self.api.VK_API_VERSION)['title']
+            chat_title = self.api.messages.getChat(chat_id=id - 2000000000)['title']
             return '{} ({})'.format(chat_title, id)
         elif id >= 0:
             for profile in response['profiles']:
@@ -47,13 +47,12 @@ class Private_messages_parser(Messages_parser):
             print()
 
     def print_last_messages(self, count, mark_unreads_messages=False):
-        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, v=self.api.VK_API_VERSION)
+        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count)
         for message in messages['items'][::-1]:
             self._print_private_message(message)
         if mark_unreads_messages:
             self.api.messages.markAsRead(start_message_id=messages['items'][0]['id'],
-                                         peer_id=self.peer_id, mark_conversation_as_read=True,
-                                         v=self.api.VK_API_VERSION)
+                                         peer_id=self.peer_id, mark_conversation_as_read=True)
 
 
 class Chat_messages_parser(Messages_parser):
@@ -80,14 +79,12 @@ class Chat_messages_parser(Messages_parser):
             print()
 
     def print_last_messages(self, count, mark_unreads_messages=False):
-        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, extended=True,
-                                                v=self.api.VK_API_VERSION)
+        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, extended=True)
         for message in messages['items'][::-1]:
             self._print_last_message(message, messages)
         if mark_unreads_messages and messages['conversations'][0]['is_marked_unread']:
             self.api.messages.markAsRead(start_message_id=messages['conversations'][0]['last_message_id'],
-                                         peer_id=self.peer_id, mark_conversation_as_read=True,
-                                         v=self.api.VK_API_VERSION)
+                                         peer_id=self.peer_id, mark_conversation_as_read=True)
 
 
 class Group_messages_parser(Messages_parser):
@@ -113,7 +110,7 @@ class Group_messages_parser(Messages_parser):
             print()
 
     def print_last_messages(self, count, mark_unreads_messages=False):
-        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, v=self.api.VK_API_VERSION)
+        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count,)
         for message in messages['items'][::-1]:
             self._print_last_message(message)
         if mark_unreads_messages and messages['conversations'][0]['is_marked_unread']:
@@ -148,7 +145,7 @@ class Message_details(Messages_parser):
         print(colored('Скрипт пока не умеет работать с такими типами сообщений :(', 'red'))  # TODO
 
     def print_message_details(self, message_ids):
-        messages_details = self.api.messages.getById(message_ids=message_ids, extended=True, v=self.api.VK_API_VERSION)
+        messages_details = self.api.messages.getById(message_ids=message_ids, extended=True)
         for message in messages_details['items']:
             if message['peer_id'] > 2000000000:
                 date = datetime.fromtimestamp(message['date'])

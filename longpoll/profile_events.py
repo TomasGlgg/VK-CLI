@@ -27,16 +27,15 @@ class Profile_events:
         """
         if event.user_id not in self.users:
             if event.user_id > 0:
-                user_info = self.api.users.get(user_ids=[event.user_id], name_case='nom', v=self.api.VK_API_VERSION)[0]
+                user_info = self.api.users.get(user_ids=[event.user_id], name_case='nom')[0]
                 username_nom = user_info['first_name'] + ' ' + user_info['last_name']
-                user_info = self.api.users.get(user_ids=[event.user_id], name_case='gen', v=self.api.VK_API_VERSION)[0]
+                user_info = self.api.users.get(user_ids=[event.user_id], name_case='gen')[0]
                 username_gen = user_info['first_name'] + ' ' + user_info['last_name']
-                user_info = self.api.users.get(user_ids=[event.user_id], name_case='dat', v=self.api.VK_API_VERSION)[0]
+                user_info = self.api.users.get(user_ids=[event.user_id], name_case='dat')[0]
                 username_dat = user_info['first_name'] + ' ' + user_info['last_name']
                 self.users[event.user_id] = [username_nom, username_gen, username_dat]
             else:
-                group_name = self.api.groups.getById(group_ids=abs(event.user_id),
-                                                     v=self.api.VK_API_VERSION)['groups'][0]['name']
+                group_name = self.api.groups.getById(group_ids=abs(event.user_id))['groups'][0]['name']
                 self.users[event.user_id] = [group_name, group_name, group_name]
 
         if case is None:
@@ -46,7 +45,7 @@ class Profile_events:
 
     def _get_cached_chat_name(self, event):
         if event.chat_id not in self.chats:
-            chat_info = self.api.messages.getChat(chat_id=event.chat_id, v=self.api.VK_API_VERSION)
+            chat_info = self.api.messages.getChat(chat_id=event.chat_id)
             chat_title = chat_info['title']
             self.chats[event.chat_id] = chat_title
 
@@ -55,7 +54,7 @@ class Profile_events:
     def _get_cached_group_name(self, event):
         group_id = abs(event.peer_id)
         if group_id not in self.groups:
-            group_info = self.api.groups.getById(group_ids=[group_id], v=self.api.VK_API_VERSION)
+            group_info = self.api.groups.getById(group_ids=[group_id])
             group_name = group_info['groups'][0]['name']
             self.groups[group_id] = group_name
 
@@ -103,10 +102,9 @@ class Profile_events:
         self._print_text_from_message(event)
 
     def _mark_as_read(self, message_id, peer_id):
-        self.api.messages.markAsRead(start_message_id=message_id, peer_id=peer_id, mark_conversation_as_read=True,
-                                     v=self.api.VK_API_VERSION)
+        self.api.messages.markAsRead(start_message_id=message_id, peer_id=peer_id, mark_conversation_as_read=True)
 
-    def _start(self, show_typing, line, mark_as_read, play_sound):
+    def _start(self, show_typing, online, mark_as_read, play_sound):
         for event in self.longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW:
                 self._print_message(event)
@@ -129,9 +127,9 @@ class Profile_events:
             elif event.type == VkEventType.USER_TYPING and show_typing:
                 print('Печатает:', end=' ')
                 print(colored(self._get_cached_user_name(event, case=0), 'blue'))  # case - nom
-            elif event.type == VkEventType.USER_ONLINE and line:
+            elif event.type == VkEventType.USER_ONLINE and online:
                 print(self._get_cached_user_name(event, case=0), 'теперь online')
-            elif event.type == VkEventType.USER_OFFLINE and line:
+            elif event.type == VkEventType.USER_OFFLINE and online:
                 print(self._get_cached_user_name(event, case=0), 'ушел в offline')
 
     def start(self, *args):

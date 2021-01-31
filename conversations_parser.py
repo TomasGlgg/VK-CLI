@@ -70,7 +70,7 @@ class Parser:
 
     def print_conversations_short(self, count):
         dialogs_ids = []
-        conversations = self.api.messages.getConversations(count=count, v=self.api.VK_API_VERSION, extended=True)
+        conversations = self.api.messages.getConversations(count=count, extended=True)
         for i, conversation in enumerate(conversations['items']):
             if conversation['conversation']['peer']['type'] == 'user':
                 peer_id = conversation['conversation']['peer']['id']
@@ -93,8 +93,7 @@ class Parser:
         return dialogs_ids
 
     def print_conversations(self, count, filter='all'):
-        conversations = self.api.messages.getConversations(count=count, filter=filter,
-                                                           v=self.api.VK_API_VERSION, extended=True)
+        conversations = self.api.messages.getConversations(count=count, filter=filter, extended=True)
         for conversation in conversations['items']:
             if conversation['conversation']['peer']['type'] == 'user':
                 self._print_private_message(conversations, conversation)

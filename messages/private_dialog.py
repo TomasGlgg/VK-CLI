@@ -35,7 +35,7 @@ class Private_dialog(Dialog):
     def setupUI(self):
         self.parser = Private_messages_parser(self.api, self.chat_id)
         fields = ['status', 'last_seen', 'online']
-        self.chat_info = self.api.users.get(user_ids=[self.chat_id], fields=fields, v=self.api.VK_API_VERSION)[0]
+        self.chat_info = self.api.users.get(user_ids=[self.chat_id], fields=fields)[0]
         if 'last_seen' in self.chat_info:
             last_seen = datetime.fromtimestamp(self.chat_info['last_seen']['time'])
         else:
@@ -52,8 +52,7 @@ class Private_dialog(Dialog):
         self.__set_prompt()
 
     def precmd(self, line: str) -> str:
-        self.chat_info['online'] = self.api.users.get(user_ids=[self.chat_id], fields='online',
-                                                      v=self.api.VK_API_VERSION)[0]['online']
+        self.chat_info['online'] = self.api.users.get(user_ids=[self.chat_id], fields='online')[0]['online']
         self.__set_prompt()
         return line
 

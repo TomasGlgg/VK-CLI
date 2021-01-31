@@ -24,7 +24,7 @@ class Chat_dialog(Dialog):
 
     def setupUI(self):
         self.parser = Chat_messages_parser(self.api, self.chat_id, self.profile_info)
-        self.chat_info = self.api.messages.getChat(chat_id=self.chat_id - 2000000000, v=self.api.VK_API_VERSION)
+        self.chat_info = self.api.messages.getChat(chat_id=self.chat_id - 2000000000)
         self.prompt = '({} {})->({})>'.format(self.profile_info['first_name'], self.profile_info['last_name'],
                                               self.chat_info['title'])
 
