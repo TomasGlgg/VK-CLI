@@ -1,5 +1,6 @@
 import os
 import re
+import vk
 import argparse
 from cmd import Cmd
 from termcolor import cprint, colored
@@ -129,6 +130,18 @@ class VKLogin(Cmd):
         except KeyboardInterrupt:
             clear()
 
+    def do_login(self, args):
+        login, password = args.split()
+        try:
+            session = vk.AuthSession(app_id=6121396, user_login=login, user_password=password)
+        except vk.exceptions.VkAuthError:
+            cprint('Ошибка авторизации', 'red')
+            return
+        token = session.access_token
+        self.tokens.append(token)
+        self.__save_token_list()
+        cprint('Токен добавлен в список', 'green')
+
     @staticmethod
     def do_update(_):
         """Обновить локальный репозиторий (зависит от git)"""
@@ -162,9 +175,9 @@ if __name__ == '__main__':
                              'аккаунт в online')
     args = parser.parse_args()
     try:
-        vk = VKLogin()
-        vk.load_options(args)
-        vk.cmdloop()
+        maincmd = VKLogin()
+        maincmd.load_options(args)
+        maincmd.cmdloop()
     except KeyboardInterrupt:
         print('\nKeyboardInterrupt, выход')
         exit()
