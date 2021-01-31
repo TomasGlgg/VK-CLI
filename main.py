@@ -1,7 +1,8 @@
-from cmd import Cmd
 import os
-from termcolor import cprint, colored
+import re
 import argparse
+from cmd import Cmd
+from termcolor import cprint, colored
 
 from profile import Profile
 from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
@@ -47,9 +48,9 @@ class VKLogin(Cmd):
     def load_tokens(self):
         if 'tokens.txt' not in os.listdir():
             return
-        with open('tokens.txt', 'r') as f:
-            for line in f.readlines():
-                self.tokens.append(line.strip())
+        token_regex = r'[\da-f]{85}'
+        tokens = open('tokens.txt', 'r').read()
+        self.tokens = re.findall(token_regex, tokens)
         cprint('Список токенов загружен', 'green')
 
     def load_options(self, args):
