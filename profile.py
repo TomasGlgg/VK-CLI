@@ -72,11 +72,16 @@ class Profile(Cmd):
         self.doc_header = 'Доступные команды (для справки по конкретной команде наберите help КОМАНДА или КОМАНДА -h)'
         self.api.stealth = stealth
         self.profile_info = self.api.account.getProfileInfo()
-        online = self.api.users.get(user_ids=self.profile_info['id'], fields=['online'])[0]['online']
 
         # setup prompt
         self.prompt = '({} {})>'.format(self.profile_info['first_name'], self.profile_info['last_name'])
+
+        self.__setup_banner()
+
+    def __setup_banner(self):
         # setup banner
+        online = self.api.users.get(user_ids=self.profile_info['id'], fields=['online'])[0]['online']
+
         self.intro = f"{colored(self.profile_info['first_name'], 'green')} "
         self.intro += f"{colored(self.profile_info['last_name'], 'green')}"
         if 'screen_name' in self.profile_info:
@@ -181,6 +186,10 @@ class Profile(Cmd):
         Очистить экран
         """
         os.system('cls || clear')
+
+    def do_banner(self, _):
+        self.__setup_banner()
+        print(self.intro)
 
     @staticmethod
     def do_exit(_):
