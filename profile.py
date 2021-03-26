@@ -7,7 +7,7 @@ import os
 
 from conversations_parser import Parser
 from longpoll.profile_events import Profile_events
-from messages import Private_dialog, Chat_dialog, Group_dialog, Message_details
+from messages import Private_dialog, Chat_dialog, Group_dialog
 from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
 
@@ -49,10 +49,13 @@ class Profile(Cmd):
     __unread_parser.add_argument('count', metavar='COUNT', type=int, nargs='?',
                                  help='Количество выводимых диалогов', default=5)
 
-    __message_details_parser = argparse.ArgumentParser(prog='message_details',
-                                                       description='Показать подробности сообщения')
-    __message_details_parser.add_argument('ids', metavar='IDs', type=int, nargs='+',
-                                          help='ID/IDs сообщения/сообщений (разделенных через пробел)')
+    #__message_details_parser = argparse.ArgumentParser(prog='message_details',
+    #                                                   description='Показать подробности сообщения')
+    #__message_details_parser.add_argument('ids', metavar='IDs', type=int, nargs='+',
+    #                                      help='ID/IDs сообщения/сообщений (разделенных через пробел)')
+    __clear_parser = argparse.ArgumentParser(prog='clear', description='Очистить консоль')
+    __banner_parser = argparse.ArgumentParser(prog='banner', description='Вывод баннера профиля')
+    __exit_parser = argparse.ArgumentParser(prog='exit', description='Выход из профиля')
 
     def load_token(self, token):
         self.token = token
@@ -171,31 +174,25 @@ class Profile(Cmd):
         events = Profile_events(self.api, self.alternative_api)
         events.start(argv.typing, argv.online, argv.read, argv.sound)
 
-    @Wrapper_cmd_line_arg_parser(parser=__message_details_parser)
-    def do_message_details(self, argv):
-        message_ids = argv.ids
-        message_details = Message_details(self.api)
-        try:
-            message_details.print_message_details(message_ids)
-        except vk.exceptions.VkAPIError:
-            cprint('Ошибка', 'red')
+    #@Wrapper_cmd_line_arg_parser(parser=__message_details_parser)
+    #def do_message_details(self, argv):
+    #    message_ids = argv.ids
+    #    message_details = Message_details(self.api)
+    #    try:
+    #        message_details.print_message_details(message_ids)
+    #    except vk.exceptions.VkAPIError:
+    #        cprint('Ошибка', 'red')
 
-    @staticmethod
-    def do_clear(_):
-        """
-        Очистить экран
-        """
+    @Wrapper_cmd_line_arg_parser(parser=__clear_parser)
+    def do_clear(self, _):
         os.system('cls || clear')
 
+    @Wrapper_cmd_line_arg_parser(parser=__banner_parser)
     def do_banner(self, _):
         self.__setup_banner()
         print(self.intro)
 
-    @staticmethod
-    def do_exit(_):
-        """
-        Выйти из текущей консоли
-        exit
-        """
+    @Wrapper_cmd_line_arg_parser(parser=__exit_parser)
+    def do_exit(self, _):
         print('Выход')
         return True
