@@ -194,5 +194,4 @@ class Profile(Cmd):
 
     @Wrapper_cmd_line_arg_parser(parser=__exit_parser)
     def do_exit(self, _):
-        print('Выход')
-        return True
+        raise KeyboardInterrupt
