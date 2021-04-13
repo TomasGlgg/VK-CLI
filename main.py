@@ -82,6 +82,11 @@ class VKLogin(Cmd):
         self.tokens.append(argv.token)
         self.__save_token_list()
         cprint('Добавлено', 'green')
+        profile = Profile()
+        profile.load_token(token)
+        valid = profile.auth()
+        if not valid:
+            cprint('Ошибка аутентификации по токену', 'red')
         return
 
     @Wrapper_cmd_line_arg_parser(parser=__delete_parser)
