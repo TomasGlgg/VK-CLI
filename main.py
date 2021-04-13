@@ -185,6 +185,8 @@ if __name__ == '__main__':
                         help='Не использовать методы (в случае, если пользователь не в сети), которые могут вывести '
                              'аккаунт в online')
     args = parser.parse_args()
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
     try:
         maincmd = VKLogin()
         maincmd.load_options(args)
