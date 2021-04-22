@@ -2,8 +2,10 @@ from cmd import Cmd
 from termcolor import cprint
 from vk_api.utils import get_random_id
 
+from public_methods import PublicMethods
 
-class Dialog(Cmd):
+
+class Dialog(Cmd, PublicMethods):
     api = None              # setup
     profile_info = None     # setup
     chat_id = None          # setup

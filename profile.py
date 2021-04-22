@@ -9,6 +9,7 @@ from conversations_parser import Parser
 from longpoll.profile_events import Profile_events
 from messages import Private_dialog, Chat_dialog, Group_dialog
 from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
+from public_methods import PublicMethods
 
 
 def clear():
@@ -20,7 +21,7 @@ def clear():
         print("\n" * 100)
 
 
-class Profile(Cmd):
+class Profile(Cmd, PublicMethods):
     profile_info = None
     token = None
     api = None  # vk
@@ -53,7 +54,6 @@ class Profile(Cmd):
     #                                                   description='Показать подробности сообщения')
     #__message_details_parser.add_argument('ids', metavar='IDs', type=int, nargs='+',
     #                                      help='ID/IDs сообщения/сообщений (разделенных через пробел)')
-    __clear_parser = argparse.ArgumentParser(prog='clear', description='Очистить консоль')
     __banner_parser = argparse.ArgumentParser(prog='banner', description='Вывод баннера профиля')
     __exit_parser = argparse.ArgumentParser(prog='exit', description='Выход из профиля')
 
@@ -151,7 +151,7 @@ class Profile(Cmd):
             try:
                 group_dialog.cmdloop()
             except KeyboardInterrupt:
-                clear()
+                print()
         elif conversation_id < 2000000000:  # private messages
             private_dialog = Private_dialog()
             private_dialog.setup(self.api, self.alternative_api, self.profile_info, conversation_id)
@@ -159,7 +159,7 @@ class Profile(Cmd):
             try:
                 private_dialog.cmdloop()
             except KeyboardInterrupt:
-                clear()
+                print()
         else:  # chat messages
             chat_dialog = Chat_dialog()
             chat_dialog.setup(self.api, self.alternative_api, self.profile_info, conversation_id)
@@ -167,7 +167,7 @@ class Profile(Cmd):
             try:
                 chat_dialog.cmdloop()
             except KeyboardInterrupt:
-                clear()
+                print()
 
     @Wrapper_cmd_line_arg_parser(parser=__events_parser)
     def do_events(self, argv):
@@ -182,10 +182,6 @@ class Profile(Cmd):
     #        message_details.print_message_details(message_ids)
     #    except vk.exceptions.VkAPIError:
     #        cprint('Ошибка', 'red')
-
-    @Wrapper_cmd_line_arg_parser(parser=__clear_parser)
-    def do_clear(self, _):
-        os.system('cls || clear')
 
     @Wrapper_cmd_line_arg_parser(parser=__banner_parser)
     def do_banner(self, _):

@@ -7,18 +7,10 @@ from termcolor import cprint, colored
 
 from profile import Profile
 from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
+from public_methods import PublicMethods
 
 
-def clear():
-    if os.name in ('nt', 'dos'):
-        os.system("cls")
-    elif os.name in ('linux', 'osx', 'posix'):
-        os.system("clear")
-    else:
-        print("\n" * 100)
-
-
-class VKLogin(Cmd):
+class VKLogin(Cmd, PublicMethods):
     tokens = []
     stealth = None
     default_app_id = 6121396  # Admin
@@ -139,7 +131,7 @@ class VKLogin(Cmd):
         try:
             profile.cmdloop()
         except KeyboardInterrupt:
-            clear()
+            print()
 
     @Wrapper_cmd_line_arg_parser(parser=__login_parser)
     def do_login(self, args):
