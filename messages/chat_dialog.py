@@ -35,7 +35,7 @@ class Chat_dialog(Dialog):
 
     @Wrapper_cmd_line_arg_parser(parser=__read_parser)
     def do_read(self, argv):
-        self.parser.print_last_messages(argv.count, mark_unreads_messages=argv.mark)
+        self.parser.print_messages(argv.count, mark_unreads_messages=argv.mark)
 
     @Wrapper_cmd_line_arg_parser(parser=__events_parser)
     def do_events(self, argv):

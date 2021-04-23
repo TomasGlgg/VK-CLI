@@ -4,10 +4,12 @@ import vk_api
 from termcolor import colored, cprint
 import argparse
 import os
+from datetime import datetime
 
 from conversations_parser import Parser
 from longpoll.profile_events import Profile_events
 from messages import Private_dialog, Chat_dialog, Group_dialog
+from messages.messages_parser import Auto_messages_parser
 from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 from public_methods import PublicMethods
 
@@ -19,6 +21,17 @@ def clear():
         os.system("clear")
     else:
         print("\n" * 100)
+
+
+def str2bool(v):
+    if isinstance(v, bool):
+       return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1', 'да', 'д'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0', 'нет', 'н'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 
 class Profile(Cmd, PublicMethods):
@@ -49,6 +62,13 @@ class Profile(Cmd, PublicMethods):
     __unread_parser = argparse.ArgumentParser(prog='unread', description='Вывести непрочитанные')
     __unread_parser.add_argument('count', metavar='COUNT', type=int, nargs='?',
                                  help='Количество выводимых диалогов', default=5)
+
+    __search_parser = argparse.ArgumentParser(prog='search', description='Найти сообщение')
+    __search_parser.add_argument('text', metavar='TEXT', nargs='+', help='Подстрока поиска')
+    __search_parser.add_argument('-c', '--count', metavar='count', type=int, nargs='?',
+                                 help='Количество выводимых сообщений (По умолчанию: 5)', default=5)
+    __search_parser.add_argument('-e', '--extended', metavar='extended', type=str2bool, nargs='?',
+                                 help='Выводить дополнительную информацию о сообщении? (По умолчанию: да)', default=True)
 
     #__message_details_parser = argparse.ArgumentParser(prog='message_details',
     #                                                   description='Показать подробности сообщения')
@@ -173,6 +193,20 @@ class Profile(Cmd, PublicMethods):
     def do_events(self, argv):
         events = Profile_events(self.api, self.alternative_api)
         events.start(argv.typing, argv.online, argv.read, argv.sound)
+
+    @Wrapper_cmd_line_arg_parser(parser=__search_parser)
+    def do_search(self, argv):
+        subtext = ' '.join(argv.text)
+        founded_messages = self.api.messages.search(q=subtext, count=argv.count, extended=argv.extended)
+        if argv.extended:
+            messages_parser = Auto_messages_parser(self.api)
+            messages_parser.print_messages(founded_messages)
+        else:
+            for message in founded_messages['items']:
+                date = datetime.fromtimestamp(message['date'])
+                print('[{}] от id{}: '.format(date.strftime('%Y-%m-%d %H:%M:%S'), message['from_id']),
+                      end='\n'*('\n' in message['text']))
+                print(message['text'])
 
     #@Wrapper_cmd_line_arg_parser(parser=__message_details_parser)
     #def do_message_details(self, argv):

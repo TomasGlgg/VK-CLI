@@ -9,22 +9,42 @@ class Messages_parser:
         self.profile_id = profile_id
 
     def _get_profile_name(self, response, id):
-        if id >= 2000000000:
+        if id >= 2000000000:  # Chat
             chat_title = self.api.messages.getChat(chat_id=id - 2000000000)['title']
             return '{} ({})'.format(chat_title, id)
-        elif id >= 0:
+        elif id >= 0:  # User
             for profile in response['profiles']:
                 if profile['id'] == id:
                     return '{} {} ({})'.format(profile['first_name'], profile['last_name'], id)
-        else:
+        else:  # Group
             for group in response['groups']:
                 if group['id'] == abs(id):
                     return '{} ({})'.format(group['name'], id)
 
 
 class Private_messages_parser(Messages_parser):
-    @staticmethod
-    def _print_private_message(message):
+    def _print_fwd_messages(self, messages, message, offset=2):
+        date = datetime.fromtimestamp(message['date'])
+        print(' ' * offset, '-------- ', date.strftime('%Y-%m-%d %H:%M:%S'), sep='')
+        group_name = self._get_profile_name(messages, message['from_id'])
+        print(' ' * offset, 'От: ' + group_name, sep='')
+        if message['text']:
+            if '\n' in message['text']:
+                print()
+            print(' ' * offset, end='')
+            print(*message['text'].split('\n'), sep='\n' + ' ' * offset)
+
+        if message['attachments']:
+            print(' ' * offset, 'Дополнительно:', end=' ', sep='')
+            for attachment in message['attachments']:
+                print(colored(attachment['type'], 'cyan'), end=' ')
+            print()
+        if 'fwd_messages' in message and message['fwd_messages']:
+            print(' '*offset, colored('Пересланные сообщения:', 'blue'), sep='')
+            for fwd_message in message['fwd_messages']:
+                self._print_fwd_messages(messages, fwd_message, offset + 2)
+
+    def _print_message(self, message, messages):
         date = datetime.fromtimestamp(message['date'])
         print('-------- {} - №{}'.format(date.strftime('%Y-%m-%d %H:%M:%S'), message['id']))
         if 'reply_message' in message:
@@ -46,17 +66,43 @@ class Private_messages_parser(Messages_parser):
                 print(colored(attachment['type'], 'cyan'), end=' ')
             print()
 
-    def print_last_messages(self, count, mark_unreads_messages=False):
+        if 'fwd_messages' in message and message['fwd_messages']:
+            print(colored('Пересланные сообщения:', 'blue'), sep='')
+            for fwd_message in message['fwd_messages']:
+                self._print_fwd_messages(messages, fwd_message)
+
+    def print_messages(self, count, mark_unreads_messages=False):
         messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count)
         for message in messages['items'][::-1]:
-            self._print_private_message(message)
+            self._print_message(message, messages)
         if mark_unreads_messages:
             self.api.messages.markAsRead(start_message_id=messages['items'][0]['id'],
                                          peer_id=self.peer_id, mark_conversation_as_read=True)
 
 
 class Chat_messages_parser(Messages_parser):
-    def _print_last_message(self, message, messages):
+    def _print_fwd_messages(self, messages, message, offset=2):
+        date = datetime.fromtimestamp(message['date'])
+        print(' ' * offset, '-------- ', date.strftime('%Y-%m-%d %H:%M:%S'), sep='')
+        group_name = self._get_profile_name(messages, message['from_id'])
+        print(' ' * offset, 'От: ' + group_name, sep='')
+        if message['text']:
+            if '\n' in message['text']:
+                print()
+            print(' ' * offset, end='')
+            print(*message['text'].split('\n'), sep='\n' + ' ' * offset)
+
+        if message['attachments']:
+            print(' ' * offset, 'Дополнительно:', end=' ', sep='')
+            for attachment in message['attachments']:
+                print(colored(attachment['type'], 'cyan'), end=' ')
+            print()
+        if 'fwd_messages' in message and message['fwd_messages']:
+            print(' ' * offset, colored('Пересланные сообщения:', 'blue'), sep='')
+            for fwd_message in message['fwd_messages']:
+                self._print_fwd_messages(messages, fwd_message, offset + 2)
+
+    def _print_message(self, message, messages):
         date = datetime.fromtimestamp(message['date'])
         print('-------- {} - №{}'.format(date.strftime('%Y-%m-%d %H:%M:%S'), message['id']))
         if 'reply_message' in message:
@@ -78,27 +124,52 @@ class Chat_messages_parser(Messages_parser):
                 print(colored(attachment['type'], 'cyan'), end=' ')
             print()
 
-    def print_last_messages(self, count, mark_unreads_messages=False):
+        if 'fwd_messages' in message and message['fwd_messages']:
+            print(colored('Пересланные сообщения:', 'blue'), sep='')
+            for fwd_message in message['fwd_messages']:
+                self._print_fwd_messages(messages, fwd_message)
+
+    def print_messages(self, count, mark_unreads_messages=False):
         messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, extended=True)
         for message in messages['items'][::-1]:
-            self._print_last_message(message, messages)
+            self._print_message(message, messages)
         if mark_unreads_messages and messages['conversations'][0]['is_marked_unread']:
             self.api.messages.markAsRead(start_message_id=messages['conversations'][0]['last_message_id'],
                                          peer_id=self.peer_id, mark_conversation_as_read=True)
 
 
 class Group_messages_parser(Messages_parser):
-    @staticmethod
-    def _print_last_message(message):
+    def _print_fwd_messages(self, messages, message, offset=2):
+        date = datetime.fromtimestamp(message['date'])
+        print(' ' * offset, '-------- ', date.strftime('%Y-%m-%d %H:%M:%S'), sep='')
+        group_name = self._get_profile_name(messages, message['from_id'])
+        print(' ' * offset, 'От: ' + group_name, sep='')
+        if message['text']:
+            if '\n' in message['text']:
+                print()
+            print(' ' * offset, end='')
+            print(*message['text'].split('\n'), sep='\n' + ' ' * offset)
+
+        if message['attachments']:
+            print(' ' * offset, 'Дополнительно:', end=' ', sep='')
+            for attachment in message['attachments']:
+                print(colored(attachment['type'], 'cyan'), end=' ')
+            print()
+        if 'fwd_messages' in message and message['fwd_messages']:
+            print(' ' * offset, colored('Пересланные сообщения:', 'blue'), sep='')
+            for fwd_message in message['fwd_messages']:
+                self._print_fwd_messages(messages, fwd_message, offset + 2)
+
+    def _print_message(self, message, messages):
         date = datetime.fromtimestamp(message['date'])
         print('--------', date.strftime('%Y-%m-%d %H:%M:%S'))
-        if message['out']:
-            print('Сообщение', colored('(Вы):', 'green'), end='')
-        else:
-            print('Сообщение', colored('(Собеседник):', 'blue'), end='')
-        if '\n' in message['text']:
-            print()
         if message['text']:
+            if message['out']:
+                print('Сообщение', colored('(Вы):', 'green'), end='')
+            else:
+                print('Сообщение', colored('(Собеседник):', 'blue'), end='')
+            if '\n' in message['text']:
+                print()
             print(message['text'])
         else:
             print()
@@ -109,14 +180,41 @@ class Group_messages_parser(Messages_parser):
                 print(colored(attachment['type'], 'cyan'), end=' ')
             print()
 
-    def print_last_messages(self, count, mark_unread_messages=False):
+        if 'fwd_messages' in message and message['fwd_messages']:
+            print(colored('Пересланные сообщения:', 'blue'), sep='')
+            for fwd_message in message['fwd_messages']:
+                self._print_fwd_messages(fwd_message, messages)
+
+    def print_messages(self, count, mark_unread_messages=False):
         messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count)
         for message in messages['items'][::-1]:
-            self._print_last_message(message)
+            self._print_message(message, messages)
         if mark_unread_messages and messages['conversations'][0]['is_marked_unread']:
             self.api.messages.markAsRead(start_message_id=messages['conversations'][0]['last_message_id'],
                                          peer_id=self.peer_id, mark_conversation_as_read=True,
                                          v=self.api.VK_API_VERSION)
+
+
+class Auto_messages_parser(Messages_parser):
+    chat_messages_parser = None
+    private_messages_parser = None
+    group_messages_parser = None
+
+    def print_messages(self, messages):
+        for message in messages['items']:
+            if message['from_id'] >= 2000000000:  # Group
+                if self.group_messages_parser is None:
+                    self.group_messages_parser = Group_messages_parser(self.api, self.peer_id, self.profile_id)
+                self.group_messages_parser._print_message(message, messages)
+            elif message['from_id'] >= 0:  # User
+                if self.private_messages_parser is None:
+                    self.private_messages_parser = Private_messages_parser(self.api, self.peer_id, self.profile_id)
+                self.private_messages_parser._print_message(message, messages)
+            else:
+                if self.chat_messages_parser is None:
+                    self.chat_messages_parser = Chat_messages_parser(self.api, self.peer_id, self.profile_id)
+                self.chat_messages_parser._print_message(message, messages)
+
 
 
 #class Message_details(Messages_parser):
