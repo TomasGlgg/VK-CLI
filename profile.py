@@ -11,7 +11,7 @@ from longpoll.profile_events import Profile_events
 from messages import Private_dialog, Chat_dialog, Group_dialog
 from messages.messages_parser import Auto_messages_parser
 from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
-from public_methods import PublicMethods
+from public_methods import PublicMethodsWithAuth
 
 
 def clear():
@@ -34,11 +34,8 @@ def str2bool(v):
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
 
-class Profile(Cmd, PublicMethods):
-    profile_info = None
+class Profile(Cmd, PublicMethodsWithAuth):
     token = None
-    api = None  # vk
-    alternative_api = None  # vk_api
     parser = None
 
     __select_parser = argparse.ArgumentParser(prog='select', description='Выбрать диалог')
@@ -68,12 +65,8 @@ class Profile(Cmd, PublicMethods):
     __search_parser.add_argument('-c', '--count', metavar='count', type=int,
                                  help='Количество выводимых сообщений (По умолчанию: 5)', default=5)
     __search_parser.add_argument('-e', '--extended', metavar='extended', type=str2bool,
-                                 help='Выводить дополнительную информацию о сообщении? (По умолчанию: да)', default=True)
-
-    #__message_details_parser = argparse.ArgumentParser(prog='message_details',
-    #                                                   description='Показать подробности сообщения')
-    #__message_details_parser.add_argument('ids', metavar='IDs', type=int, nargs='+',
-    #                                      help='ID/IDs сообщения/сообщений (разделенных через пробел)')
+                                 help='Выводить дополнительную информацию о сообщении? (По умолчанию: да)',
+                                 default=True)
 
     __banner_parser = argparse.ArgumentParser(prog='banner', description='Вывод баннера профиля')
     __exit_parser = argparse.ArgumentParser(prog='exit', description='Выход из профиля')
@@ -208,15 +201,6 @@ class Profile(Cmd, PublicMethods):
                 print('[{}] от id{}: '.format(date.strftime('%Y-%m-%d %H:%M:%S'), message['from_id']),
                       end='\n'*('\n' in message['text']))
                 print(message['text'])
-
-    #@Wrapper_cmd_line_arg_parser(parser=__message_details_parser)
-    #def do_message_details(self, argv):
-    #    message_ids = argv.ids
-    #    message_details = Message_details(self.api)
-    #    try:
-    #        message_details.print_message_details(message_ids)
-    #    except vk.exceptions.VkAPIError:
-    #        cprint('Ошибка', 'red')
 
     @Wrapper_cmd_line_arg_parser(parser=__banner_parser)
     def do_banner(self, _):

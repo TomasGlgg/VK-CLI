@@ -1,4 +1,4 @@
-from termcolor import colored
+from termcolor import colored, cprint
 from datetime import datetime
 
 
@@ -27,8 +27,7 @@ class Parser:
     def _print_private_message(self, conversations, conversation):
         peer_id = conversation['conversation']['peer']['id']
         peer_info = self._find_profile(conversations, peer_id)
-        print('-' * 10, '{} {} ({})'.format(colored(peer_info['first_name'], 'blue'),
-                                            colored(peer_info['last_name'], 'blue'), peer_id))
+        print('-' * 10, colored('{} {} ({})'.format(peer_info['first_name'], peer_info['last_name'], peer_id), 'red'))
         date = datetime.fromtimestamp(conversation['last_message']['date'])
         print(date.strftime('%Y-%m-%d %H:%M:%S'))
         if conversation['last_message']['out'] and conversation['last_message']['text']:
@@ -45,8 +44,8 @@ class Parser:
         if last_peer >= 0:
             last_peer_info = self._find_profile(conversations, last_peer)
             print(
-                f'Сообщение от: {colored(last_peer_info["first_name"], "blue")} \
-{colored(last_peer_info["last_name"], "blue")} ({last_peer})')
+                colored(f'Сообщение от: {last_peer_info["first_name"]} \
+{last_peer_info["last_name"]} ({last_peer})', "blue"))
         else:
             last_peer_info = self._find_profile(conversations, last_peer, key='groups')
             print(f'Сообщение от: {colored(last_peer_info["name"], "blue")} ({last_peer})')
@@ -59,7 +58,7 @@ class Parser:
     def _print_group_message(self, conversations, conversation):
         group_id = conversation['conversation']['peer']['local_id']
         group_info = self._find_profile(conversations, group_id, key='groups')
-        print('-' * 10, '{} ({})'.format(colored(group_info['name'], 'blue'), group_id))
+        print('-' * 10 + colored(' {} ({})'.format(group_info['name'], group_id), 'cyan'))
         date = datetime.fromtimestamp(conversation['last_message']['date'])
         print(date.strftime('%Y-%m-%d %H:%M:%S'))
         if conversation['last_message']['out'] and conversation['last_message']['text']:
@@ -75,17 +74,18 @@ class Parser:
             if conversation['conversation']['peer']['type'] == 'user':
                 peer_id = conversation['conversation']['peer']['id']
                 peer_info = self._find_profile(conversations, peer_id)
-                print('№{}:{} {} ({}):'.format(i, peer_info['first_name'], peer_info['last_name'], peer_id))
+                cprint('№{}:{} {} ({}):'.format(i, peer_info['first_name'], peer_info['last_name'], peer_id),
+                      'red')
                 dialogs_ids.append(peer_id)
             elif conversation['conversation']['peer']['type'] == 'chat':
                 title = conversation['conversation']['chat_settings']['title']
                 chat_id = conversation['conversation']['peer']['id']
-                print('№{}:Чат: {} ({})'.format(i, title, chat_id))
+                cprint('№{}:Чат: {} ({})'.format(i, title, chat_id), 'blue')
                 dialogs_ids.append(chat_id)
             elif conversation['conversation']['peer']['type'] == 'group':
                 group_id = conversation['conversation']['peer']['id']
                 group_info = self._find_profile(conversations, abs(group_id), key='groups')
-                print('№{}:Группа: {} ({})'.format(i, group_info['name'], group_id))
+                cprint('№{}:Группа: {} ({})'.format(i, group_info['name'], group_id), 'cyan')
                 dialogs_ids.append(group_id)
             else:
                 dialogs_ids.append(None)
