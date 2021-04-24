@@ -202,21 +202,21 @@ class Auto_messages_parser(Messages_parser):
 
     def print_messages(self, messages):
         for message in messages['items']:
-            if message['from_id'] >= 2000000000:  # Group
-                if self.group_messages_parser is None:
-                    self.group_messages_parser = Group_messages_parser(self.api, self.peer_id, self.profile_id)
-                print('Сообщение в группе', colored(self._get_profile_name(messages, message['from_id']), 'blue'))
-                self.group_messages_parser._print_message(message, messages)
+            if message['from_id'] >= 2000000000:  # Chat
+                if self.chat_messages_parser is None:
+                    self.chat_messages_parser = Chat_messages_parser(self.api, self.peer_id, self.profile_id)
+                print('Сообщение в чате', colored(self._get_profile_name(messages, message['from_id']), 'blue'))
+                self.chat_messages_parser._print_message(message, messages)
             elif message['from_id'] >= 0:  # User
                 if self.private_messages_parser is None:
                     self.private_messages_parser = Private_messages_parser(self.api, self.peer_id, self.profile_id)
                 print('Сообщение в личном диалоге с', colored(self._get_profile_name(messages, message['from_id']), 'blue'))
                 self.private_messages_parser._print_message(message, messages)
-            else:
-                if self.chat_messages_parser is None:
-                    self.chat_messages_parser = Chat_messages_parser(self.api, self.peer_id, self.profile_id)
-                print('Сообщение в чате', colored(self._get_profile_name(messages, message['from_id']), 'blue'))
-                self.chat_messages_parser._print_message(message, messages)
+            else:  # Group
+                if self.group_messages_parser is None:
+                    self.group_messages_parser = Group_messages_parser(self.api, self.peer_id, self.profile_id)
+                print('Сообщение в группе', colored(self._get_profile_name(messages, message['from_id']), 'blue'))
+                self.group_messages_parser._print_message(message, messages)
 
 
 

@@ -74,6 +74,7 @@ class Profile(Cmd, PublicMethods):
     #                                                   description='Показать подробности сообщения')
     #__message_details_parser.add_argument('ids', metavar='IDs', type=int, nargs='+',
     #                                      help='ID/IDs сообщения/сообщений (разделенных через пробел)')
+
     __banner_parser = argparse.ArgumentParser(prog='banner', description='Вывод баннера профиля')
     __exit_parser = argparse.ArgumentParser(prog='exit', description='Выход из профиля')
 
