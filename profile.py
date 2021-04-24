@@ -65,9 +65,9 @@ class Profile(Cmd, PublicMethods):
 
     __search_parser = argparse.ArgumentParser(prog='search', description='Найти сообщение')
     __search_parser.add_argument('text', metavar='TEXT', nargs='+', help='Подстрока поиска')
-    __search_parser.add_argument('-c', '--count', metavar='count', type=int, nargs='?',
+    __search_parser.add_argument('-c', '--count', metavar='count', type=int,
                                  help='Количество выводимых сообщений (По умолчанию: 5)', default=5)
-    __search_parser.add_argument('-e', '--extended', metavar='extended', type=str2bool, nargs='?',
+    __search_parser.add_argument('-e', '--extended', metavar='extended', type=str2bool,
                                  help='Выводить дополнительную информацию о сообщении? (По умолчанию: да)', default=True)
 
     #__message_details_parser = argparse.ArgumentParser(prog='message_details',
