@@ -48,6 +48,17 @@ class PublicMethodsWithAuth(PublicMethods):
 
     @Wrapper_cmd_line_arg_parser(parser=__play_parser)
     def do_play(self, argv):
+        def play_audio(link):
+            tmp_file = NamedTemporaryFile(delete=False)
+            mp3 = requests.get(link, stream=True)
+            print('Скачивается аудиосообщение №{}'.format(message['id']))
+            for chunk in mp3.iter_content(chunk_size=4 * (2 ** 10)):  # chunk_size = 4KB
+                if chunk:
+                    tmp_file.write(chunk)
+            tmp_file.close()
+            print('Воспроизведение')
+            playsound(tmp_file.name)
+
         messages = self.api.messages.getById(message_ids=argv.ids)['items']
         for message in messages:
             if 'attachments' not in message or not message['attachments']:
@@ -56,16 +67,8 @@ class PublicMethodsWithAuth(PublicMethods):
             for attachment in message['attachments']:
                 if attachment['type'] == 'audio_message':
                     audio_link = attachment['audio_message']['link_mp3']
-                    tmp_file = NamedTemporaryFile(delete=False)
-                    mp3 = requests.get(audio_link, stream=True)
-                    print('Скачивается аудиосообщение №{}'.format(message['id']))
-                    for chunk in mp3.iter_content(chunk_size=4 * (2**10)):  # chunk_size = 4KB
-                        if chunk:
-                            tmp_file.write(chunk)
-                    tmp_file.close()
-                    print('Воспроизведение')
                     try:
-                        playsound(tmp_file.name)
+                        play_audio(audio_link)
                     except KeyboardInterrupt:
                         pass
                     break
