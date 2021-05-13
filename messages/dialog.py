@@ -1,17 +1,24 @@
 from cmd import Cmd
 from termcolor import cprint
 from vk_api.utils import get_random_id
+import argparse
 
 from public_methods import PublicMethodsWithAuth
+from wrapper_cmd_line_arg_parser import Wrapper_cmd_line_arg_parser
 
 
 class Dialog(Cmd, PublicMethodsWithAuth):
-    api = None              # setup
-    profile_info = None     # setup
-    chat_id = None          # setup
+    api = None  # setup
+    profile_info = None  # setup
+    chat_id = None  # setup
     chat_info = None
     parser = None
     alternative_api = None  # setup
+
+    __delete_parser = argparse.ArgumentParser(prog='delete', description='Удалить сообщение')
+    __delete_parser.add_argument('ids', metavar='IDs', type=int, nargs='+',
+                                 help='ID/IDs сообщения/сообщений (разделенных через пробел)')
+    __delete_parser.add_argument('-a', '--all', dest='all', action='store_true', help='Удалить у всех')
 
     def _stealth_protection(self):
         if self.api.stealth:
@@ -38,6 +45,10 @@ class Dialog(Cmd, PublicMethodsWithAuth):
         if len(text) < 1:
             cprint('Неверное количество аргументов', 'red')
         self.alternative_api.get_api().messages.send(peer_id=self.chat_id, random_id=get_random_id(), message=text)
+
+    @Wrapper_cmd_line_arg_parser(parser=__delete_parser)
+    def do_delete(self, argv):
+        self.api.messages.delete(message_ids=argv.ids, delete_for_all=int(argv.all))
 
     @staticmethod
     def do_exit(_):

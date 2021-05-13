@@ -35,7 +35,7 @@ class PublicMethodsWithAuth(PublicMethods):
 
     __play_parser = argparse.ArgumentParser(prog='play', description='Воспроизвести аудиосообщение')
     __play_parser.add_argument('ids', metavar='IDs', type=int, nargs='+',
-                                          help='ID/IDs сообщения/сообщений (разделенных через пробел)')
+                               help='ID/IDs сообщения/сообщений (разделенных через пробел)')
 
     @Wrapper_cmd_line_arg_parser(parser=__message_details_parser)
     def do_message_details(self, argv):
