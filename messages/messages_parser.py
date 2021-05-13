@@ -264,8 +264,8 @@ class Message_details(Messages_parser):
                 print(
                     '---------- Чат: №{} - {}'.format(message['peer_id'] - 2000000000,
                                                       date.strftime('%Y-%m-%d %H:%M:%S')))
-            print('Пишет:', self._get_profile_name(message_details, message['from_id']), 'blue')
-            print('Диалог:', self._get_profile_name(message_details, message['peer_id']), 'blue')
+            print('Пишет:', self._get_profile_name(message_details, message['from_id']))
+            print('Диалог:', self._get_profile_name(message_details, message['peer_id']))
             if 'reply_message' in message and message['reply_message']:
                 print('Ответ на сообщение №{}'.format(colored(message['reply_message']['id'], 'cyan')))
             print('Сообщение:', end='')
