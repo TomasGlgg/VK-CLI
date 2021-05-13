@@ -39,7 +39,7 @@ class PublicMethodsWithAuth(PublicMethods):
 
     def _stealth_protection(self):
         if self.api.stealth:
-            online = self.api.users.get(user_ids=self.profile_info['id'], fields=['online'])[0]['online']
+            online = self.api.messages.getLastActivity(user_id=self.profile_info['id'])['online']
             if not online:
                 return True
         return False
