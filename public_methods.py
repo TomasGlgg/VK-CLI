@@ -37,6 +37,13 @@ class PublicMethodsWithAuth(PublicMethods):
     __play_parser.add_argument('ids', metavar='IDs', type=int, nargs='+',
                                help='ID/IDs сообщения/сообщений (разделенных через пробел)')
 
+    def _stealth_protection(self):
+        if self.api.stealth:
+            online = self.api.users.get(user_ids=self.profile_info['id'], fields=['online'])[0]['online']
+            if not online:
+                return True
+        return False
+
     @Wrapper_cmd_line_arg_parser(parser=__message_details_parser)
     def do_message_details(self, argv):
         message_ids = argv.ids

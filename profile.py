@@ -112,13 +112,6 @@ class Profile(Cmd, PublicMethodsWithAuth):
             self.intro += f"       Страна: {self.profile_info['country']['title']}\n"
         self.intro += f"       Статус: {colored(self.profile_info['status'], 'cyan')}"
 
-    def _stealth_protection(self):
-        if self.api.stealth:
-            online = self.api.users.get(user_ids=self.profile_info['id'], fields=['online'])[0]['online']
-            if not online:
-                return True
-        return False
-
     @Wrapper_cmd_line_arg_parser(parser=__dialogs_parser)
     def do_dialogs(self, argv):
         if self._stealth_protection():
