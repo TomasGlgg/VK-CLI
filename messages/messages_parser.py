@@ -23,7 +23,7 @@ class Messages_parser:
 
 
 class Private_messages_parser(Messages_parser):
-    def _print_fwd_messages(self, message, messages, offset=2):
+    def _print_fwd_messages(self, messages, message, offset=2):
         date = datetime.fromtimestamp(message['date'])
         print(' ' * offset, '-------- ', date.strftime('%Y-%m-%d %H:%M:%S'), sep='')
         group_name = self._get_profile_name(messages, message['from_id'])
@@ -69,7 +69,7 @@ class Private_messages_parser(Messages_parser):
         if 'fwd_messages' in message and message['fwd_messages']:
             cprint('Пересланные сообщения:', 'blue')
             for fwd_message in message['fwd_messages']:
-                self._print_fwd_messages(fwd_message, messages)
+                self._print_fwd_messages(messages, fwd_message)
 
     def print_messages(self, count, mark_unreads_messages=False):
         messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, extended=True)
