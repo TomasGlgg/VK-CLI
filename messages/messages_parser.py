@@ -72,7 +72,7 @@ class Private_messages_parser(Messages_parser):
                 self._print_fwd_messages(fwd_message, messages)
 
     def print_messages(self, count, mark_unreads_messages=False):
-        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count)
+        messages = self.api.messages.getHistory(peer_id=self.peer_id, count=count, extended=True)
         for message in messages['items'][::-1]:
             self._print_message(message, messages)
         if mark_unreads_messages:
